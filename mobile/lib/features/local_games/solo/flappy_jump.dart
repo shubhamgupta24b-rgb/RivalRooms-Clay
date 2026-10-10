@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../core/ui/tokens.dart';
 import '../shell/local_game_info.dart';
 import '../shell/ticking_play.dart';
 import 'solo_common.dart';
@@ -145,7 +146,7 @@ class _FlappyPainter extends CustomPainter {
     canvas.restore();
     if (!g.started) {
       final tp = TextPainter(
-        text: const TextSpan(text: 'TAP TO FLY', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 28, shadows: [Shadow(color: Colors.black45, offset: Offset(0, 2))])),
+        text: const TextSpan(text: 'TAP TO FLY', style: TextStyle(fontFamily: Fonts.display, color: Colors.white, fontSize: 30,shadows: [Shadow(color: Colors.black45, offset: Offset(0, 2))])),
         textDirection: TextDirection.ltr,
       )..layout();
       tp.paint(canvas, Offset((size.width - tp.width) / 2, size.height * 0.3));

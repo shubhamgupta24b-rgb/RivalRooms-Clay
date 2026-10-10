@@ -43,14 +43,15 @@ class _GoldButtonState extends State<GoldButton> {
   Widget build(BuildContext context) {
     final enabled = widget.onPressed != null;
     final sink = _down && enabled;
+    // Disabled: frosted glass with dimmed ink, not a faded gold (which reads as dirty brown).
+    final flat = context.tk.flat;
+    final ink = enabled ? Brand.onGold : (flat ? FlatPalette.ink.withValues(alpha: 0.45) : Colors.white.withValues(alpha: 0.5));
     return Semantics(
       button: true,
       enabled: enabled,
       label: widget.label,
       excludeSemantics: true,
-      child: Opacity(
-        opacity: enabled ? 1 : 0.5,
-        child: GestureDetector(
+      child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTapDown: enabled ? (_) => _set(true) : null,
           onTapUp: enabled ? (_) => _set(false) : null,
@@ -67,24 +68,29 @@ class _GoldButtonState extends State<GoldButton> {
             curve: Motion.standard,
             height: widget.height,
             transform: Matrix4.translationValues(0, sink ? 4 : 0, 0),
-            decoration: BoxDecoration(
-              color: Brand.gold,
-              borderRadius: Radii.rButton,
-              boxShadow: sink || !enabled ? Shadows.edge(Brand.goldDeep, depth: 1) : Shadows.edge(Brand.goldDeep),
-            ),
+            decoration: enabled
+                ? BoxDecoration(
+                    color: Brand.gold,
+                    borderRadius: Radii.rButton,
+                    boxShadow: sink ? Shadows.edge(Brand.goldDeep, depth: 1) : Shadows.edge(Brand.goldDeep),
+                  )
+                : BoxDecoration(
+                    color: flat ? Colors.white.withValues(alpha: 0.6) : Colors.white.withValues(alpha: 0.08),
+                    borderRadius: Radii.rButton,
+                    border: Border.all(color: flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.16), width: 1.5),
+                  ),
             padding: const EdgeInsets.symmetric(horizontal: Space.l),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              if (widget.icon != null) ...[GameIcon(widget.icon!, size: 22, color: Brand.onGold), const SizedBox(width: 10)],
+              if (widget.icon != null) ...[GameIcon(widget.icon!, size: 22, color: ink), const SizedBox(width: 10)],
               Flexible(
                 child: Text(widget.label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontFamily: Fonts.display, fontSize: widget.fontSize, height: 1, letterSpacing: widget.fontSize * 0.02, color: Brand.onGold)),
+                    style: TextStyle(fontFamily: Fonts.display, fontSize: widget.fontSize, height: 1, letterSpacing: widget.fontSize * 0.02, color: ink)),
               ),
             ]),
           ),
         ),
-      ),
     );
   }
 }

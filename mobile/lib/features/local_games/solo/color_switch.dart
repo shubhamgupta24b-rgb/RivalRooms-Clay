@@ -164,7 +164,7 @@ class _SwitchPainter extends CustomPainter {
     canvas.drawCircle(ball, SwitchLogic.ballR * s * 1.8, Paint()..color = switchColors[g.colour].withValues(alpha: 0.25));
     canvas.drawCircle(ball, SwitchLogic.ballR * s, Paint()..color = switchColors[g.colour]);
     if (!g.started) {
-      final tp = TextPainter(text: const TextSpan(text: 'TAP TO START', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 2)), textDirection: TextDirection.ltr)..layout();
+      final tp = TextPainter(text: const TextSpan(text: 'TAP TO START', style: TextStyle(fontFamily: Fonts.display, color: Colors.white70, fontSize: 18, letterSpacing: 2)), textDirection: TextDirection.ltr)..layout();
       tp.paint(canvas, Offset(cx - tp.width / 2, ball.dy + 30));
     }
   }

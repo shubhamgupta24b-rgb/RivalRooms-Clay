@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../core/ui/tokens.dart';
 import '../air_hockey/air_hockey_game.dart' show V;
 import '../shell/local_game_info.dart';
 import '../shell/ticking_play.dart';
@@ -153,7 +154,7 @@ class _BrickPainter extends CustomPainter {
     canvas.drawRRect(RRect.fromRectAndRadius(p, const Radius.circular(8)), Paint()..color = Colors.white);
     canvas.drawCircle(Offset(g.ball.x * s, g.ball.y * s), BrickBreakerLogic.ballR * s, Paint()..color = const Color(0xFFFFD43B));
     if (!g.launched && !g.over) {
-      final tp = TextPainter(text: const TextSpan(text: 'TAP TO LAUNCH', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w900, fontSize: 20)), textDirection: TextDirection.ltr)..layout();
+      final tp = TextPainter(text: const TextSpan(text: 'TAP TO LAUNCH', style: TextStyle(fontFamily: Fonts.display, color: Colors.white70, fontSize: 22, letterSpacing: 1)), textDirection: TextDirection.ltr)..layout();
       tp.paint(canvas, Offset((size.width - tp.width) / 2, size.height * 0.62));
     }
   }

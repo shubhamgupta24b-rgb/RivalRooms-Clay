@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../core/ui/tokens.dart';
 import '../shell/local_game_info.dart';
 import '../shell/ticking_play.dart';
 import 'solo_common.dart';
@@ -127,7 +128,7 @@ class _PianoPainter extends CustomPainter {
     }
     final n = g.next;
     if (!g.started && n != null) {
-      final tp = TextPainter(text: const TextSpan(text: 'START', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 18)), textDirection: TextDirection.ltr)..layout();
+      final tp = TextPainter(text: const TextSpan(text: 'START', style: TextStyle(fontFamily: Fonts.display, color: Colors.white, fontSize: 20, letterSpacing: 1)), textDirection: TextDirection.ltr)..layout();
       tp.paint(canvas, Offset(n.lane * w + (w - tp.width) / 2, (n.y + PianoLogic.tileH / 2) * h - tp.height / 2));
     }
     if (g.wrongLane != null) {

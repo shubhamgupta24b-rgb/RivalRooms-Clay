@@ -63,7 +63,7 @@ class _QuestionMarks extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     for (final (x, y, s, rot) in _marks) {
       final tp = TextPainter(
-        text: TextSpan(text: '?', style: TextStyle(color: GpCoral.mark, fontSize: size.width * s, fontWeight: FontWeight.w900)),
+        text: TextSpan(text: '?', style: TextStyle(fontFamily: Fonts.display, color: GpCoral.mark, fontSize: size.width * s)),
         textDirection: TextDirection.ltr,
       )..layout();
       canvas.save();

@@ -132,12 +132,12 @@ void main() {
     session.result = result();
     session.notifyListeners();
     await tester.pump();
-    expect(find.text('RESULTS'), findsOneWidget);
+    expect(find.text('Ravi wins!', findRichText: true), findsOneWidget);
     expect(find.text('1'), findsWidgets); // rank medal
-    await tester.tap(find.text('PLAY AGAIN'));
+    await tester.tap(find.text('Play again'));
     await tester.pump();
     expectReq(socket, 'next_game', {});
-    await tester.tap(find.text('CHOOSE ANOTHER GAME'));
+    await tester.tap(find.text('Choose another game'));
     await tester.pump();
     expect(socket.requests.last.$1, 'return_to_lobby');
   });
@@ -152,9 +152,9 @@ void main() {
     session.notifyListeners();
     await tester.pump();
     expect(find.text('PARTY STANDINGS · GAME 1 OF 3'), findsOneWidget);
-    expect(find.text('+2 pts'), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('NEXT GAME (2/3): LUDO'), 200, scrollable: find.byType(Scrollable).first);
-    await tester.tap(find.text('NEXT GAME (2/3): LUDO'));
+    expect(find.text('+2'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Next game (2/3): Ludo'), 200, scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.text('Next game (2/3): Ludo'));
     await tester.pump();
     expectReq(socket, 'next_game', {});
 
@@ -162,7 +162,7 @@ void main() {
     rm.room = room(status: 'finished', party: {...party, 'index': 2, 'done': true, 'totals': {'me': 6, 'op': 3}});
     rm.notifyListeners();
     await tester.pump();
-    expect(find.text('ASHA WINS THE PARTY!'), findsOneWidget);
-    expect(find.textContaining('NEXT GAME'), findsNothing);
+    expect(find.text('Asha wins the party!', findRichText: true), findsOneWidget);
+    expect(find.textContaining('Next game'), findsNothing);
   });
 }

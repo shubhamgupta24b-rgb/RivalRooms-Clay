@@ -195,7 +195,7 @@ class _ParkPainter extends CustomPainter {
     final key = '$t|${size.round()}|${color.toARGB32()}';
     return _text.putIfAbsent(key, () {
       if (_text.length > 400) _text.clear();
-      return TextPainter(text: TextSpan(text: t, style: TextStyle(fontSize: size, color: color, fontWeight: weight)), textDirection: TextDirection.ltr)..layout();
+      return TextPainter(text: TextSpan(text: t, style: TextStyle(fontFamily: Fonts.body, fontSize: size, color: color, fontWeight: weight)), textDirection: TextDirection.ltr)..layout();
     });
   }
 

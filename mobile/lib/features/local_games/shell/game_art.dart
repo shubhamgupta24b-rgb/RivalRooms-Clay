@@ -9,7 +9,7 @@ const gameIcons = <String, GameIcons>{
   'archery': GameIcons.target,
   'ball_sort': GameIcons.bottle,
   'basketball_hoops': GameIcons.ball,
-  'battleship': GameIcons.target,
+  'battleship': GameIcons.bomb,
   'bingo': GameIcons.star,
   'block_drop': GameIcons.stoneBlock,
   'bottle_smash': GameIcons.bottle,
@@ -25,10 +25,10 @@ const gameIcons = <String, GameIcons>{
   'dino_run': GameIcons.cactus,
   'dots_boxes': GameIcons.pencil,
   'draw_guess': GameIcons.paintBrush,
-  'find_spy': GameIcons.magnifier,
+  'find_spy': GameIcons.eye,
   'flappy_jump': GameIcons.bird,
   'fruit_duel': GameIcons.watermelon,
-  'fruit_merge': GameIcons.watermelon,
+  'fruit_merge': GameIcons.pineapple,
   'fruit_merge_battle': GameIcons.strawberry,
   'game_2048': GameIcons.stoneBlock,
   'guess_person': GameIcons.magnifier,
@@ -55,7 +55,7 @@ const gameIcons = <String, GameIcons>{
   'simon_says': GameIcons.sound,
   'sky_jumper': GameIcons.arrowUp,
   'sliding_puzzle': GameIcons.woodBlock,
-  'slingshot': GameIcons.bird,
+  'slingshot': GameIcons.pig,
   'smash_karts': GameIcons.rocket,
   'snake_duel': GameIcons.snake,
   'snakes_ladders': GameIcons.ladder,
@@ -225,6 +225,8 @@ class GameArtPainter extends CustomPainter {
       PaperCardPainter(radius: s * 0.14, tint: color).paint(canvas, card.size);
       canvas.restore();
       paintIcon(canvas, gameIconFor(id), Rect.fromCenter(center: c, width: s * 0.85, height: s * 0.85), color: fillFor(color));
+    } else if (id.startsWith('colour_clash')) {
+      _cardFan(canvas, c, s);
     } else {
       // Soft shadow, then the icon.
       canvas.drawOval(
@@ -235,6 +237,29 @@ class GameArtPainter extends CustomPainter {
       paintIcon(canvas, gameIconFor(id), Rect.fromCenter(center: c, width: s, height: s), color: Colors.white);
     }
     canvas.restore();
+  }
+
+  /// Colour Clash: two of its cards fanned out (blue behind, red in front), like a hand.
+  void _cardFan(Canvas canvas, Offset c, double s) {
+    final w = s * 0.74, h = s * 1.08;
+    void card(Offset at, double turn, Color fill) {
+      canvas.save();
+      canvas.translate(at.dx, at.dy);
+      canvas.rotate(turn);
+      final outer = RRect.fromRectAndRadius(Rect.fromCenter(center: Offset.zero, width: w, height: h), Radius.circular(w * 0.14));
+      canvas.drawRRect(outer.shift(Offset(0, s * 0.04)), Paint()..color = Colors.black.withValues(alpha: 0.3));
+      canvas.drawRRect(outer, Paint()..color = Colors.white);
+      canvas.drawRRect(outer.deflate(w * 0.08), Paint()..color = fill);
+      canvas.save();
+      canvas.rotate(-0.55);
+      canvas.drawOval(Rect.fromCenter(center: Offset.zero, width: w * 0.62, height: h * 0.62), Paint()..color = Colors.white);
+      canvas.drawOval(Rect.fromCenter(center: Offset.zero, width: w * 0.34, height: h * 0.36), Paint()..color = fill);
+      canvas.restore();
+      canvas.restore();
+    }
+
+    card(c + Offset(-w * 0.32, s * 0.02), -0.28, const Color(0xFF1E7BE0));
+    card(c + Offset(w * 0.30, s * 0.04), 0.2, const Color(0xFFE53935));
   }
 
   void _night(Canvas canvas, Size size) {
@@ -359,7 +384,7 @@ class _GameTileState extends State<GameTile> {
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                Text(w.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.display, fontSize: 17, height: 1.15, color: flat ? FlatPalette.ink : Colors.white)),
+                ShrinkText(w.title, style: TextStyle(fontFamily: Fonts.display, fontSize: 17, height: 1.15, color: flat ? FlatPalette.ink : Colors.white)),
                 const SizedBox(height: 4),
                 PlayersChip(min: w.minPlayers, max: w.maxPlayers),
               ]),
@@ -401,6 +426,29 @@ class _GameTileState extends State<GameTile> {
       ),
     ]);
   }
+}
+
+/// One line of text that steps its font down (to [minSize]) to fit before it ellipsizes,
+/// so long game names on narrow tiles ("Snakes & Ladders" at 320 px) stay readable.
+class ShrinkText extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+  final double minSize;
+  const ShrinkText(this.text, {super.key, required this.style, this.minSize = 13});
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(builder: (context, box) {
+        final scaler = MediaQuery.textScalerOf(context);
+        var size = style.fontSize!;
+        while (size > minSize) {
+          final tp = TextPainter(text: TextSpan(text: text, style: style.copyWith(fontSize: size)), textDirection: TextDirection.ltr, textScaler: scaler, maxLines: 1)..layout();
+          final fits = tp.width <= box.maxWidth;
+          tp.dispose();
+          if (fits) break;
+          size -= 1;
+        }
+        return Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: style.copyWith(fontSize: size));
+      });
 }
 
 /// The small "2–4 players" / SOLO chip on tiles.

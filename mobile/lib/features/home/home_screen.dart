@@ -324,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 8),
             SizedBox(
               width: 200,
-              child: Text('$totalGameCount games · 2–6 players · no internet needed',
+              child: Text('$totalGameCount games · 2–6 players\nNo internet needed',
                   style: const TextStyle(fontFamily: Fonts.body, fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFFD6DAF7))),
             ),
             const SizedBox(height: 14),

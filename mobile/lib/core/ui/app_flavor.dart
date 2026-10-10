@@ -58,7 +58,7 @@ class QuestionMarksPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     for (final (x, y, s, rot) in _marks) {
       final tp = TextPainter(
-        text: TextSpan(text: '?', style: TextStyle(color: color, fontSize: size.width * s, fontWeight: FontWeight.w900)),
+        text: TextSpan(text: '?', style: TextStyle(fontFamily: Fonts.display, color: color, fontSize: size.width * s)),
         textDirection: TextDirection.ltr,
       )..layout();
       canvas.save();
