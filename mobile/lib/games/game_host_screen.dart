@@ -228,7 +228,7 @@ class _Results extends StatelessWidget {
                   const SizedBox(height: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.06), borderRadius: Radii.rButton, border: Border.all(color: Colors.white.withValues(alpha: 0.10))),
+                    decoration: Skin.surface(radius: Radii.button, depth: 0.8),
                     child: Column(children: [
                       for (var i = 0; i < partyOrder.length; i++)
                         Padding(
@@ -300,11 +300,7 @@ class _RankRow extends StatelessWidget {
         child: Container(
           constraints: const BoxConstraints(minHeight: 58),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(
-            color: winner ? c.withValues(alpha: 0.14) : Colors.white.withValues(alpha: 0.06),
-            borderRadius: Radii.rButton,
-            border: Border.all(color: winner ? c : Colors.white.withValues(alpha: 0.10), width: 2),
-          ),
+          decoration: Skin.surface(radius: Radii.button, tint: winner ? c : null, ring: winner ? nameColor(c) : null, depth: winner ? 1 : 0.7),
           child: Row(children: [
             Container(
               width: 26,
@@ -353,11 +349,7 @@ class _PlaylistChip extends StatelessWidget {
         opacity: state < 0 ? 0.55 : 1,
         child: Container(
           padding: const EdgeInsets.fromLTRB(4, 4, 10, 4),
-          decoration: BoxDecoration(
-            color: now ? Brand.gold.withValues(alpha: 0.16) : Colors.white.withValues(alpha: 0.07),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: now ? Brand.gold : Colors.white.withValues(alpha: 0.12), width: now ? 2 : 1),
-          ),
+          decoration: Skin.surface(radius: 14, ring: now ? Brand.gold : null, tint: now ? Brand.gold : null, depth: 0.5),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             GameThumb(id: game.id, color: game.color, size: 22, radius: 7),
             const SizedBox(width: 6),

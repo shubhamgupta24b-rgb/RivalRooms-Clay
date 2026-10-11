@@ -132,7 +132,7 @@ class SideTimer extends StatelessWidget {
         child: Container(
           height: 30,
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(color: NeonPalette.overlay, borderRadius: Radii.rChip, border: Border.all(color: Colors.white.withValues(alpha: 0.14))),
+          decoration: Skin.pill(color: NeonPalette.overlay),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             GameIcon(GameIcons.clock, size: 14, color: c),
             const SizedBox(width: 6),
@@ -157,7 +157,7 @@ class ZoneCenterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 14, right: 2),
-      decoration: BoxDecoration(color: NeonPalette.sheet, borderRadius: BorderRadius.circular(Radii.pill), border: Border.all(color: Colors.white.withValues(alpha: 0.18)), boxShadow: Shadows.small),
+      decoration: Skin.pill(color: NeonPalette.sheet),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Semantics(
           liveRegion: true,
@@ -180,7 +180,7 @@ class PlayerTagSmall extends StatelessWidget {
     final fill = fillFor(player.color);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: Space.s, vertical: Space.xs),
-      decoration: BoxDecoration(color: fill, borderRadius: Radii.rChip),
+      decoration: Skin.pill(color: fill),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         if (seat != null) ...[SizedBox(width: 12, height: 12, child: CustomPaint(painter: PlayerShapePainter(PlayerPalette.shape(seat), onColor(fill)))), const SizedBox(width: 5)],
         Flexible(
@@ -206,7 +206,7 @@ class _ScoreBadge extends StatelessWidget {
         constraints: const BoxConstraints(minWidth: 58),
         height: 36,
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(color: player.color.withValues(alpha: 0.18), borderRadius: Radii.rChip, border: Border.all(color: player.color, width: 1.5)),
+        decoration: Skin.surface(tint: player.color, ring: player.color, radius: Radii.chip, depth: 0.6),
         child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
           PlayerBadge(index: seat, size: 16, color: player.color),
           const SizedBox(width: 6),

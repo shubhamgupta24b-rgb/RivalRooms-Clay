@@ -357,12 +357,7 @@ class PlayerPicker extends StatelessWidget {
                 width: 96,
                 constraints: const BoxConstraints(minHeight: 96),
                 padding: const EdgeInsets.fromLTRB(6, Space.m, 6, Space.s),
-                decoration: BoxDecoration(
-                  color: picked ? fillFor(p.color) : (t.flat ? Colors.white : Colors.white.withValues(alpha: 0.06)),
-                  borderRadius: Radii.rButton,
-                  border: Border.all(color: picked ? Colors.white : p.color.withValues(alpha: 0.8), width: 2),
-                  boxShadow: picked ? [BoxShadow(color: p.color.withValues(alpha: 0.4), blurRadius: 14)] : null,
-                ),
+                decoration: Skin.surface(tint: picked ? fillFor(p.color) : p.color, ring: picked ? Colors.white : p.color.withValues(alpha: 0.8), radius: Radii.button, depth: picked ? 1 : 0.7),
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                   PlayerBadge(index: seat, size: 40, color: p.color, initial: p.name),
                   const SizedBox(height: 6),
@@ -419,11 +414,7 @@ class TimeChip extends StatelessWidget {
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.fromLTRB(8, 4, 10, 4),
-        decoration: BoxDecoration(
-          color: urgent ? fillFor(t.danger) : (t.flat ? FlatPalette.option : NeonPalette.overlay),
-          borderRadius: Radii.rChip,
-          border: Border.all(color: urgent ? Colors.transparent : (t.flat ? t.strokeStrong : Colors.white.withValues(alpha: 0.14))),
-        ),
+        decoration: Skin.pill(color: urgent ? fillFor(t.danger) : NeonPalette.overlay),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           GameIcon(GameIcons.clock, size: 16, color: ink),
           const SizedBox(width: 5),

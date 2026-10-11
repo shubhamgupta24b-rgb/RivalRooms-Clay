@@ -77,12 +77,7 @@ class _Sheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: NeonPalette.sheet,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.14))),
-        boxShadow: const [BoxShadow(color: Color(0x80000000), blurRadius: 32, offset: Offset(0, -12))],
-      ),
+      decoration: Skin.sheet(),
       child: SafeArea(
         top: false,
         child: ConstrainedBox(
@@ -148,7 +143,7 @@ class PauseToggles extends StatelessWidget {
             );
         return Container(
           clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.06), borderRadius: Radii.rLg, border: Border.all(color: Colors.white.withValues(alpha: 0.10))),
+          decoration: Skin.surface(radius: Radii.lg, depth: 0.7),
           child: Material(
             type: MaterialType.transparency,
             child: Column(children: [

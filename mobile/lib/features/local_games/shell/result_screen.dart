@@ -191,11 +191,7 @@ class ResultScreen extends StatelessWidget {
         const SizedBox(height: 18),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-          decoration: BoxDecoration(
-            color: newBest ? Brand.gold.withValues(alpha: 0.12) : t.surface,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: newBest ? Brand.gold : t.stroke, width: newBest ? 2 : 1),
-          ),
+          decoration: Skin.surface(radius: 22, tint: newBest ? Brand.gold : null, ring: newBest ? Brand.gold : null),
           child: Column(children: [
             Text(game.scoreUnit.toUpperCase(), style: t.styles.label),
             const SizedBox(height: 6),
@@ -243,11 +239,7 @@ class _Row extends StatelessWidget {
         child: Container(
           constraints: const BoxConstraints(minHeight: 58),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(
-            color: winner ? c.withValues(alpha: 0.14) : Colors.white.withValues(alpha: 0.06),
-            borderRadius: Radii.rButton,
-            border: Border.all(color: winner ? c : Colors.white.withValues(alpha: 0.10), width: 2),
-          ),
+          decoration: Skin.surface(radius: Radii.button, tint: winner ? c : null, ring: winner ? nameColor(c) : null, depth: winner ? 1 : 0.7),
           child: Row(children: [
             Container(
               width: 24,

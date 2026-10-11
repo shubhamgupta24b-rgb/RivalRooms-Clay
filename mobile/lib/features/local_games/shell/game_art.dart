@@ -365,21 +365,21 @@ class _GameTileState extends State<GameTile> {
           w.onTap();
         },
         onLongPress: w.onStar,
-        child: AnimatedContainer(
+        child: AnimatedScale(
+          scale: _down ? Skin.pressScale : 1,
           duration: Motion.of(context, Motion.fast),
-          transform: Matrix4.translationValues(0, _down ? 3 : 0, 0),
-          decoration: BoxDecoration(
-            color: flat ? Colors.white : const Color(0xFF151A45),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: w.selected ? (flat ? FlatPalette.ink : Brand.gold) : (flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.12)), width: w.selected ? 2.5 : 1),
-            boxShadow: _down ? null : [flat ? const BoxShadow(color: Color(0x38000000), offset: Offset(0, 4)) : const BoxShadow(color: Color(0x40000000), blurRadius: 10, offset: Offset(0, 4))],
-          ),
-          clipBehavior: Clip.antiAlias,
+          child: AnimatedContainer(
+          duration: Motion.of(context, Motion.fast),
+          decoration: Skin.tile(selected: w.selected, pressed: _down),
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Expanded(
-              child: Stack(fit: StackFit.expand, children: [
-                CustomPaint(painter: GameArtPainter(w.id, w.color)),
-              ]),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(Skin.rTile - 6),
+                  child: CustomPaint(painter: GameArtPainter(w.id, w.color)),
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
@@ -390,6 +390,7 @@ class _GameTileState extends State<GameTile> {
               ]),
             ),
           ]),
+        ),
         ),
       ),
     );
@@ -413,7 +414,7 @@ class _GameTileState extends State<GameTile> {
                   width: 32,
                   height: 32,
                   alignment: Alignment.center,
-                  decoration: const BoxDecoration(color: Color(0x990A0E28), shape: BoxShape.circle),
+                  decoration: Skin.round(dark: true),
                   child: w.favourite!
                       ? const GameIcon(GameIcons.star, size: 16, color: Brand.gold)
                       // Not a favourite: the same star, greyed out.

@@ -55,11 +55,7 @@ class PrivacyScreen extends StatelessWidget {
                   Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: t.flat ? Colors.white : t.surface,
-                      borderRadius: Radii.rLg,
-                      border: Border.all(color: t.flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.10)),
-                    ),
+                    decoration: Skin.surface(radius: Radii.lg, depth: 0.8),
                     child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Container(
                         width: 34,

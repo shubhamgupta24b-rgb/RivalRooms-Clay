@@ -227,7 +227,7 @@ class TurnBar extends StatelessWidget {
           excludeSemantics: true,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: Space.m, vertical: Space.xs),
-            decoration: BoxDecoration(color: t.glassStrong, borderRadius: Radii.rMd),
+            decoration: Skin.pill(),
             child: Text('$score', style: t.styles.score),
           ),
         ),

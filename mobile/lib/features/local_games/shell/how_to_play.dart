@@ -31,7 +31,7 @@ class RuleStep extends StatelessWidget {
         width: 34,
         height: 34,
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: tile.withValues(alpha: 0.2), borderRadius: Radii.rCard),
+        decoration: Skin.surface(tint: tile, radius: Radii.card, depth: 0.45),
         child: icon != null
             ? GameIcon(icon, size: 20, color: ink)
             : Text('${index + 1}', style: TextStyle(fontFamily: Fonts.display, fontSize: 17, color: ink)),
@@ -110,7 +110,7 @@ class HowToPlay extends StatelessWidget {
                         const SizedBox(height: 14),
                         Container(
                           padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(color: t.surface, borderRadius: Radii.rButton, border: Border.all(color: t.stroke)),
+                          decoration: Skin.surface(radius: Radii.button, depth: 0.85),
                           child: Column(children: [
                             for (var i = 0; i < game.rules.length; i++) ...[if (i > 0) const SizedBox(height: 10), RuleStep(index: i, rule: game.rules[i])],
                           ]),

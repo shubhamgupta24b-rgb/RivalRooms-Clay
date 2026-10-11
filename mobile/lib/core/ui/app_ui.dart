@@ -40,53 +40,26 @@ ThemeData buildAppTheme() {
     colorScheme: scheme,
     extensions: [appTokens],
     scaffoldBackgroundColor: AppColors.deep,
+    pageTransitionsTheme: Skin.pageTransitions,
     appBarTheme: const AppBarTheme(backgroundColor: AppColors.night, foregroundColor: Colors.white, centerTitle: true),
     snackBarTheme: const SnackBarThemeData(behavior: SnackBarBehavior.floating, backgroundColor: AppColors.navy, contentTextStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
     dialogTheme: const DialogThemeData(backgroundColor: AppColors.night),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.glass,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: BorderSide.none),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: const BorderSide(color: AppColors.gold, width: 2)),
-      hintStyle: const TextStyle(color: Colors.white38),
+      fillColor: Skin.fieldFill,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(Skin.rChip), borderSide: BorderSide.none),
+      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(Skin.rChip), borderSide: const BorderSide(color: Skin.fieldFocus, width: 2)),
+      hintStyle: const TextStyle(color: Colors.white54),
     ),
   );
 }
 
-/// Navy night background with soft blue and red glows, like the logo.
+/// Every app page's background: the skin's world.
 class AppBackground extends StatelessWidget {
   final Widget child;
   const AppBackground({super.key, required this.child});
   @override
-  Widget build(BuildContext context) => flatStyle ? FlatBackground(child: child) : DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0, 0.45, 1], colors: [NeonPalette.bgTop, NeonPalette.bg, NeonPalette.bgBottom]),
-        ),
-        child: Stack(children: [
-          const Positioned.fill(child: IgnorePointer(child: CustomPaint(painter: _Glows()))),
-          Positioned.fill(child: child),
-        ]),
-      );
-}
-
-class _Glows extends CustomPainter {
-  const _Glows();
-  @override
-  void paint(Canvas canvas, Size size) {
-    void glow(Offset c, double r, Color color) => canvas.drawCircle(
-        c, r, Paint()..shader = RadialGradient(colors: [color.withValues(alpha: 0.12), color.withValues(alpha: 0)]).createShader(Rect.fromCircle(center: c, radius: r)));
-    glow(Offset(-size.width * 0.1, size.height * 0.12), size.width * 0.7, AppColors.blue);
-    glow(Offset(size.width * 1.1, size.height * 0.35), size.width * 0.7, AppColors.red);
-    glow(Offset(size.width * 0.5, size.height * 1.05), size.width * 0.8, AppColors.purple);
-    // A few sparkles.
-    final dot = Paint()..color = Colors.white.withValues(alpha: 0.35);
-    for (final (x, y, r) in const [(0.12, 0.06, 1.6), (0.82, 0.1, 2.0), (0.6, 0.22, 1.2), (0.25, 0.42, 1.4), (0.9, 0.55, 1.8), (0.08, 0.75, 1.5), (0.7, 0.85, 1.3)]) {
-      canvas.drawCircle(Offset(size.width * x, size.height * y), r, dot);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  Widget build(BuildContext context) => flatStyle ? FlatBackground(child: child) : Skin.background(child: child);
 }
 
 /// The app logo with a soft neon glow behind it.
@@ -142,7 +115,6 @@ class _PressableCardState extends State<PressableCard> {
   @override
   Widget build(BuildContext context) {
     final enabled = widget.onTap != null;
-    final shadow = Color.lerp(widget.colors.last, Colors.black, 0.55)!;
     return Semantics(
       button: true,
       enabled: enabled,
@@ -152,17 +124,15 @@ class _PressableCardState extends State<PressableCard> {
         onTapUp: enabled ? (_) => setState(() => _down = false) : null,
         onTapCancel: enabled ? () => setState(() => _down = false) : null,
         onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 90),
-          transform: Matrix4.translationValues(0, _down ? 4 : 0, 0),
-          padding: widget.padding,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: widget.colors, begin: Alignment.topLeft, end: Alignment.bottomRight),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.stroke),
-            boxShadow: [if (!_down) BoxShadow(color: shadow, offset: const Offset(0, 5))],
+        child: AnimatedScale(
+          scale: _down ? Skin.pressScale : 1,
+          duration: const Duration(milliseconds: 110),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 110),
+            padding: widget.padding,
+            decoration: Skin.surface(tint: widget.colors.first, pressed: _down),
+            child: Opacity(opacity: enabled ? 1 : 0.55, child: widget.child),
           ),
-          child: Opacity(opacity: enabled ? 1 : 0.55, child: widget.child),
         ),
       ),
     );

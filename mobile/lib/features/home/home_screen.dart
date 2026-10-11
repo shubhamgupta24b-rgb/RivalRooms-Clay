@@ -287,11 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 constraints: const BoxConstraints(minHeight: 32),
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: t.flat ? Colors.white : c.withValues(alpha: 0.14),
-                  borderRadius: Radii.rChip,
-                  border: Border.all(color: c.withValues(alpha: 0.5)),
-                ),
+                decoration: Skin.surface(tint: c, radius: Radii.chip, depth: 0.5),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   Container(width: 8, height: 8, decoration: BoxDecoration(color: c, shape: BoxShape.circle)),
                   const SizedBox(width: 6),
@@ -307,25 +303,20 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _hero() {
     return Container(
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Brand.indigo, Brand.indigoDeep]),
-        borderRadius: Radii.rBoard,
-        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
-        boxShadow: Shadows.large,
-      ),
+      decoration: Skin.heroPanel(),
       child: Stack(children: [
         const Positioned(right: -6, top: 6, child: ExcludeSemantics(child: SizedBox(width: 150, height: 120, child: CustomPaint(painter: _HeroArt())))),
         Padding(
           padding: const EdgeInsets.all(18),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('PARTY GAMES', style: TextStyle(fontFamily: Fonts.body, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.76, color: Brand.goldLine)),
+            const Text('RIVALROOM', style: TextStyle(fontFamily: Fonts.body, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.76, color: Colors.white)),
             const SizedBox(height: 6),
             const SizedBox(width: 190, child: Text('Ready to play?', style: TextStyle(fontFamily: Fonts.display, fontSize: 30, height: 1.05, color: Colors.white))),
             const SizedBox(height: 8),
             SizedBox(
               width: 200,
               child: Text('$totalGameCount games · 2–6 players\nNo internet needed',
-                  style: const TextStyle(fontFamily: Fonts.body, fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFFD6DAF7))),
+                  style: const TextStyle(fontFamily: Fonts.body, fontSize: 13, fontWeight: FontWeight.w800, color: Colors.white)),
             ),
             const SizedBox(height: 14),
             IntrinsicWidth(child: GoldButton('Play on one phone', height: 50, fontSize: 19, onPressed: () => _open(const LocalGamesHubScreen()))),
@@ -383,16 +374,11 @@ class _ModeTile extends StatelessWidget {
       button: true,
       label: label,
       excludeSemantics: true,
-      child: Material(
-        color: flat ? Colors.white : tint.withValues(alpha: 0.15),
-        shape: RoundedRectangleBorder(borderRadius: Radii.rButton, side: BorderSide(color: flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.12))),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () {
-            haptic(HapticWeight.selection);
-            onTap();
-          },
-          child: SizedBox(
+      child: SkinPanel(
+        tint: tint,
+        radius: Radii.button,
+        onTap: onTap,
+        child: SizedBox(
             height: 104,
             child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               GameIcon(icon, size: 30, color: flat ? fillFor(tint) : ink),
@@ -403,7 +389,6 @@ class _ModeTile extends StatelessWidget {
               ),
             ]),
           ),
-        ),
       ),
     );
   }
@@ -424,13 +409,11 @@ class _ContinueChip extends StatelessWidget {
       button: true,
       label: 'Continue: play $title again',
       excludeSemantics: true,
-      child: Material(
-        color: flat ? Colors.white : Colors.white.withValues(alpha: 0.06),
-        shape: RoundedRectangleBorder(borderRadius: Radii.rLg, side: BorderSide(color: flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.12))),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: SizedBox(
+      child: SkinPanel(
+        radius: Radii.lg,
+        depth: 0.7,
+        onTap: onTap,
+        child: SizedBox(
             height: 52,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -452,7 +435,6 @@ class _ContinueChip extends StatelessWidget {
               ]),
             ),
           ),
-        ),
       ),
     );
   }
@@ -473,23 +455,18 @@ class _SheetOption extends StatelessWidget {
       button: true,
       label: title,
       excludeSemantics: true,
-      child: Material(
-        color: t.flat ? FlatPalette.option : Colors.white.withValues(alpha: 0.06),
-        shape: RoundedRectangleBorder(borderRadius: Radii.rLg, side: BorderSide(color: t.flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.12))),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () {
-            haptic(HapticWeight.selection);
-            onTap();
-          },
-          child: Padding(
+      child: SkinPanel(
+        radius: Radii.lg,
+        depth: 0.8,
+        onTap: onTap,
+        child: Padding(
             padding: const EdgeInsets.all(12),
             child: Row(children: [
               Container(
                 width: 44,
                 height: 44,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(color: tint.withValues(alpha: t.flat ? 0.9 : 0.22), borderRadius: Radii.rCard),
+                decoration: Skin.surface(tint: tint, radius: Radii.card, depth: 0.5),
                 child: GameIcon(icon, size: 22, color: t.flat ? onColor(tint) : Color.lerp(tint, Colors.white, 0.5)!),
               ),
               const SizedBox(width: 12),
@@ -502,7 +479,6 @@ class _SheetOption extends StatelessWidget {
               GameIcon(GameIcons.forward, size: 16, color: t.textMuted),
             ]),
           ),
-        ),
       ),
     );
   }

@@ -37,8 +37,8 @@ android {
     }
 
     defaultConfig {
-        applicationId = if (flatApp) "com.shubhamgupta.partygames.flat" else "com.shubhamgupta.partygames"
-        manifestPlaceholders["appLabel"] = if (flatApp) "Party Games Flat" else "Party Games"
+        applicationId = if (flatApp) "com.shubhamgupta.rivalroom.clay.flat" else "com.shubhamgupta.rivalroom.clay"
+        manifestPlaceholders["appLabel"] = if (flatApp) "RivalRoom Clay Flat" else "RivalRoom Clay"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

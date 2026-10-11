@@ -7,7 +7,7 @@ import 'tokens.dart';
 /// It is a compile-time constant, so colours can switch inside `const` expressions.
 const bool flatStyle = String.fromEnvironment('APP_STYLE') == 'flat';
 
-const String appName = flatStyle ? 'Party Games Flat' : 'Party Games';
+const String appName = flatStyle ? '${Skin.name} Flat' : Skin.name;
 
 /// Games that use the flat look in the flat app: the ones that are mostly words and cards.
 const flatGames = {'memory', 'charades', 'heads_up', 'find_spy', 'undercover', 'mafia', 'most_likely', 'would_rather', 'truth_dare'};

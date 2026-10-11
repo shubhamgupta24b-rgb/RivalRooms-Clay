@@ -246,12 +246,7 @@ class _CodeCard extends StatelessWidget {
         );
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Brand.indigo, Brand.indigoDeep]),
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
-        boxShadow: Shadows.small,
-      ),
+      decoration: Skin.heroPanel(radius: 24),
       child: Column(children: [
         if (quickPlay) ...[
           Container(
@@ -261,7 +256,7 @@ class _CodeCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
         ],
-        const Text('ROOM CODE', style: TextStyle(fontFamily: Fonts.body, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.76, color: Brand.goldLine)),
+        const Text('ROOM CODE', style: TextStyle(fontFamily: Fonts.body, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.76, color: Colors.white)),
         const SizedBox(height: 10),
         Semantics(
           container: true,
@@ -276,7 +271,7 @@ class _CodeCard extends StatelessWidget {
                   width: w,
                   height: w * 1.24,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.12), borderRadius: Radii.rCard),
+                  decoration: Skin.surface(radius: Radii.card, depth: 0.55),
                   child: Text(code[i], style: TextStyle(fontFamily: Fonts.display, fontSize: w * 0.74, height: 1, color: Colors.white)),
                 ),
               ],
@@ -290,7 +285,7 @@ class _CodeCard extends StatelessWidget {
             if (context.mounted) showToast(context, 'Room code $code copied', tone: Tone.success);
           }),
           const SizedBox(width: 8),
-          small(GameIcons.share, 'Share', () => shareText(context, 'Join my Party Games room: $code', copied: 'Room code $code copied')),
+          small(GameIcons.share, 'Share', () => shareText(context, 'Join my RivalRoom game: $code', copied: 'Room code $code copied')),
         ]),
         const SizedBox(height: 10),
         Text(quickPlay ? 'New players are matched in automatically, or join with this code' : 'Friends tap Join room and enter this code',
@@ -313,7 +308,7 @@ class _GameCard extends StatelessWidget {
     final ink = t.flat ? FlatPalette.ink : Colors.white;
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: t.flat ? Colors.white : t.surface, borderRadius: Radii.rButton, border: Border.all(color: t.flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.10))),
+      decoration: Skin.surface(radius: Radii.button, depth: 0.85),
       child: Row(children: [
         GameThumb(id: game.id, color: game.color, size: 56, radius: 14),
         const SizedBox(width: 12),
@@ -353,11 +348,7 @@ class _PlayerRow extends StatelessWidget {
       child: Container(
         height: 54,
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: t.flat ? Colors.white : (isMe ? c.withValues(alpha: 0.14) : t.surface),
-          borderRadius: Radii.rLg,
-          border: Border.all(color: isMe ? c.withValues(alpha: 0.6) : (t.flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.10)), width: 1.5),
-        ),
+        decoration: Skin.surface(tint: isMe ? c : null, ring: isMe ? c.withValues(alpha: 0.7) : null, radius: Radii.lg, depth: 0.75),
         child: Row(children: [
           Opacity(opacity: player.connected ? 1 : 0.5, child: PlayerBadge(index: seat, size: 26, initial: player.username.isEmpty ? '?' : player.username)),
           const SizedBox(width: 10),

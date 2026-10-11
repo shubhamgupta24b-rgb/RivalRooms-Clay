@@ -146,15 +146,12 @@ class _CodeBoxes extends StatelessWidget {
                   width: box,
                   height: box * 1.2,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: t.flat ? Colors.white : (i < text.length ? Brand.gold.withValues(alpha: 0.14) : Colors.white.withValues(alpha: 0.10)),
-                    borderRadius: Radii.rCard,
-                    border: Border.all(
-                      color: error
-                          ? red
-                          : (i == text.length && focus.hasFocus ? gold : (i < text.length ? gold.withValues(alpha: 0.6) : (t.flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.14)))),
-                      width: 2,
-                    ),
+                  decoration: Skin.surface(
+                    radius: Radii.card,
+                    sunken: i >= text.length,
+                    tint: i < text.length ? gold : null,
+                    ring: error ? red : (i == text.length && focus.hasFocus ? gold : null),
+                    depth: 0.6,
                   ),
                   child: Text(i < text.length ? text[i] : '', style: TextStyle(fontFamily: Fonts.display, color: ink, fontSize: (box * 0.55).clamp(20.0, 30.0))),
                 ),
@@ -200,7 +197,7 @@ class _Tip extends StatelessWidget {
     final muted = t.flat ? FlatPalette.inkMuted : NeonPalette.textMuted;
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: t.flat ? Colors.white : t.surface, borderRadius: Radii.rChip, border: Border.all(color: t.flat ? FlatPalette.stroke : t.stroke)),
+      decoration: Skin.surface(radius: Radii.chip, depth: 0.6),
       child: Row(children: [
         GameIcon(icon, size: 18, color: muted),
         const SizedBox(width: 10),

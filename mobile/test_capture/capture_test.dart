@@ -55,8 +55,19 @@ Future<void> loadFonts() async {
     await l.load();
   }
 
-  await family('Nunito', [for (final wt in ['SemiBold', 'Bold', 'ExtraBold', 'Black']) 'assets/fonts/Nunito-$wt.ttf']);
-  await family('Lilita One', ['assets/fonts/LilitaOne-Regular.ttf']);
+  // Every family the app declares in pubspec.yaml, with its files.
+  final spec = File('pubspec.yaml').readAsStringSync().replaceAll('\r\n', '\n');
+  final fams = <String, List<String>>{};
+  String? cur;
+  for (final line in spec.split('\n')) {
+    final f = RegExp(r'^\s+- family: (.+)$').firstMatch(line);
+    if (f != null) cur = f.group(1)!.trim();
+    final a = RegExp(r'^\s+- asset: (assets/fonts/.+)$').firstMatch(line);
+    if (a != null && cur != null) (fams[cur] ??= []).add(a.group(1)!.trim());
+  }
+  for (final e in fams.entries) {
+    await family(e.key, e.value.toSet().toList());
+  }
   final mf = '${Platform.environment['FLUTTER_ROOT']}/bin/cache/artifacts/material_fonts';
   if (Directory(mf).existsSync()) {
     await family('MaterialIcons', ['$mf/materialicons-regular.otf']);

@@ -105,11 +105,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                               excludeSemantics: true,
                               child: Container(
                                 padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: t.flat ? Colors.white : t.surface,
-                                  borderRadius: Radii.rLg,
-                                  border: Border.all(color: t.flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.10)),
-                                ),
+                                decoration: Skin.surface(radius: Radii.lg, depth: 0.8),
                                 child: Row(children: [
                                   GameThumb(id: e.key, color: color, size: 46, radius: 12),
                                   const SizedBox(width: 12),
@@ -158,7 +154,7 @@ class _Stat extends StatelessWidget {
         excludeSemantics: true,
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(color: t.flat ? Colors.white : t.surface, borderRadius: Radii.rLg, border: Border.all(color: t.flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.10))),
+          decoration: Skin.surface(radius: Radii.lg, depth: 0.8),
           child: Column(children: [
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               GameIcon(icon, size: 18, color: t.flat ? FlatPalette.ink : Brand.gold),

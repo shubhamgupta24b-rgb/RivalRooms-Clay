@@ -51,7 +51,7 @@ class HudLabel extends StatelessWidget {
     final t = context.tk;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: Space.s, vertical: 5),
-      decoration: BoxDecoration(color: t.glassStrong, borderRadius: Radii.rMd),
+      decoration: Skin.pill(),
       child: Text(text, style: t.styles.label.copyWith(color: t.onBg, letterSpacing: 0.8)),
     );
   }
@@ -117,18 +117,14 @@ class DiceTray extends StatelessWidget {
       label: '${stripEmoji(turnText)}. ${stripEmoji(message)}',
       child: Container(
         padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-        decoration: BoxDecoration(
-          color: t.flat ? Colors.white : player.color.withValues(alpha: 0.10),
-          borderRadius: Radii.rButton,
-          border: Border.all(color: player.color.withValues(alpha: 0.6), width: 1.5),
-        ),
+        decoration: Skin.surface(tint: player.color, ring: player.color.withValues(alpha: 0.7), radius: Radii.button, depth: 0.8),
         child: Row(children: [
           PlayerBadge(index: seat, size: 26, color: player.color, initial: player.name),
           const SizedBox(width: 10),
           Expanded(
             child: ExcludeSemantics(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                Text(sentence(stripEmoji(turnText)), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.display, fontSize: 19, height: 1.1, color: t.flat ? fillFor(player.color) : nameColor(player.color))),
+                Text(sentence(stripEmoji(turnText)), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.display, fontSize: 19, height: 1.1, color: t.flat ? fillFor(player.color) : Colors.white)),
                 if (message.isNotEmpty)
                   Text(stripEmoji(message), maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.body, fontSize: 12.5, fontWeight: FontWeight.w700, color: t.flat ? FlatPalette.inkMuted : NeonPalette.textMuted)),
               ]),

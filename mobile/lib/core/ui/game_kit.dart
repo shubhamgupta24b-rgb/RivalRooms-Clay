@@ -43,42 +43,34 @@ class _GoldButtonState extends State<GoldButton> {
   Widget build(BuildContext context) {
     final enabled = widget.onPressed != null;
     final sink = _down && enabled;
-    // Disabled: frosted glass with dimmed ink, not a faded gold (which reads as dirty brown).
-    final flat = context.tk.flat;
-    final ink = enabled ? Brand.onGold : (flat ? FlatPalette.ink.withValues(alpha: 0.45) : Colors.white.withValues(alpha: 0.5));
+    final ink = Skin.primaryInk(enabled: enabled);
+    final duration = Motion.of(context, Motion.fast);
     return Semantics(
       button: true,
       enabled: enabled,
       label: widget.label,
       excludeSemantics: true,
       child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTapDown: enabled ? (_) => _set(true) : null,
-          onTapUp: enabled ? (_) => _set(false) : null,
-          onTapCancel: () => _set(false),
-          onTap: enabled
-              ? () {
-                  haptic(HapticWeight.selection);
-                  GameAudio.sfx('tap');
-                  widget.onPressed!();
-                }
-              : null,
+        behavior: HitTestBehavior.opaque,
+        onTapDown: enabled ? (_) => _set(true) : null,
+        onTapUp: enabled ? (_) => _set(false) : null,
+        onTapCancel: () => _set(false),
+        onTap: enabled
+            ? () {
+                haptic(HapticWeight.selection);
+                GameAudio.sfx('tap');
+                widget.onPressed!();
+              }
+            : null,
+        child: AnimatedScale(
+          scale: sink ? Skin.pressScale : 1,
+          duration: duration,
+          curve: Motion.standard,
           child: AnimatedContainer(
-            duration: Motion.of(context, Motion.fast),
+            duration: duration,
             curve: Motion.standard,
             height: widget.height,
-            transform: Matrix4.translationValues(0, sink ? 4 : 0, 0),
-            decoration: enabled
-                ? BoxDecoration(
-                    color: Brand.gold,
-                    borderRadius: Radii.rButton,
-                    boxShadow: sink ? Shadows.edge(Brand.goldDeep, depth: 1) : Shadows.edge(Brand.goldDeep),
-                  )
-                : BoxDecoration(
-                    color: flat ? Colors.white.withValues(alpha: 0.6) : Colors.white.withValues(alpha: 0.08),
-                    borderRadius: Radii.rButton,
-                    border: Border.all(color: flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.16), width: 1.5),
-                  ),
+            decoration: Skin.primary(enabled: enabled, pressed: sink),
             padding: const EdgeInsets.symmetric(horizontal: Space.l),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               if (widget.icon != null) ...[GameIcon(widget.icon!, size: 22, color: ink), const SizedBox(width: 10)],
@@ -91,6 +83,7 @@ class _GoldButtonState extends State<GoldButton> {
             ]),
           ),
         ),
+      ),
     );
   }
 }
@@ -120,53 +113,103 @@ class KitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final flat = context.tk.flat;
-    final danger = flat ? FlatPalette.close : const Color(0xFFFF8E8B);
-    final ink = flat ? FlatPalette.ink : Colors.white;
-    final (Color fill, Border? border, Color fg) = switch (style) {
-      KitButtonStyle.outline => (flat ? Colors.white.withValues(alpha: 0.5) : Colors.transparent, Border.all(color: flat ? FlatPalette.ink.withValues(alpha: 0.35) : Colors.white.withValues(alpha: 0.28), width: 2), ink),
-      KitButtonStyle.ghost => (flat ? Colors.white : Colors.white.withValues(alpha: 0.10), null, ink),
-      KitButtonStyle.soft => (flat ? Colors.white : Colors.white.withValues(alpha: 0.08), Border.all(color: flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.14)), ink),
-      KitButtonStyle.danger => (flat ? Colors.white : Colors.transparent, Border.all(color: (flat ? FlatPalette.close : const Color(0xFFFF5E5B)).withValues(alpha: 0.55), width: 1.5), danger),
-    };
     final enabled = onPressed != null;
+    final kind = switch (style) {
+      KitButtonStyle.outline => SkinButton.outline,
+      KitButtonStyle.ghost => SkinButton.ghost,
+      KitButtonStyle.soft => SkinButton.soft,
+      KitButtonStyle.danger => SkinButton.danger,
+    };
+    final fg = Skin.secondaryInk(kind, enabled: enabled);
     return Semantics(
       button: true,
       enabled: enabled,
       label: label,
       excludeSemantics: true,
-      child: Opacity(
-        opacity: enabled ? 1 : 0.5,
-        child: Material(
-          color: fill,
-          shape: RoundedRectangleBorder(borderRadius: Radii.rLg, side: border == null ? BorderSide.none : border.top),
-          child: InkWell(
-            borderRadius: Radii.rLg,
-            onTap: enabled
-                ? () {
-                    haptic(HapticWeight.selection);
-                    GameAudio.sfx('tap');
-                    onPressed!();
-                  }
-                : null,
-            child: SizedBox(
-              height: height,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Space.m),
-                child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
-                  if (icon != null) ...[GameIcon(icon!, size: 18, color: fg), const SizedBox(width: Space.s)],
-                  Flexible(
-                    child: Text(label,
-                        maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.body, fontSize: 15, fontWeight: FontWeight.w900, color: fg)),
-                  ),
-                ]),
-              ),
+      child: Squash(
+        enabled: enabled,
+        onTap: enabled
+            ? () {
+                haptic(HapticWeight.selection);
+                GameAudio.sfx('tap');
+                onPressed!();
+              }
+            : null,
+        builder: (down) => AnimatedContainer(
+          duration: Motion.of(context, Motion.fast),
+          height: height,
+          decoration: Skin.secondary(kind, pressed: down, enabled: enabled, radius: height / 2),
+          padding: const EdgeInsets.symmetric(horizontal: Space.m),
+          child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
+            if (icon != null) ...[GameIcon(icon!, size: 18, color: fg), const SizedBox(width: Space.s)],
+            Flexible(
+              child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.body, fontSize: 15, fontWeight: FontWeight.w900, color: fg)),
             ),
-          ),
+          ]),
         ),
       ),
     );
   }
+}
+
+/// A skin surface (row, tile, option) that squashes when tapped. Replaces the old
+/// Material + InkWell flat rows so every page shares the skin's surfaces.
+class SkinPanel extends StatelessWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  final Color? tint;
+  final Color? ring;
+  final double? radius;
+  final double depth;
+  final EdgeInsetsGeometry? padding;
+  final bool haptics;
+  const SkinPanel({super.key, required this.child, this.onTap, this.tint, this.ring, this.radius, this.depth = 1, this.padding, this.haptics = true});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget box(bool down) => AnimatedContainer(
+          duration: Motion.of(context, Motion.fast),
+          padding: padding,
+          decoration: Skin.surface(tint: tint, ring: ring, radius: radius, pressed: down, depth: depth),
+          child: child,
+        );
+    if (onTap == null) return box(false);
+    return Squash(
+      enabled: true,
+      onTap: () {
+        if (haptics) haptic(HapticWeight.selection);
+        onTap!();
+      },
+      builder: box,
+    );
+  }
+}
+
+/// Tracks a press and squashes its child a little while held (skin press feedback).
+class Squash extends StatefulWidget {
+  final bool enabled;
+  final VoidCallback? onTap;
+  final Widget Function(bool down) builder;
+  const Squash({super.key, required this.enabled, required this.onTap, required this.builder});
+  @override
+  State<Squash> createState() => _SquashState();
+}
+
+class _SquashState extends State<Squash> {
+  bool _down = false;
+  void _set(bool v) {
+    if (_down != v) setState(() => _down = v);
+  }
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: widget.enabled ? (_) => _set(true) : null,
+        onTapUp: widget.enabled ? (_) => _set(false) : null,
+        onTapCancel: () => _set(false),
+        onTap: widget.onTap,
+        child: AnimatedScale(scale: _down ? Skin.pressScale : 1, duration: Motion.of(context, Motion.fast), child: widget.builder(_down)),
+      );
 }
 
 /// The 44 px round button of every top bar (pause, help, close, back). [dark] is the
@@ -181,11 +224,7 @@ class RoundButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final t = context.tk;
-    final flat = t.flat && !dark;
-    final fill = dark ? const Color(0x8C0A0E28) : (flat ? Colors.white : Colors.white.withValues(alpha: 0.10));
-    final edge = dark ? Colors.white.withValues(alpha: 0.2) : (flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.18));
-    final ink = flat ? FlatPalette.ink : Colors.white;
+    const ink = Colors.white;
     return Tooltip(
       message: label,
       child: Semantics(
@@ -196,18 +235,20 @@ class RoundButton extends StatelessWidget {
           width: math.max(size, kTouchTarget),
           height: math.max(size, kTouchTarget),
           child: Center(
-            child: Material(
-              color: fill,
-              shape: CircleBorder(side: BorderSide(color: edge)),
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: onPressed == null
-                    ? null
-                    : () {
-                        haptic(HapticWeight.selection);
-                        onPressed!();
-                      },
-                child: SizedBox(width: size, height: size, child: Center(child: GameIcon(icon, size: size * 0.42, color: ink))),
+            child: Squash(
+              enabled: onPressed != null,
+              onTap: onPressed == null
+                  ? null
+                  : () {
+                      haptic(HapticWeight.selection);
+                      onPressed!();
+                    },
+              builder: (down) => AnimatedContainer(
+                duration: Motion.of(context, Motion.fast),
+                width: size,
+                height: size,
+                decoration: Skin.round(dark: dark, pressed: down),
+                child: Center(child: GameIcon(icon, size: size * 0.42, color: ink)),
               ),
             ),
           ),
@@ -321,14 +362,7 @@ class PlayerScoreCard extends StatelessWidget {
       curve: Motion.standard,
       constraints: BoxConstraints(minHeight: compact ? 58 : 0),
       padding: compact ? const EdgeInsets.symmetric(horizontal: 8, vertical: 6) : const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: flat ? (active ? Color.alphaBlend(c.withValues(alpha: 0.16), Colors.white) : Colors.white) : (active ? c.withValues(alpha: 0.16) : t.surface),
-        borderRadius: BorderRadius.circular(compact ? 14 : 18),
-        border: Border.all(color: active ? c : (flat ? t.strokeStrong : t.stroke), width: 2),
-        boxShadow: active
-            ? [BoxShadow(color: c.withValues(alpha: 0.16), spreadRadius: 4), if (!flat) const BoxShadow(color: Color(0x59000000), blurRadius: 20, offset: Offset(0, 8))]
-            : null,
-      ),
+      decoration: Skin.surface(tint: active ? c : null, ring: active ? nameColor(c) : null, radius: compact ? 16 : 20, depth: active ? 1 : 0.6),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         compact
             ? Column(mainAxisSize: MainAxisSize.min, children: [
@@ -513,7 +547,7 @@ class OverlayChip extends StatelessWidget {
       child: Container(
         width: width,
         padding: const EdgeInsets.fromLTRB(10, 6, 12, 6),
-        decoration: BoxDecoration(color: NeonPalette.overlay, borderRadius: Radii.rChip, border: Border.all(color: Colors.white.withValues(alpha: 0.14))),
+        decoration: Skin.pill(color: NeonPalette.overlay),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           if (icon != null) ...[GameIcon(icon!, size: 20, color: iconColor ?? Colors.white), const SizedBox(width: 8)],
           Flexible(
@@ -728,12 +762,7 @@ class ConnectionBanner extends StatelessWidget {
       child: Container(
         constraints: const BoxConstraints(minHeight: kTouchTarget),
         padding: const EdgeInsets.fromLTRB(12, 6, 6, 6),
-        decoration: BoxDecoration(
-          color: Color.alphaBlend(c.withValues(alpha: 0.22), NeonPalette.sheet),
-          borderRadius: Radii.rChip,
-          border: Border.all(color: c.withValues(alpha: 0.7), width: 1.5),
-          boxShadow: Shadows.small,
-        ),
+        decoration: Skin.surface(tint: c, ring: c.withValues(alpha: 0.7), radius: Radii.chip, depth: 0.7),
         child: Row(children: [
           if (busy)
             SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2.5, color: c))
@@ -905,7 +934,7 @@ class _Confetti extends CustomPainter {
   final double t;
   final int seed;
   _Confetti(this.t, this.seed);
-  static const _colors = [Brand.gold, Color(0xFF2E8BFF), Colors.white, Color(0xFFFF8A1F), Color(0xFFB07CFF), Color(0xFFFF3B5C), Color(0xFF2ECC71)];
+  static const _colors = Skin.confetti;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1139,8 +1168,6 @@ class KitChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final flat = context.tk.flat;
-    final ink = flat ? FlatPalette.ink : Colors.white;
     return Semantics(
       button: true,
       selected: selected,
@@ -1159,13 +1186,8 @@ class KitChip extends StatelessWidget {
             child: AnimatedContainer(
               duration: Motion.of(context, Motion.fast),
               padding: outline ? const EdgeInsets.symmetric(horizontal: 10, vertical: 4) : const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-              decoration: BoxDecoration(
-                color: outline ? (flat ? (selected ? Colors.white : Colors.white.withValues(alpha: 0.5)) : Colors.transparent) : (selected ? Brand.gold : (flat ? Colors.white : Colors.white.withValues(alpha: 0.10))),
-                borderRadius: BorderRadius.circular(outline ? 10 : 14),
-                border: outline ? Border.all(color: selected ? (flat ? FlatPalette.ink : Brand.gold) : ink.withValues(alpha: 0.2), width: 1.5) : null,
-              ),
-              child: Text(label,
-                  style: TextStyle(fontFamily: Fonts.body, fontSize: outline ? 12 : 13, fontWeight: FontWeight.w900, color: !outline && selected ? Brand.onGold : ink)),
+              decoration: Skin.chip(selected: selected, outline: outline),
+              child: Text(label, style: TextStyle(fontFamily: Fonts.body, fontSize: outline ? 12 : 13, fontWeight: FontWeight.w900, color: Skin.chipInk(selected: selected))),
             ),
           ),
         ),
@@ -1195,21 +1217,21 @@ class KitField extends StatelessWidget {
       onChanged: onChanged,
       maxLength: maxLength,
       textCapitalization: capitalization,
-      cursorColor: Brand.gold,
+      cursorColor: Skin.fieldFocus,
       style: TextStyle(fontFamily: Fonts.body, fontSize: 15, fontWeight: FontWeight.w800, color: ink),
       decoration: InputDecoration(
         hintText: hint,
         counterText: '',
         hintStyle: TextStyle(fontFamily: Fonts.body, fontSize: 15, fontWeight: FontWeight.w700, color: flat ? FlatPalette.inkMuted : NeonPalette.label),
         filled: true,
-        fillColor: flat ? Colors.white : Colors.white.withValues(alpha: 0.10),
+        fillColor: flat ? Colors.white : Skin.fieldFill,
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         prefixIcon: icon == null ? null : Padding(padding: const EdgeInsets.only(left: 14, right: 10), child: GameIcon(icon!, size: 18, color: flat ? FlatPalette.inkMuted : NeonPalette.textMuted)),
         prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
         suffixIcon: suffix,
         enabledBorder: border(flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.14)),
-        focusedBorder: border(flat ? FlatPalette.ink : Brand.gold, 2),
+        focusedBorder: border(flat ? FlatPalette.ink : Skin.fieldFocus, 2),
         border: border(flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.14)),
       ),
     );

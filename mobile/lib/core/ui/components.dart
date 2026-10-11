@@ -43,60 +43,51 @@ class _AppButtonState extends State<AppButton> {
 
   @override
   Widget build(BuildContext context) {
-    final t = context.tk;
     final enabled = widget.onPressed != null;
-    final (Color bg, Color fg, Color? edge) = switch (widget.variant) {
-      ButtonVariant.primary => () {
-          final c = widget.color ?? t.accent;
-          final fill = widget.color == null || contrast(widget.textColor ?? onColor(c), c) >= 4.5 ? c : fillFor(c);
-          return (fill, widget.textColor ?? onColor(fill), Color.lerp(fill, Colors.black, 0.42));
-        }(),
-      ButtonVariant.danger => (fillFor(t.danger), Colors.white, Color.lerp(fillFor(t.danger), Colors.black, 0.42)),
-      ButtonVariant.secondary => (t.flat ? t.card : t.glassStrong, t.flat ? t.text : t.onBg, t.flat ? t.strokeStrong : null),
-      ButtonVariant.ghost => (Colors.transparent, t.onBg, null),
-    };
     final height = widget.compact ? kTouchTarget : 54.0;
-    final radius = BorderRadius.circular(height / 2);
     final sink = _down && enabled;
     final duration = Motion.of(context, Motion.fast);
+    final (Decoration deco, Color fg) = switch (widget.variant) {
+      ButtonVariant.primary => (
+          Skin.primary(enabled: enabled, pressed: sink, color: widget.color, radius: height / 2),
+          widget.textColor != null && enabled ? widget.textColor! : Skin.primaryInk(enabled: enabled, color: widget.color)
+        ),
+      ButtonVariant.danger => (Skin.secondary(SkinButton.danger, pressed: sink, radius: height / 2, enabled: enabled), Skin.secondaryInk(SkinButton.danger, enabled: enabled)),
+      ButtonVariant.secondary => (Skin.secondary(SkinButton.soft, pressed: sink, radius: height / 2, enabled: enabled), Skin.secondaryInk(SkinButton.soft, enabled: enabled)),
+      ButtonVariant.ghost => (Skin.secondary(SkinButton.outline, pressed: sink, radius: height / 2, enabled: enabled), Skin.secondaryInk(SkinButton.outline, enabled: enabled)),
+    };
     return Semantics(
       button: true,
       enabled: enabled,
       label: widget.label,
       excludeSemantics: true,
-      child: Opacity(
-        opacity: enabled ? 1 : 0.5,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTapDown: enabled ? (_) => _set(true) : null,
-          onTapUp: enabled ? (_) => _set(false) : null,
-          onTapCancel: () => _set(false),
-          onTap: enabled
-              ? () {
-                  haptic(HapticWeight.selection);
-                  GameAudio.sfx('tap');
-                  widget.onPressed!();
-                }
-              : null,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: enabled ? (_) => _set(true) : null,
+        onTapUp: enabled ? (_) => _set(false) : null,
+        onTapCancel: () => _set(false),
+        onTap: enabled
+            ? () {
+                haptic(HapticWeight.selection);
+                GameAudio.sfx('tap');
+                widget.onPressed!();
+              }
+            : null,
+        child: AnimatedScale(
+          scale: sink ? Skin.pressScale : 1,
+          duration: duration,
+          curve: Motion.standard,
           child: AnimatedContainer(
             duration: duration,
             curve: Motion.standard,
             constraints: BoxConstraints(minHeight: height),
-            transform: Matrix4.translationValues(0, sink ? 3 : 0, 0),
             padding: EdgeInsets.symmetric(horizontal: widget.compact ? Space.l : Space.xl, vertical: Space.s),
-            decoration: BoxDecoration(
-              color: bg,
-              borderRadius: radius,
-              border: widget.variant == ButtonVariant.ghost
-                  ? Border.all(color: t.flat ? Colors.white : t.strokeStrong, width: 2)
-                  : (widget.variant == ButtonVariant.secondary && !t.flat ? Border.all(color: t.stroke) : null),
-              boxShadow: edge == null || sink || !enabled ? null : [BoxShadow(color: edge, offset: const Offset(0, 4))],
-            ),
+            decoration: deco,
             child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
               if (widget.icon != null) ...[Icon(widget.icon, color: fg, size: widget.compact ? 20 : 22), const SizedBox(width: Space.s)],
               Flexible(
                 child: Text(widget.label,
-                    textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: t.styles.button.copyWith(color: fg, fontSize: widget.compact ? 14.5 : 16.5)),
+                    textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: context.tk.styles.button.copyWith(color: fg, fontSize: widget.compact ? 14.5 : 16.5)),
               ),
             ]),
           ),
@@ -130,9 +121,11 @@ class AppIconButton extends StatelessWidget {
           height: math.max(size, kTouchTarget),
           child: Center(
             child: Material(
-              color: fill,
-              shape: CircleBorder(side: BorderSide(color: t.flat ? FlatPalette.tileShade : t.stroke, width: t.flat ? 2 : 1)),
-              child: InkWell(
+              color: Colors.transparent,
+              shape: const CircleBorder(),
+              child: Ink(
+                decoration: color != null ? BoxDecoration(color: fill, shape: BoxShape.circle) : Skin.round(),
+                child: InkWell(
                 customBorder: const CircleBorder(),
                 onTap: onPressed == null
                     ? null
@@ -141,6 +134,7 @@ class AppIconButton extends StatelessWidget {
                         onPressed!();
                       },
                 child: SizedBox(width: size, height: size, child: Icon(icon, color: fg, size: size * 0.56)),
+              ),
               ),
             ),
           ),
@@ -165,7 +159,6 @@ class AppChip extends StatelessWidget {
     final t = context.tk;
     final c = color ?? t.accent;
     final fill = selected ? (color == null ? c : fillFor(c)) : (t.flat ? Colors.white : t.glass);
-    final fg = selected ? onColor(fill) : (t.flat ? t.text : t.onBg);
     return Semantics(
       button: true,
       selected: selected,
@@ -184,14 +177,8 @@ class AppChip extends StatelessWidget {
           constraints: BoxConstraints(minHeight: kTouchTarget, minWidth: kTouchTarget),
           padding: round ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: Space.l),
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: fill,
-            shape: round ? BoxShape.circle : BoxShape.rectangle,
-            borderRadius: round ? null : BorderRadius.circular(kTouchTarget / 2),
-            border: Border.all(color: selected ? (t.flat ? fillFor(c) : Colors.white) : (t.flat ? t.strokeStrong : t.stroke), width: 2),
-            boxShadow: selected && !t.flat ? [BoxShadow(color: c.withValues(alpha: 0.45), blurRadius: 12)] : null,
-          ),
-          child: Text(label, textAlign: TextAlign.center, style: t.styles.bodyStrong.copyWith(color: fg, fontWeight: FontWeight.w900)),
+          decoration: Skin.chip(selected: selected, color: color == null ? null : fill),
+          child: Text(label, textAlign: TextAlign.center, style: t.styles.bodyStrong.copyWith(color: Skin.chipInk(selected: selected, color: color == null ? null : fill), fontWeight: FontWeight.w900)),
         ),
       ),
     );
@@ -212,19 +199,9 @@ class AppCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.tk;
-    final color = switch (kind) {
-      SurfaceKind.glass => t.glass,
-      SurfaceKind.card => t.card,
-      SurfaceKind.raised => t.cardRaised,
-    };
     return Container(
       padding: padding,
-      decoration: BoxDecoration(
-        color: tint == null ? color : Color.alphaBlend(tint!.withValues(alpha: 0.22), color),
-        borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: tint?.withValues(alpha: 0.55) ?? (t.flat && kind != SurfaceKind.glass ? t.strokeStrong : t.stroke), width: tint == null ? 1 : 2),
-        boxShadow: kind == SurfaceKind.glass ? null : t.shadowMd,
-      ),
+      decoration: Skin.surface(tint: tint, radius: radius == Radii.xl ? null : radius, depth: kind == SurfaceKind.glass ? 0.8 : 1),
       child: kind == SurfaceKind.glass ? child : DefaultTextStyle.merge(style: TextStyle(color: t.text), child: child),
     );
   }
@@ -276,11 +253,10 @@ class _AppDialog extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 420),
             child: Material(
-              color: t.card,
-              borderRadius: Radii.rXl,
+              color: Colors.transparent,
               elevation: 0,
               child: Container(
-                decoration: BoxDecoration(borderRadius: Radii.rXl, border: Border.all(color: t.flat ? t.strokeStrong : t.stroke), boxShadow: t.shadowLg),
+                decoration: Skin.dialog(),
                 padding: const EdgeInsets.fromLTRB(Space.xl, Space.xl, Space.xl, Space.l),
                 child: SingleChildScrollView(
                   child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -320,10 +296,12 @@ Future<T?> showAppSheet<T>(BuildContext context, {required Widget Function(Build
   return showModalBottomSheet<T>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: t.card,
+    backgroundColor: Colors.transparent,
+    elevation: 0,
     barrierColor: t.scrim,
-    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(Radii.xl))),
-    builder: (ctx) => SafeArea(
+    builder: (ctx) => DecoratedBox(
+      decoration: Skin.sheet(),
+      child: SafeArea(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(ctx).height * 0.9),
         child: SingleChildScrollView(
@@ -336,6 +314,7 @@ Future<T?> showAppSheet<T>(BuildContext context, {required Widget Function(Build
           ]),
         ),
       ),
+    ),
     ),
   );
 }

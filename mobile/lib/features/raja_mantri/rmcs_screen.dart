@@ -109,7 +109,7 @@ class _RmcsMenuScreenState extends State<RmcsMenuScreen> {
 
   Widget _roundPicker() => Container(
         padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(color: RmcsColors.panel, borderRadius: Radii.rButton, border: Border.all(color: Colors.white.withValues(alpha: 0.10))),
+        decoration: Skin.surface(tint: RmcsColors.panel, radius: Radii.button, depth: 0.8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text('ROUNDS', style: TextStyle(fontFamily: Fonts.body, color: NeonPalette.label, fontWeight: FontWeight.w900, fontSize: 11, letterSpacing: 1.6)),
           const SizedBox(height: 6),
@@ -131,7 +131,7 @@ class _RmcsMenuScreenState extends State<RmcsMenuScreen> {
     ];
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: RmcsColors.panel, borderRadius: Radii.rButton, border: Border.all(color: Colors.white.withValues(alpha: 0.10))),
+      decoration: Skin.surface(tint: RmcsColors.panel, radius: Radii.button, depth: 0.8),
       child: Column(children: [
         for (var i = 0; i < rules.length; i++) ...[if (i > 0) const SizedBox(height: 8), RuleStep(index: i, rule: rules[i])],
       ]),

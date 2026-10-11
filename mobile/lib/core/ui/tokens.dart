@@ -1,5 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'skin.dart';
+
+export 'skin.dart';
 
 /// Design tokens ("Party Night", docs/ui-redesign/UI_SPEC.md section 1): the raw scales every
 /// screen is built from. Widgets read the flavour-aware set through `context.tokens` (see
@@ -8,8 +11,8 @@ import 'package:flutter/material.dart';
 
 /// Bundled font families (assets/fonts, OFL).
 abstract final class Fonts {
-  static const display = 'Lilita One'; // headings, scores, timers, announcements
-  static const body = 'Nunito'; // everything else (600/700/800/900)
+  static const display = Skin.display; // headings, scores, timers, announcements
+  static const body = Skin.body; // everything else
 }
 
 /// Spacing scale (dp).
@@ -23,9 +26,9 @@ abstract final class Space {
 /// Corner radii (dp). Spec: 6 tiles, 10 cards, 14 chips/banners, 18 player cards/buttons,
 /// 24 boards/scene frames.
 abstract final class Radii {
-  static const double tile = 6, card = 10, chip = 14, button = 18, board = 24, pill = 999;
+  static const double tile = 8, card = 14, chip = Skin.rChip, button = Skin.rButton, board = Skin.rBoard, pill = 999;
   // Older names, still used: sm 8 · md 12 · lg 16 · xl 24.
-  static const double sm = 8, md = 12, lg = 16, xl = 24;
+  static const double sm = 10, md = 14, lg = 18, xl = Skin.rPanel;
   static const rTile = BorderRadius.all(Radius.circular(tile));
   static const rCard = BorderRadius.all(Radius.circular(card));
   static const rChip = BorderRadius.all(Radius.circular(chip));
@@ -39,8 +42,8 @@ abstract final class Radii {
 
 /// Shadows: small `0 4 10 rgba(0,0,0,0.35)`, large `0 14 34 rgba(0,0,0,0.5)`.
 abstract final class Shadows {
-  static const small = [BoxShadow(color: Color(0x59000000), blurRadius: 10, offset: Offset(0, 4))];
-  static const large = [BoxShadow(color: Color(0x80000000), blurRadius: 34, offset: Offset(0, 14))];
+  static const small = [BoxShadow(color: Color(0x591C0868), blurRadius: 12, offset: Offset(0, 6))];
+  static const large = [BoxShadow(color: Color(0x801C0868), blurRadius: 34, offset: Offset(0, 16))];
 
   /// The darker "bottom edge" of a pressable thing (4–6 px), which sinks when pressed.
   static List<BoxShadow> edge(Color c, {double depth = 5}) => [BoxShadow(color: c, offset: Offset(0, depth))];
@@ -68,42 +71,42 @@ const double kTouchTarget = 48;
 
 /// The logo palette and the spec's shared accents (same in both flavours).
 abstract final class Brand {
-  static const navy = Color(0xFF14207A);
-  static const night = Color(0xFF0A0F3D);
-  static const deep = Color(0xFF060827);
+  static const navy = Skin.bgTop;
+  static const night = Skin.bg;
+  static const deep = Skin.bgBottom;
   static const blue = Color(0xFF2E8BFF);
   static const red = Color(0xFFFF3B5C);
-  static const gold = Color(0xFFFFC93C);
-  static const goldDeep = Color(0xFFA87A12); // button bottom edge
-  static const onGold = Color(0xFF1A1440); // text on gold
+  static const gold = Skin.accent;
+  static const goldDeep = Skin.accentDeep; // button bottom edge
+  static const onGold = Skin.onAccent; // text on gold
   static const purple = Color(0xFF7B4DFF);
   static const green = Color(0xFF2ECC71);
   static const ink = Color(0xFF1E1B3A); // dark text on white
-  static const indigo = Color(0xFF3B2D9A); // hero cards, card backs
-  static const indigoDeep = Color(0xFF1F1666);
-  static const goldLine = Color(0xFFE9C46A); // gold hairlines and labels on indigo
+  static const indigo = Skin.hero; // hero cards, card backs
+  static const indigoDeep = Skin.heroDeep;
+  static const goldLine = Skin.accentLine; // gold hairlines and labels on indigo
 }
 
 /// Raw colours of the default "Party Night" look (spec 1.1, Night column).
 abstract final class NeonPalette {
-  static const bgTop = Color(0xFF151A4A);
-  static const bg = Color(0xFF0B0E2E); // bgMid
-  static const bgBottom = Color(0xFF060820);
+  static const bgTop = Skin.bgTop;
+  static const bg = Skin.bg; // bgMid
+  static const bgBottom = Skin.bgBottom;
   static const surface = Color(0x0FFFFFFF); // rgba(255,255,255,0.06)
   static const surfaceStrong = Color(0x1AFFFFFF); // rgba(255,255,255,0.10)
-  static const stroke = Color(0x1AFFFFFF); // rgba(255,255,255,0.10)
-  static const overlay = Color(0xA80A0E28); // rgba(10,14,40,0.66)
+  static const stroke = Skin.stroke;
+  static const overlay = Skin.overlay;
   static const text = Colors.white;
-  static const textMuted = Color(0xFFC3C9EE);
-  static const label = Color(0xFFAAB2E8);
-  static const sheet = Color(0xFF121640); // bottom sheets (Pause mockup)
+  static const textMuted = Skin.textMuted;
+  static const label = Skin.label;
+  static const sheet = Skin.sheetColor; // bottom sheets
   // Older names.
   static const glass = surface;
   static const glassStrong = surfaceStrong;
-  static const card = Color(0xFF1B2160);
-  static const cardRaised = Color(0xFF242B74);
+  static const card = Skin.card;
+  static const cardRaised = Skin.cardRaised;
   static const sunken = Color(0x40000000);
-  static const strokeStrong = Color(0x38FFFFFF);
+  static const strokeStrong = Skin.strokeStrong;
   static const textFaint = label;
 }
 
@@ -132,7 +135,7 @@ abstract final class FlatPalette {
 abstract final class StatusColors {
   static const success = Color(0xFF2ECC71);
   static const warn = Color(0xFFFFB020);
-  static const danger = Color(0xFFFF5E5B);
+  static const danger = Skin.danger;
   static const info = Color(0xFF2E8BFF);
 }
 

@@ -51,7 +51,7 @@ void main() {
 
   test('scales', () {
     expect([Space.xs, Space.s, Space.m, Space.l, Space.xl, Space.xxl], [4, 8, 12, 16, 24, 32]);
-    expect([Radii.sm, Radii.md, Radii.lg, Radii.xl], [8, 12, 16, 24]);
+    expect([Radii.sm, Radii.md, Radii.lg, Radii.xl], [10, 14, 18, 26]); // RivalRoom Clay: rounder, inflated shapes
     expect([Motion.fast, Motion.normal, Motion.slow].map((d) => d.inMilliseconds), [120, 220, 360]);
   });
 

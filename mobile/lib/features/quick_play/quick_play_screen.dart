@@ -58,12 +58,7 @@ class _QuickPlayScreenState extends State<QuickPlayScreen> {
                   child: AnimatedContainer(
                     duration: Motion.of(context, Motion.fast),
                     padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: any ? Brand.gold : (t.flat ? Colors.white : t.surface),
-                      borderRadius: Radii.rButton,
-                      border: Border.all(color: any ? Brand.gold : (t.flat ? FlatPalette.stroke : t.stroke)),
-                      boxShadow: any ? Shadows.edge(Brand.goldDeep) : null,
-                    ),
+                    decoration: any ? Skin.primary(radius: Radii.button) : Skin.surface(radius: Radii.button),
                     child: Row(children: [
                       GameIcon(GameIcons.dice5, size: 36, color: any ? Brand.onGold : (t.flat ? FlatPalette.ink : Colors.white)),
                       const SizedBox(width: 14),
@@ -84,12 +79,7 @@ class _QuickPlayScreenState extends State<QuickPlayScreen> {
             Expanded(child: GameGrid(selectedId: gameId, onSelect: (g) => setState(() => gameId = g.id))),
             Container(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 22),
-              decoration: BoxDecoration(
-                color: t.flat ? Colors.white : NeonPalette.sheet,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                border: Border(top: BorderSide(color: t.flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.14))),
-                boxShadow: const [BoxShadow(color: Color(0x80000000), blurRadius: 32, offset: Offset(0, -12))],
-              ),
+              decoration: Skin.sheet(),
               child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                 if (busy)
                   const _Finding()

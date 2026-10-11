@@ -95,7 +95,7 @@ class _RoomSize extends StatelessWidget {
         );
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 6, 6, 6),
-      decoration: BoxDecoration(color: t.flat ? Colors.white : t.surface, borderRadius: Radii.rLg, border: Border.all(color: t.flat ? FlatPalette.stroke : t.stroke)),
+      decoration: Skin.surface(radius: Radii.lg, depth: 0.8),
       child: Row(children: [
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -136,12 +136,7 @@ class _BottomPanel extends StatelessWidget {
     final ink = t.flat ? FlatPalette.ink : Colors.white;
     return Container(
       padding: EdgeInsets.fromLTRB(16, compact ? 10 : 14, 16, compact ? 12 : 22),
-      decoration: BoxDecoration(
-        color: t.flat ? Colors.white : NeonPalette.sheet,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        border: Border(top: BorderSide(color: t.flat ? FlatPalette.stroke : Colors.white.withValues(alpha: 0.14))),
-        boxShadow: const [BoxShadow(color: Color(0x80000000), blurRadius: 32, offset: Offset(0, -12))],
-      ),
+      decoration: Skin.sheet(),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Row(children: [
           GameThumb(id: game.id, color: game.color, size: compact ? 40 : 48, radius: 12),

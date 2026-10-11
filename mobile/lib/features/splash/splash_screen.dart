@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../config.dart';
 import '../../core/auth/authentication_manager.dart';
 import '../../core/network/socket_manager.dart';
+import '../../core/ui/app_flavor.dart';
 import '../../core/ui/app_ui.dart';
 import '../home/home_screen.dart';
 import '../login/login_screen.dart';
@@ -68,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                   const AppLogo(size: 200),
                   const SizedBox(height: 24),
-                  Text('Party Games', textAlign: TextAlign.center, style: t.styles.h1.copyWith(color: t.onBg)),
+                  Text(appName, textAlign: TextAlign.center, style: t.styles.h1.copyWith(color: t.onBg)),
                   const SizedBox(height: 6),
                   Text('One phone or many · play anywhere', textAlign: TextAlign.center, style: t.styles.body.copyWith(color: t.onBgMuted)),
                   const SizedBox(height: 28),

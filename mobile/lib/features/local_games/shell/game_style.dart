@@ -28,17 +28,10 @@ class GameBackground extends StatelessWidget {
   const GameBackground({super.key, required this.color, required this.child, this.flat = false});
 
   @override
-  Widget build(BuildContext context) => flat ? FlatBackground(child: child) : DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF151A4A), Color(0xFF0B0E2E), Color(0xFF060820)]),
-        ),
-        child: Stack(children: [
-          Positioned.fill(child: IgnorePointer(child: CustomPaint(painter: _Glow(color)))),
-          Positioned.fill(child: child),
-        ]),
-      );
+  Widget build(BuildContext context) => flat ? FlatBackground(child: child) : Skin.background(color: color, child: child);
 }
 
+// ignore: unused_element
 class _Glow extends CustomPainter {
   final Color color;
   _Glow(this.color);
@@ -85,11 +78,7 @@ class ScorePill extends StatelessWidget {
     final c = fillFor(color ?? GameTheme.colorOf(context)); // white digits stay readable on light game colours
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [c, Color.lerp(c, Colors.black, 0.25)!]),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: c.withValues(alpha: 0.45), blurRadius: 10, offset: const Offset(0, 3))],
-      ),
+      decoration: Skin.pill(color: c, glow: true),
       child: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 17, fontFeatures: [FontFeature.tabularFigures()], shadows: [Shadow(color: Colors.black26, offset: Offset(0, 1))])),
     );
   }

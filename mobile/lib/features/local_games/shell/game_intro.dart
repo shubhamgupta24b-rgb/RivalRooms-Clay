@@ -146,11 +146,10 @@ class GameIntro extends StatelessWidget {
   }
 
   Widget _rules(BuildContext context) {
-    final t = context.tk;
     final shown = game.rules.take(3).toList();
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: t.surface, borderRadius: Radii.rButton, border: Border.all(color: t.stroke)),
+      decoration: Skin.surface(radius: Radii.button, depth: 0.85),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         for (var i = 0; i < shown.length; i++) ...[if (i > 0) const SizedBox(height: 8), RuleStep(index: i, rule: shown[i])],
         Padding(
@@ -175,18 +174,19 @@ class GameIntro extends StatelessWidget {
           excludeSemantics: true,
           child: Opacity(
             opacity: onTap == null ? 0.35 : 1,
-            child: Material(
-              color: Colors.white.withValues(alpha: 0.10),
-              shape: CircleBorder(side: BorderSide(color: Colors.white.withValues(alpha: 0.2))),
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: onTap == null
-                    ? null
-                    : () {
-                        haptic(HapticWeight.selection);
-                        onTap();
-                      },
-                child: SizedBox(width: kTouchTarget, height: kTouchTarget, child: Center(child: GameIcon(glyph == '-' ? GameIcons.minus : GameIcons.plus, size: 18))),
+            child: Squash(
+              enabled: onTap != null,
+              onTap: onTap == null
+                  ? null
+                  : () {
+                      haptic(HapticWeight.selection);
+                      onTap();
+                    },
+              builder: (down) => Container(
+                width: kTouchTarget,
+                height: kTouchTarget,
+                decoration: Skin.round(pressed: down),
+                child: Center(child: GameIcon(glyph == '-' ? GameIcons.minus : GameIcons.plus, size: 18)),
               ),
             ),
           ),
@@ -250,7 +250,7 @@ class _PlayerRowState extends State<_PlayerRow> {
     return Container(
       height: 54,
       padding: const EdgeInsets.only(left: 12, right: 6),
-      decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.06), borderRadius: Radii.rLg, border: Border.all(color: Colors.white.withValues(alpha: 0.10))),
+      decoration: Skin.surface(radius: Radii.lg, depth: 0.7),
       child: Row(children: [
         PlayerBadge(index: shape, size: 26, color: c, initial: widget.player.name),
         const SizedBox(width: 10),
@@ -327,16 +327,12 @@ class _OptionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MergeSemantics(
-      child: Material(
-        color: value ? Brand.gold.withValues(alpha: 0.10) : Colors.white.withValues(alpha: 0.06),
-        shape: RoundedRectangleBorder(borderRadius: Radii.rLg, side: BorderSide(color: value ? Brand.gold.withValues(alpha: 0.6) : Colors.white.withValues(alpha: 0.10))),
-        child: InkWell(
-          borderRadius: Radii.rLg,
-          onTap: () {
-            haptic(HapticWeight.selection);
-            onChanged(!value);
-          },
-          child: Padding(
+      child: SkinPanel(
+        radius: Radii.lg,
+        depth: 0.75,
+        ring: value ? Brand.gold.withValues(alpha: 0.75) : null,
+        onTap: () => onChanged(!value),
+        child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 10, 12, 10),
             child: Row(children: [
               GameIcon(icon, size: 20),
@@ -351,7 +347,6 @@ class _OptionRow extends StatelessWidget {
               PillSwitch(value: value, onChanged: onChanged, color: Brand.gold),
             ]),
           ),
-        ),
       ),
     );
   }
@@ -379,11 +374,7 @@ class _ModeTile extends StatelessWidget {
           duration: Motion.of(context, Motion.fast),
           constraints: const BoxConstraints(minHeight: 60),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          decoration: BoxDecoration(
-            color: selected ? Brand.gold.withValues(alpha: 0.14) : Colors.white.withValues(alpha: 0.06),
-            borderRadius: Radii.rLg,
-            border: Border.all(color: selected ? Brand.gold : Colors.white.withValues(alpha: 0.10), width: 2),
-          ),
+          decoration: Skin.surface(radius: Radii.lg, ring: selected ? Brand.gold : null, depth: selected ? 1 : 0.6, tint: selected ? Brand.gold : null),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text(title, textAlign: TextAlign.center, style: TextStyle(fontFamily: Fonts.display, fontSize: 17, color: selected ? Brand.gold : Colors.white)),
             Text(hint, textAlign: TextAlign.center, style: const TextStyle(fontFamily: Fonts.body, fontSize: 11.5, fontWeight: FontWeight.w700, color: NeonPalette.textMuted)),
@@ -416,11 +407,7 @@ class _MinuteChip extends StatelessWidget {
           duration: Motion.of(context, Motion.fast),
           height: kTouchTarget,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: selected ? Brand.gold : Colors.white.withValues(alpha: 0.08),
-            borderRadius: Radii.rChip,
-            border: Border.all(color: selected ? Brand.gold : Colors.white.withValues(alpha: 0.14)),
-          ),
+          decoration: Skin.chip(selected: selected),
           padding: const EdgeInsets.symmetric(horizontal: 6),
           child: FittedBox(
               fit: BoxFit.scaleDown,

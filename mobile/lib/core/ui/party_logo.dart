@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'skin.dart';
 
 /// The Party Games app icon, drawn in code so it is sharp at any size: a split game
 /// controller (the blue and orange halves are players 1 and 2, the buttons are the player
@@ -215,7 +216,7 @@ class PartyLogoIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Semantics(
         image: true,
-        label: 'Party Games',
+        label: Skin.name,
         child: SizedBox(width: size, height: size, child: const CustomPaint(painter: PartyLogoPainter())),
       );
 }
@@ -228,7 +229,7 @@ class PartyLogoFull extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-        label: 'Party Games',
+        label: Skin.name,
         child: ExcludeSemantics(
           child: SizedBox(
             width: width,
@@ -265,26 +266,22 @@ class PartyWordmark extends StatelessWidget {
           ..color = const Color(0xFF2A0B3D));
     Widget outlined(String t, Color fill) => Stack(children: [Text(t, style: stroke()), Text(t, style: word(fill))]);
     return Semantics(
-      label: 'Party Games',
+      label: Skin.name,
       child: ExcludeSemantics(
         child: SizedBox(
           width: width,
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             FittedBox(
               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                outlined('PARTY', Colors.white),
-                SizedBox(width: 12 * f),
-                outlined('GAMES', const Color(0xFFFFC93C)),
+                outlined('RIVAL', Colors.white),
+                SizedBox(width: 8 * f),
+                outlined('ROOM', Skin.accent),
               ]),
             ),
             SizedBox(height: 10 * f),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 14 * f, vertical: 5 * f),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [Color(0xFF7B4DFF), Color(0xFF4D2BD6)]),
-                borderRadius: BorderRadius.circular(20 * f),
-                border: Border.all(color: Colors.white24, width: 1.5 * f),
-              ),
+              decoration: Skin.pill(color: Skin.hero),
               child: Text('2–6 PLAYERS', style: TextStyle(fontFamily: fontFamily, color: Colors.white, fontWeight: FontWeight.w900, fontSize: 13 * f, letterSpacing: 2 * f)),
             ),
           ]),

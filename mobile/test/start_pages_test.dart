@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:multiplayer_game/core/auth/authentication_manager.dart';
 import 'package:multiplayer_game/core/network/socket_manager.dart';
 import 'package:multiplayer_game/core/room/room_manager.dart';
+import 'package:multiplayer_game/core/ui/app_flavor.dart';
 import 'package:multiplayer_game/core/ui/app_ui.dart';
 import 'package:multiplayer_game/features/create_room/create_room_screen.dart';
 import 'package:multiplayer_game/features/home/home_screen.dart';
@@ -57,8 +58,8 @@ void main() {
   testWidgets('first launch: splash -> login -> home with your name', (tester) async {
     final (auth, socket) = await pumpApp(tester, const SplashScreen(minShow: Duration.zero));
     await tester.pump(const Duration(milliseconds: 400)); // the splash fades in
-    expect(find.bySemanticsLabel('Party Games'), findsWidgets, reason: 'logo and name');
-    expect(find.text('Party Games'), findsOneWidget);
+    expect(find.bySemanticsLabel(appName), findsWidgets, reason: 'logo and name');
+    expect(find.text(appName), findsOneWidget);
     await bootSplash(tester);
     expect(find.byType(LoginScreen), findsOneWidget);
 
