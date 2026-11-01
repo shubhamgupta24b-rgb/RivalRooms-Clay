@@ -3,7 +3,38 @@
 Party games for 2–6 friends: on one phone, in online rooms, or solo.
 Flutter app (`mobile/`) + Node/Socket.IO server (`server/`).
 
-**Current branch:** `clay/new-games` (Clay version — see git log for prior UI redesign work).
+**Deployment branch:** `main` (Clay version).
+
+## Render deployment
+
+**Service:** [rivalrooms-clay-backend](https://dashboard.render.com/web/srv-dbjdf75g1s2s73feco6g)  
+**Public URL:** https://rivalrooms-clay-backend.onrender.com  
+**Health endpoint:** https://rivalrooms-clay-backend.onrender.com/health  
+**Source:** `main` branch of this repository  
+**Runtime:** Docker (`server/Dockerfile`, build context `server/`)  
+**Region / plan:** Singapore / Free  
+**Auto deploy:** enabled for commits to `main`
+
+The first Render build completed and the service process started on port 10000. Render marked that deployment live. This confirms container startup, not end-to-end multiplayer verification.
+
+### Current deployment limitations
+
+- `MONGO_URI` is not configured; profile persistence is disabled.
+- `AUTH_MODE=dev` and `ALLOW_DEV_AUTH=true` are currently enabled for temporary testing. Development auth allows clients to claim identities and is **not production-safe**. Configure Firebase authentication and remove the dev-auth override before public production use.
+- Room state is currently held in server memory and can be lost when the service restarts or spins down.
+- The Free instance may spin down when idle, causing cold starts.
+- Render's health-check path should be set to `/health`.
+- Automated server tests passing does not replace real-device, multi-client online gameplay testing.
+
+Build the Flutter app against this deployment:
+
+```bash
+cd mobile
+flutter build apk --release --dart-define=SERVER_URL=https://rivalrooms-clay-backend.onrender.com
+flutter build appbundle --release --dart-define=SERVER_URL=https://rivalrooms-clay-backend.onrender.com
+```
+
+Do not commit database credentials, Firebase service-account keys, or other secrets. Configure them in the Render service's Environment settings.
 
 ## Status snapshot
 
