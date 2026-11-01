@@ -28,15 +28,28 @@ class PromptVoteLogic extends LocalGameLogic {
   int round = 0;
   late final List<int?> votes = List.filled(players, null);
   late final List<int> score = List.filled(players, 0);
-  List<int> lastWinners = []; // players (most likely) or options (would rather) that won the round
+  List<int> lastWinners =
+      []; // players (most likely) or options (would rather) that won the round
 
-  PromptVoteLogic({required this.mode, required this.players, required List<String> prompts, this.rounds = 8, Random? random})
-      : prompts = ([...prompts]..shuffle(random ?? Random())).take(rounds).toList();
+  PromptVoteLogic(
+      {required this.mode,
+      required this.players,
+      required List<String> prompts,
+      this.rounds = 8,
+      Random? random})
+      : prompts =
+            ([...prompts]..shuffle(random ?? Random())).take(rounds).toList();
 
   String get prompt => prompts[round % prompts.length];
   int get votesIn => votes.where((v) => v != null).length;
-  int get voteTurn => [for (var i = 0; i < players; i++) if (votes[i] == null) i].firstOrNull ?? 0;
-  List<int> tally(int options) => [for (var o = 0; o < options; o++) votes.where((v) => v == o).length];
+  int get voteTurn =>
+      [
+        for (var i = 0; i < players; i++)
+          if (votes[i] == null) i
+      ].firstOrNull ??
+      0;
+  List<int> tally(int options) =>
+      [for (var o = 0; o < options; o++) votes.where((v) => v == o).length];
 
   @override
   bool get finished => phase == PromptPhase.done;
@@ -59,7 +72,10 @@ class PromptVoteLogic extends LocalGameLogic {
     final t = tally(mode == VoteMode.mostLikely ? players : 2);
     final best = t.reduce(max);
     if (mode == VoteMode.mostLikely) {
-      lastWinners = [for (var i = 0; i < players; i++) if (t[i] == best) i];
+      lastWinners = [
+        for (var i = 0; i < players; i++)
+          if (t[i] == best) i
+      ];
       for (final w in lastWinners) {
         score[w]++;
       }
@@ -82,10 +98,20 @@ class PromptVoteLogic extends LocalGameLogic {
   }
 }
 
-RelaySpec<PromptVoteLogic> promptVoteRelay(PromptVoteLogic Function(int players) create, Widget Function(BuildContext, PromptVoteLogic, List<GpPlayer>, int) view) =>
+RelaySpec<PromptVoteLogic> promptVoteRelay(
+        PromptVoteLogic Function(int players) create,
+        Widget Function(BuildContext, PromptVoteLogic, List<GpPlayer>, int)
+            view) =>
     RelaySpec<PromptVoteLogic>(
       create: create,
-      save: (g) => {'phase': g.phase.index, 'round': g.round, 'votes': g.votes, 'score': g.score, 'winners': g.lastWinners, 'prompts': g.prompts},
+      save: (g) => {
+        'phase': g.phase.index,
+        'round': g.round,
+        'votes': g.votes,
+        'score': g.score,
+        'winners': g.lastWinners,
+        'prompts': g.prompts
+      },
       load: (g, s, me) {
         g.phase = PromptPhase.values[asInt(s['phase'])];
         g.round = asInt(s['round']);
@@ -109,7 +135,13 @@ class PromptVoteView extends StatefulWidget {
   final int? me;
   final String title;
   final Color color;
-  const PromptVoteView({super.key, required this.players, required this.g, this.me, required this.title, required this.color});
+  const PromptVoteView(
+      {super.key,
+      required this.players,
+      required this.g,
+      this.me,
+      required this.title,
+      required this.color});
   @override
   State<PromptVoteView> createState() => _PromptVoteViewState();
 }
@@ -123,7 +155,9 @@ class _PromptVoteViewState extends State<PromptVoteView> {
 
   Widget _promptCard() => PromptCard(
         header: 'Round ${g.round + 1} of ${g.rounds}',
-        text: mostLikely ? 'Who is most likely to ${g.prompt}?' : 'Would you rather…',
+        text: mostLikely
+            ? 'Who is most likely to ${g.prompt}?'
+            : 'Would you rather…',
         icon: mostLikely ? GameIcons.people : GameIcons.help,
         color: widget.color,
       );
@@ -131,10 +165,13 @@ class _PromptVoteViewState extends State<PromptVoteView> {
   Widget _choices(int voter, {required VoidCallback after}) {
     final players = widget.players;
     if (mostLikely) {
-      return PlayerPicker(players: players, highlight: g.votes[voter], onPick: (i) {
-        g.vote(voter, i);
-        after();
-      });
+      return PlayerPicker(
+          players: players,
+          highlight: g.votes[voter],
+          onPick: (i) {
+            g.vote(voter, i);
+            after();
+          });
     }
     return Column(children: [
       for (var o = 0; o < 2; o++)
@@ -165,11 +202,14 @@ class _PromptVoteViewState extends State<PromptVoteView> {
       onChange: (fx, _, now) {
         if (now != PromptPhase.reveal) return;
         if (g.lastWinners.isEmpty) {
-          fx?.announce('A PERFECT SPLIT!', sub: 'No points this time', color: Colors.white);
+          fx?.announce('A PERFECT SPLIT!',
+              sub: 'No points this time', color: Colors.white);
         } else if (mostLikely) {
-          keyMoment(fx, g.lastWinners.map((w) => players[w].name).join(' & '), sub: 'Most likely! +1', sound: 'coin', confetti: true);
+          keyMoment(fx, g.lastWinners.map((w) => players[w].name).join(' & '),
+              sub: 'Most likely! +1', sound: 'coin', confetti: true);
         } else {
-          keyMoment(fx, 'MAJORITY: ${g.lastWinners.single == 0 ? 'A' : 'B'}', sub: 'They score a point', sound: 'coin');
+          keyMoment(fx, 'MAJORITY: ${g.lastWinners.single == 0 ? 'A' : 'B'}',
+              sub: 'They score a point', sound: 'coin');
         }
       },
       child: _phase(context),
@@ -190,7 +230,10 @@ class _PromptVoteViewState extends State<PromptVoteView> {
               child: Column(children: [
                 _promptCard(),
                 const SizedBox(height: 16),
-                if (voted) const WaitingNote('Vote in! Waiting for the others…') else _choices(me, after: () {}),
+                if (voted)
+                  const WaitingNote('Vote in! Waiting for the others…')
+                else
+                  _choices(me, after: () {}),
               ]),
             ),
           );
@@ -205,7 +248,11 @@ class _PromptVoteViewState extends State<PromptVoteView> {
             onReveal: () => setState(() => _shown = true),
             onDone: null, // voting is the way on
             doneLabel: 'Tap your choice above',
-            secret: Column(children: [_promptCard(), const SizedBox(height: 16), _choices(p, after: () => setState(() => _shown = false))]),
+            secret: Column(children: [
+              _promptCard(),
+              const SizedBox(height: 16),
+              _choices(p, after: () => setState(() => _shown = false))
+            ]),
           ),
         );
       case PromptPhase.reveal:
@@ -213,7 +260,8 @@ class _PromptVoteViewState extends State<PromptVoteView> {
         final Widget results;
         if (mostLikely) {
           final t = g.tally(players.length);
-          final order = [for (var i = 0; i < players.length; i++) i]..sort((a, b) => t[b] - t[a]);
+          final order = [for (var i = 0; i < players.length; i++) i]
+            ..sort((a, b) => t[b] - t[a]);
           results = Column(children: [
             for (final i in order)
               Padding(
@@ -222,7 +270,10 @@ class _PromptVoteViewState extends State<PromptVoteView> {
                   player: players[i],
                   seat: _seat(i),
                   winner: g.lastWinners.contains(i),
-                  voters: [for (var v = 0; v < players.length; v++) if (g.votes[v] == i) v],
+                  voters: [
+                    for (var v = 0; v < players.length; v++)
+                      if (g.votes[v] == i) v
+                  ],
                   players: players,
                   seatOf: _seat,
                 ),
@@ -233,7 +284,13 @@ class _PromptVoteViewState extends State<PromptVoteView> {
           results = _SplitBar(
             options: options,
             counts: t,
-            voters: [for (var o = 0; o < 2; o++) [for (var v = 0; v < players.length; v++) if (g.votes[v] == o) v]],
+            voters: [
+              for (var o = 0; o < 2; o++)
+                [
+                  for (var v = 0; v < players.length; v++)
+                    if (g.votes[v] == o) v
+                ]
+            ],
             winner: g.lastWinners.isEmpty ? null : g.lastWinners.single,
             players: players,
             seatOf: _seat,
@@ -242,10 +299,18 @@ class _PromptVoteViewState extends State<PromptVoteView> {
         return PartyFrame(
           title: title,
           subtitle: 'The votes are in!',
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Expanded(child: SingleChildScrollView(child: Column(children: [_promptCard(), const SizedBox(height: 16), results]))),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Expanded(
+                child: SingleChildScrollView(
+                    child: Column(children: [
+              _promptCard(),
+              const SizedBox(height: 16),
+              results
+            ]))),
             const SizedBox(height: 10),
-            GoldButton(g.round + 1 >= g.rounds ? 'See scores' : 'Next question', icon: GameIcons.forward, height: 58, onPressed: g.next),
+            GoldButton(g.round + 1 >= g.rounds ? 'See scores' : 'Next question',
+                icon: GameIcons.forward, height: 58, onPressed: g.next),
           ]),
         );
     }
@@ -257,7 +322,11 @@ class _ChoiceCard extends StatelessWidget {
   final String letter, text;
   final Color color;
   final VoidCallback onTap;
-  const _ChoiceCard({required this.letter, required this.text, required this.color, required this.onTap});
+  const _ChoiceCard(
+      {required this.letter,
+      required this.text,
+      required this.color,
+      required this.onTap});
   @override
   Widget build(BuildContext context) => Semantics(
         button: true,
@@ -269,7 +338,13 @@ class _ChoiceCard extends StatelessWidget {
             constraints: const BoxConstraints(minHeight: 96),
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color.lerp(color, Colors.white, 0.12)!, Color.lerp(color, Colors.black, 0.2)!]),
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color.lerp(color, Colors.white, 0.12)!,
+                    Color.lerp(color, Colors.black, 0.2)!
+                  ]),
               borderRadius: Radii.rButton,
               boxShadow: Shadows.edge(Color.lerp(color, Colors.black, 0.45)!),
             ),
@@ -278,11 +353,20 @@ class _ChoiceCard extends StatelessWidget {
                 width: 44,
                 height: 44,
                 alignment: Alignment.center,
-                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                child: Text(letter, style: TextStyle(fontFamily: Fonts.display, fontSize: 24, color: color)),
+                decoration: const BoxDecoration(
+                    color: Colors.white, shape: BoxShape.circle),
+                child: Text(letter,
+                    style: TextStyle(
+                        fontFamily: Fonts.display, fontSize: 24, color: color)),
               ),
               const SizedBox(width: 12),
-              Expanded(child: Text(text, style: const TextStyle(fontFamily: Fonts.display, fontSize: 20, height: 1.15, color: Colors.white))),
+              Expanded(
+                  child: Text(text,
+                      style: const TextStyle(
+                          fontFamily: Fonts.display,
+                          fontSize: 20,
+                          height: 1.15,
+                          color: Colors.white))),
             ]),
           ),
         ),
@@ -297,39 +381,73 @@ class _VoteRow extends StatelessWidget {
   final List<int> voters;
   final List<GpPlayer> players;
   final int Function(int) seatOf;
-  const _VoteRow({required this.player, required this.seat, required this.winner, required this.voters, required this.players, required this.seatOf});
+  const _VoteRow(
+      {required this.player,
+      required this.seat,
+      required this.winner,
+      required this.voters,
+      required this.players,
+      required this.seatOf});
   @override
   Widget build(BuildContext context) {
     final t = context.tk;
     return Semantics(
-      label: '${player.name}: ${voters.length} ${voters.length == 1 ? 'vote' : 'votes'}${winner ? ', most likely' : ''}',
+      label:
+          '${player.name}: ${voters.length} ${voters.length == 1 ? 'vote' : 'votes'}${winner ? ', most likely' : ''}',
       excludeSemantics: true,
       child: Container(
         constraints: const BoxConstraints(minHeight: 56),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: winner ? Brand.gold.withValues(alpha: 0.14) : (t.flat ? Colors.white : t.surface),
+          color: winner
+              ? Brand.gold.withValues(alpha: 0.14)
+              : (t.flat ? Colors.white : t.surface),
           borderRadius: Radii.rLg,
-          border: Border.all(color: winner ? Brand.gold : (t.flat ? FlatPalette.stroke : t.stroke), width: winner ? 2 : 1),
+          border: Border.all(
+              color: winner
+                  ? Brand.gold
+                  : (t.flat ? FlatPalette.stroke : t.stroke),
+              width: winner ? 2 : 1),
         ),
         child: Row(children: [
-          PlayerBadge(index: seat, size: 28, color: player.color, initial: player.name),
+          PlayerBadge(
+              index: seat, size: 28, color: player.color, initial: player.name),
           const SizedBox(width: 10),
-          Expanded(child: Text(player.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.body, fontSize: 15, fontWeight: FontWeight.w900, color: t.flat ? FlatPalette.ink : Colors.white))),
+          Expanded(
+              child: Text(player.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontFamily: Fonts.body,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w900,
+                      color: t.flat ? FlatPalette.ink : Colors.white))),
           // The votes, as the voters' badges.
           Flexible(
-            child: Wrap(alignment: WrapAlignment.end, spacing: 3, runSpacing: 3, children: [
-              for (var k = 0; k < voters.length; k++)
-                TweenAnimationBuilder<double>(
-                  tween: Tween(begin: Motion.reduced(context) ? 1 : 0, end: 1),
-                  duration: Duration(milliseconds: 300 + 120 * k),
-                  curve: Curves.easeOutBack,
-                  builder: (_, s, child) => Transform.scale(scale: s, child: child),
-                  child: PlayerBadge(index: seatOf(voters[k]), size: 18, color: players[voters[k]].color),
-                ),
-            ]),
+            child: Wrap(
+                alignment: WrapAlignment.end,
+                spacing: 3,
+                runSpacing: 3,
+                children: [
+                  for (var k = 0; k < voters.length; k++)
+                    TweenAnimationBuilder<double>(
+                      tween:
+                          Tween(begin: Motion.reduced(context) ? 1 : 0, end: 1),
+                      duration: Duration(milliseconds: 300 + 120 * k),
+                      curve: Curves.easeOutBack,
+                      builder: (_, s, child) =>
+                          Transform.scale(scale: s, child: child),
+                      child: PlayerBadge(
+                          index: seatOf(voters[k]),
+                          size: 18,
+                          color: players[voters[k]].color),
+                    ),
+                ]),
           ),
-          if (winner) ...[const SizedBox(width: 8), const GameIcon(GameIcons.crown, size: 24, color: Brand.gold)],
+          if (winner) ...[
+            const SizedBox(width: 8),
+            const GameIcon(GameIcons.crown, size: 24, color: Brand.gold)
+          ],
         ]),
       ),
     );
@@ -345,7 +463,13 @@ class _SplitBar extends StatelessWidget {
   final int? winner;
   final List<GpPlayer> players;
   final int Function(int) seatOf;
-  const _SplitBar({required this.options, required this.counts, required this.voters, required this.winner, required this.players, required this.seatOf});
+  const _SplitBar(
+      {required this.options,
+      required this.counts,
+      required this.voters,
+      required this.winner,
+      required this.players,
+      required this.seatOf});
   @override
   Widget build(BuildContext context) {
     final t = context.tk;
@@ -359,14 +483,35 @@ class _SplitBar extends StatelessWidget {
           decoration: BoxDecoration(
             color: c.withValues(alpha: win ? 0.3 : 0.14),
             borderRadius: Radii.rButton,
-            border: Border.all(color: win ? Brand.gold : c.withValues(alpha: 0.6), width: win ? 2.5 : 1.5),
-            boxShadow: win ? [BoxShadow(color: Brand.gold.withValues(alpha: 0.4), blurRadius: 16)] : null,
+            border: Border.all(
+                color: win ? Brand.gold : c.withValues(alpha: 0.6),
+                width: win ? 2.5 : 1.5),
+            boxShadow: win
+                ? [
+                    BoxShadow(
+                        color: Brand.gold.withValues(alpha: 0.4),
+                        blurRadius: 16)
+                  ]
+                : null,
           ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(o == 0 ? 'A' : 'B', style: TextStyle(fontFamily: Fonts.display, fontSize: 22, color: Color.lerp(c, Colors.white, 0.4))),
-            Text(options[o], style: TextStyle(fontFamily: Fonts.body, fontSize: 14, fontWeight: FontWeight.w900, color: t.flat ? FlatPalette.ink : Colors.white)),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(o == 0 ? 'A' : 'B',
+                style: TextStyle(
+                    fontFamily: Fonts.display,
+                    fontSize: 22,
+                    color: Color.lerp(c, Colors.white, 0.4))),
+            Text(options[o],
+                style: TextStyle(
+                    fontFamily: Fonts.body,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                    color: t.flat ? FlatPalette.ink : Colors.white)),
             const SizedBox(height: 8),
-            Wrap(spacing: 3, runSpacing: 3, children: [for (final v in voters[o]) PlayerBadge(index: seatOf(v), size: 20, color: players[v].color)]),
+            Wrap(spacing: 3, runSpacing: 3, children: [
+              for (final v in voters[o])
+                PlayerBadge(index: seatOf(v), size: 20, color: players[v].color)
+            ]),
           ]),
         ),
       );
@@ -381,16 +526,41 @@ class _SplitBar extends StatelessWidget {
           child: SizedBox(
             height: 26,
             child: Row(children: [
-              Expanded(flex: max(1, counts[0] * 100 ~/ total), child: Container(color: _optionA, alignment: Alignment.center, child: Text('${counts[0]}', style: const TextStyle(fontFamily: Fonts.display, fontSize: 16, color: Colors.white)))),
+              Expanded(
+                  flex: max(1, counts[0] * 100 ~/ total),
+                  child: Container(
+                      color: _optionA,
+                      alignment: Alignment.center,
+                      child: Text('${counts[0]}',
+                          style: const TextStyle(
+                              fontFamily: Fonts.display,
+                              fontSize: 16,
+                              color: Colors.white)))),
               Container(width: 3, color: Colors.white),
-              Expanded(flex: max(1, counts[1] * 100 ~/ total), child: Container(color: _optionB, alignment: Alignment.center, child: Text('${counts[1]}', style: const TextStyle(fontFamily: Fonts.display, fontSize: 16, color: Colors.white)))),
+              Expanded(
+                  flex: max(1, counts[1] * 100 ~/ total),
+                  child: Container(
+                      color: _optionB,
+                      alignment: Alignment.center,
+                      child: Text('${counts[1]}',
+                          style: const TextStyle(
+                              fontFamily: Fonts.display,
+                              fontSize: 16,
+                              color: Colors.white)))),
             ]),
           ),
         ),
         const SizedBox(height: 10),
-        IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [side(0), const SizedBox(width: 10), side(1)])),
+        IntrinsicHeight(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [side(0), const SizedBox(width: 10), side(1)])),
         const SizedBox(height: 8),
-        Text(winner == null ? 'A perfect split! No points.' : 'The majority scores a point!', style: t.styles.bodyStrong.copyWith(color: t.onBgMuted)),
+        Text(
+            winner == null
+                ? 'A perfect split! No points.'
+                : 'The majority scores a point!',
+            style: t.styles.bodyStrong.copyWith(color: t.onBgMuted)),
       ]),
     );
   }

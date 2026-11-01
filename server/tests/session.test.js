@@ -14,9 +14,18 @@ function lobby(game = 'tic_tac_toe', others = ['p'], maxPlayers = 6) {
 }
 /** Ends a relay game with the given scores (players in join order). */
 const registry = require('../src/games/registry');
+const nitroTerminal = scores => ({
+  time: 0, seats: scores.length, over: 1,
+  karts: scores.map(score => [0, 0, 0, 0, 100, score, 1, 0, 0, 0, 0, 0]),
+  shots: [], mines: [], crates: [], feed: null,
+});
 const finish = (rm, scores) => {
   const room = rm.roomOf('h');
-  if (registry.get(room.gameType).relay) return rm.gameAction('h', { type: 'relay:finish', payload: { scores }, seq: Date.now() + Math.random() });
+  if (room.gameType === 'nitro_knockout') {
+    rm.gameAction('h', { type: 'nitro:state', payload: { state: nitroTerminal(scores) }, seq: 0 });
+    return rm.gameAction('h', { type: 'nitro:finish', payload: { scores }, seq: 1 });
+  }
+  if (registry.get(room.gameType).relay) return rm.gameAction('h', { type: 'relay:finish', payload: { scores }, seq: 0 });
   // Native games: end them the way the room does, with the same ranking.
   const ids = room.players.map(p => p.userId);
   const order = ids.map((u, i) => [u, scores[i]]).sort((a, b) => b[1] - a[1]);
@@ -57,6 +66,21 @@ test('Session: after a game the host starts the next one straight away, same roo
   rm.returnToLobby('h');
   assert.ok(room.players.every(p => p.ready), 'nobody has to tap READY again');
   close();
+});
+
+test('Session: Nitro terminal result scores a party once and advances to the next game', () => {
+  const { rm, room, close } = lobby('nitro_knockout');
+  try {
+    rm.startGame('h');
+    room.party = { games: ['nitro_knockout', 'tic_tac_toe'], index: 0, totals: { h: 0, p: 0 }, lastPoints: null, done: false };
+    const { result } = finish(rm, [1, 0]);
+    assert.deepStrictEqual(result.party.totals, { h: 2, p: 1 });
+    rm.markDisconnected('p'); rm.reconnect('p');
+    assert.deepStrictEqual(room.party.totals, { h: 2, p: 1 });
+    rm.nextGame('h');
+    assert.strictEqual(room.gameType, 'tic_tac_toe');
+    assert.strictEqual(room.party.index, 1);
+  } finally { close(); }
 });
 
 test('Party: 5 random games that fit the room, points by place, running totals', () => {
@@ -128,7 +152,9 @@ test('Session over sockets: select a game, party results carry the standings, ne
   const live = srv.rooms.roomOf('h');
   if (registry.get(live.gameType).relay) {
     const done = waitFor(p, 'game_finished');
-    assert.ok((await emit(h, 'game_action', { type: 'relay:finish', payload: { scores: [0, 1] }, seq: Date.now() })).ok);
+    const isNitro = live.gameType === 'nitro_knockout';
+    if (isNitro) assert.ok((await emit(h, 'game_action', { type: 'nitro:state', payload: { state: nitroTerminal([0, 1]) }, seq: 0 })).ok);
+    assert.ok((await emit(h, 'game_action', { type: isNitro ? 'nitro:finish' : 'relay:finish', payload: { scores: [0, 1] }, seq: 1 })).ok);
     const res = await done;
     assert.deepStrictEqual(res.party.totals, { h: 1, p: 2 });
     assert.strictEqual(res.party.done, false);

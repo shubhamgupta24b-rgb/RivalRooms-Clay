@@ -7,7 +7,8 @@ import 'package:multiplayer_game/features/raja_mantri/rmcs_game.dart';
 import 'package:multiplayer_game/features/raja_mantri/rmcs_role.dart';
 import 'package:multiplayer_game/features/raja_mantri/rmcs_screen.dart';
 import 'package:multiplayer_game/games/raja_mantri/raja_mantri_screen.dart';
-import 'online_game_screens_test.dart' show FakeSession, pumpGame, disposeGame, expectCall;
+import 'online_game_screens_test.dart'
+    show FakeSession, pumpGame, disposeGame, expectCall;
 
 /// Lets a card flip run: one frame to start it, then enough time to finish.
 Future<void> flip(WidgetTester tester) async {
@@ -28,16 +29,20 @@ void toGuessing(RmcsGame g) {
 void main() {
   group('Raja Mantri rules', () {
     test('points table', () {
-      expect([for (final r in RmcsRole.values) r.points(caught: true)], [1000, 500, 300, 0]);
-      expect([for (final r in RmcsRole.values) r.points(caught: false)], [1000, 0, 300, 500]);
+      expect([for (final r in RmcsRole.values) r.points(caught: true)],
+          [1000, 500, 300, 0]);
+      expect([for (final r in RmcsRole.values) r.points(caught: false)],
+          [1000, 0, 300, 500]);
     });
 
-    test('every deal hands out each role once; suspects are Sipahi and Chor', () {
+    test('every deal hands out each role once; suspects are Sipahi and Chor',
+        () {
       final g = RmcsGame(random: Random(1));
       final seen = <String>{};
       for (var r = 0; r < 30; r++) {
         expect(g.roles.toSet(), RmcsRole.values.toSet());
-        expect(g.suspects.map((i) => g.roles[i]).toSet(), {RmcsRole.sipahi, RmcsRole.chor});
+        expect(g.suspects.map((i) => g.roles[i]).toSet(),
+            {RmcsRole.sipahi, RmcsRole.chor});
         seen.add(g.roles.join());
         toGuessing(g);
         g.accuse(g.chor);
@@ -65,7 +70,8 @@ void main() {
       expect(g.phase, RmcsPhase.rajaReveal);
     });
 
-    test('Mantri catches the Chor: 1800 points; only suspects can be accused', () {
+    test('Mantri catches the Chor: 1800 points; only suspects can be accused',
+        () {
       final g = RmcsGame(random: Random(3));
       toGuessing(g);
       expect(g.accuse(g.raja), isNull);
@@ -133,8 +139,14 @@ void main() {
   });
 
   group('Raja Mantri on one device', () {
-    for (final size in const [Size(320, 568), Size(411, 914), Size(800, 1280)]) {
-      testWidgets('a full round from the hub on ${size.width.toInt()}x${size.height.toInt()}', (tester) async {
+    for (final size in const [
+      Size(320, 568),
+      Size(411, 914),
+      Size(800, 1280)
+    ]) {
+      testWidgets(
+          'a full round from the hub on ${size.width.toInt()}x${size.height.toInt()}',
+          (tester) async {
         tester.view.physicalSize = size;
         tester.view.devicePixelRatio = 1;
         addTearDown(tester.view.reset);
@@ -151,7 +163,8 @@ void main() {
           await tester.pump();
         }
         await tester.enterText(find.byType(TextField).first, 'Asha');
-        await tester.scrollUntilVisible(find.text('Deal the cards'), 200, scrollable: find.byType(Scrollable).first);
+        await tester.scrollUntilVisible(find.text('Deal the cards'), 200,
+            scrollable: find.byType(Scrollable).first);
         await tester.tap(find.text('Deal the cards'));
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 400));
@@ -184,7 +197,10 @@ void main() {
         await tester.tap(find.text('TAP TO ACCUSE').first);
         await tester.pump(const Duration(milliseconds: 1500));
         final caught = find.text('Chor caught!').evaluate().isNotEmpty;
-        expect(caught || find.text('Wrong guess: Chor escaped!').evaluate().isNotEmpty, isTrue);
+        expect(
+            caught ||
+                find.text('Wrong guess: Chor escaped!').evaluate().isNotEmpty,
+            isTrue);
         expect(find.text('CHOR'), findsOneWidget, reason: 'all cards revealed');
         expect(find.text('+1000'), findsOneWidget);
         expect(find.text('1000 pts'), findsOneWidget);
@@ -202,12 +218,15 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       await tester.pumpWidget(const MaterialApp(home: RmcsMenuScreen()));
-      expect(find.text('4 PLAYERS · 20 ROUNDS · ONE PHONE'), findsOneWidget, reason: 'default');
-      await tester.scrollUntilVisible(find.text('5'), 200, scrollable: find.byType(Scrollable).first);
+      expect(find.text('4 PLAYERS · 20 ROUNDS · ONE PHONE'), findsOneWidget,
+          reason: 'default');
+      await tester.scrollUntilVisible(find.text('5'), 200,
+          scrollable: find.byType(Scrollable).first);
       await tester.tap(find.text('5'));
       await tester.pump();
       expect(find.text('Quick game · about 5 minutes'), findsOneWidget);
-      await tester.scrollUntilVisible(find.text('Deal the cards'), 200, scrollable: find.byType(Scrollable).first);
+      await tester.scrollUntilVisible(find.text('Deal the cards'), 200,
+          scrollable: find.byType(Scrollable).first);
       await tester.tap(find.text('Deal the cards'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
@@ -216,7 +235,8 @@ void main() {
       await tester.pump(const Duration(seconds: 3));
     });
 
-    testWidgets('Mantri too slow: chor escapes; last round shows final results', (tester) async {
+    testWidgets('Mantri too slow: chor escapes; last round shows final results',
+        (tester) async {
       var clock = 0;
       final g = RmcsGame(totalRounds: 1, random: Random(7), now: () => clock);
       await tester.pumpWidget(MaterialApp(home: RmcsGameScreen(game: g)));
@@ -230,7 +250,13 @@ void main() {
       expect(find.text("Time's up! The Mantri didn't choose."), findsOneWidget);
       await tester.tap(find.text('See final results'));
       await tester.pump(const Duration(milliseconds: 500));
-      expect(find.textContaining(' wins!', findRichText: true).evaluate().isNotEmpty || find.text("It's a draw!").evaluate().isNotEmpty, isTrue);
+      expect(
+          find
+                  .textContaining(' wins!', findRichText: true)
+                  .evaluate()
+                  .isNotEmpty ||
+              find.text("It's a draw!").evaluate().isNotEmpty,
+          isTrue);
       expect(find.bySemanticsLabel(RegExp('^Place 1, ')), findsWidgets);
       await tester.ensureVisible(find.text('Rematch'));
       await tester.tap(find.text('Rematch'));
@@ -250,11 +276,22 @@ void main() {
       {'userId': 'c', 'username': 'Chetan'},
       {'userId': 'd', 'username': 'Dev'},
     ];
-    Map<String, dynamic> state(String phase, {String yourRole = 'mantri', Map<String, String>? roles, Map<String, dynamic>? result}) => {
-          'gameType': 'raja_mantri', 'phase': phase, 'round': 3, 'totalRounds': 20,
-          'players': people, 'scores': {'me': 1500, 'b': 300, 'c': 1000, 'd': 500},
-          'yourRole': yourRole, 'roles': roles ?? {'me': yourRole},
-          'phaseEndsAt': now + 8000, 'guessMs': 10000, 'result': result,
+    Map<String, dynamic> state(String phase,
+            {String yourRole = 'mantri',
+            Map<String, String>? roles,
+            Map<String, dynamic>? result}) =>
+        {
+          'gameType': 'raja_mantri',
+          'phase': phase,
+          'round': 3,
+          'totalRounds': 20,
+          'players': people,
+          'scores': {'me': 1500, 'b': 300, 'c': 1000, 'd': 500},
+          'yourRole': yourRole,
+          'roles': roles ?? {'me': yourRole},
+          'phaseEndsAt': now + 8000,
+          'guessMs': 10000,
+          'result': result,
         };
 
     testWidgets('dealing: only I can turn my card over', (tester) async {
@@ -273,7 +310,8 @@ void main() {
     });
 
     testWidgets('guessing as the Mantri sends the accusation', (tester) async {
-      final s = FakeSession(state('guessing', roles: {'me': 'mantri', 'c': 'raja'}));
+      final s =
+          FakeSession(state('guessing', roles: {'me': 'mantri', 'c': 'raja'}));
       await pumpGame(tester, const RajaMantriScreen(), s);
       await flip(tester);
       expect(find.text('Who is the CHOR?'), findsOneWidget);
@@ -286,7 +324,8 @@ void main() {
     });
 
     testWidgets('guessing as someone else just watches', (tester) async {
-      final s = FakeSession(state('guessing', yourRole: 'chor', roles: {'me': 'chor', 'b': 'mantri', 'c': 'raja'}));
+      final s = FakeSession(state('guessing',
+          yourRole: 'chor', roles: {'me': 'chor', 'b': 'mantri', 'c': 'raja'}));
       await pumpGame(tester, const RajaMantriScreen(), s);
       await flip(tester);
       expect(find.text('Bina is choosing…'), findsOneWidget);
@@ -295,16 +334,31 @@ void main() {
       await disposeGame(tester);
     });
 
-    testWidgets('reveal shows every card, the result and points', (tester) async {
+    testWidgets('reveal shows every card, the result and points',
+        (tester) async {
       const roles = {'me': 'mantri', 'b': 'sipahi', 'c': 'raja', 'd': 'chor'};
       final s = FakeSession(state('reveal', roles: roles, result: {
-        'guess': 'd', 'chorId': 'd', 'caught': true, 'timedOut': false,
-        'points': {'me': 500, 'b': 300, 'c': 1000, 'd': 0}, 'roles': roles,
+        'guess': 'd',
+        'chorId': 'd',
+        'caught': true,
+        'timedOut': false,
+        'points': {'me': 500, 'b': 300, 'c': 1000, 'd': 0},
+        'roles': roles,
       }));
       await pumpGame(tester, const RajaMantriScreen(), s);
       await tester.pump(const Duration(milliseconds: 1000));
       expect(find.text('Chor caught!'), findsOneWidget);
-      for (final t in ['RAJA', 'MANTRI', 'SIPAHI', 'CHOR', 'CAUGHT!', '+1000', '+500', '+300', '+0']) {
+      for (final t in [
+        'RAJA',
+        'MANTRI',
+        'SIPAHI',
+        'CHOR',
+        'CAUGHT!',
+        '+1000',
+        '+500',
+        '+300',
+        '+0'
+      ]) {
         expect(find.text(t), findsOneWidget, reason: t);
       }
       expect(find.textContaining('Next round in'), findsOneWidget);

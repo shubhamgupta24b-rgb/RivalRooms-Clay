@@ -103,7 +103,8 @@ final simonInfo = LocalGameInfo(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: const RadialGradient(colors: [Color(0xFF2A2440), Color(0xFF14101F)]),
+              gradient: const RadialGradient(
+                  colors: [Color(0xFF2A2440), Color(0xFF14101F)]),
               border: Border.all(color: const Color(0xFF3D3560), width: 3),
               boxShadow: Shadows.large,
             ),
@@ -116,9 +117,15 @@ final simonInfo = LocalGameInfo(
                 children: [
                   for (var p = 0; p < SimonLogic.pads; p++)
                     () {
-                      const colors = [Color(0xFF3B82F6), Color(0xFFFF8A1F), Color(0xFF22C55E), Color(0xFFA855F7)];
+                      const colors = [
+                        Color(0xFF3B82F6),
+                        Color(0xFFFF8A1F),
+                        Color(0xFF22C55E),
+                        Color(0xFFA855F7)
+                      ];
                       const names = ['blue', 'orange', 'green', 'purple'];
-                      const big = Radius.circular(400), small = Radius.circular(18);
+                      const big = Radius.circular(400),
+                          small = Radius.circular(18);
                       final radius = BorderRadius.only(
                         topLeft: p == 0 ? big : small,
                         topRight: p == 1 ? big : small,
@@ -139,14 +146,36 @@ final simonInfo = LocalGameInfo(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: on
-                                    ? [Colors.white, Color.lerp(colors[p], Colors.white, 0.45)!]
-                                    : [Color.lerp(colors[p], Colors.white, 0.15)!, Color.lerp(colors[p], Colors.black, g.phase == SimonPhase.input ? 0.15 : 0.45)!],
+                                    ? [
+                                        Colors.white,
+                                        Color.lerp(
+                                            colors[p], Colors.white, 0.45)!
+                                      ]
+                                    : [
+                                        Color.lerp(
+                                            colors[p], Colors.white, 0.15)!,
+                                        Color.lerp(
+                                            colors[p],
+                                            Colors.black,
+                                            g.phase == SimonPhase.input
+                                                ? 0.15
+                                                : 0.45)!
+                                      ],
                               ),
                               borderRadius: radius,
-                              border: Border.all(color: Colors.white.withValues(alpha: on ? 0.9 : 0.18), width: 3),
+                              border: Border.all(
+                                  color: Colors.white
+                                      .withValues(alpha: on ? 0.9 : 0.18),
+                                  width: 3),
                               boxShadow: [
-                                BoxShadow(color: Colors.black.withValues(alpha: 0.4), offset: const Offset(0, 5)),
-                                if (on) BoxShadow(color: colors[p], blurRadius: 34, spreadRadius: 6),
+                                BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.4),
+                                    offset: const Offset(0, 5)),
+                                if (on)
+                                  BoxShadow(
+                                      color: colors[p],
+                                      blurRadius: 34,
+                                      spreadRadius: 6),
                               ],
                             ),
                           ),
@@ -164,15 +193,29 @@ final simonInfo = LocalGameInfo(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: const Color(0xFF1B1630),
-                    border: Border.all(color: const Color(0xFF3D3560), width: 5),
-                    boxShadow: const [BoxShadow(color: Color(0x88000000), blurRadius: 10)],
+                    border:
+                        Border.all(color: const Color(0xFF3D3560), width: 5),
+                    boxShadow: const [
+                      BoxShadow(color: Color(0x88000000), blurRadius: 10)
+                    ],
                   ),
                   child: FittedBox(
                     child: Padding(
                       padding: const EdgeInsets.all(12),
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
-                        Text('${g.sequence.length}', style: const TextStyle(fontFamily: Fonts.display, color: Colors.white, fontSize: 40, height: 1)),
-                        const Text('STEPS', style: TextStyle(fontFamily: Fonts.body, color: Colors.white60, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                        Text('${g.sequence.length}',
+                            style: const TextStyle(
+                                fontFamily: Fonts.display,
+                                color: Colors.white,
+                                fontSize: 40,
+                                height: 1)),
+                        const Text('STEPS',
+                            style: TextStyle(
+                                fontFamily: Fonts.body,
+                                color: Colors.white60,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.5)),
                       ]),
                     ),
                   ),

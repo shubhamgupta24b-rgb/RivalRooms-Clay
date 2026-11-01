@@ -14,8 +14,26 @@ import '../widgets/pawn.dart';
 /// Classic Snakes & Ladders, 2-6 players. Roll, move, climb ladders, slide down snakes.
 /// A 6 rolls again. You need the exact number to land on 100 (otherwise you stay put).
 class SnakesLaddersLogic extends LocalGameLogic {
-  static const ladders = {4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 51: 67, 63: 81, 71: 91};
-  static const snakes = {17: 7, 54: 34, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 99: 78};
+  static const ladders = {
+    4: 14,
+    9: 31,
+    20: 38,
+    28: 84,
+    40: 59,
+    51: 67,
+    63: 81,
+    71: 91
+  };
+  static const snakes = {
+    17: 7,
+    54: 34,
+    62: 19,
+    64: 60,
+    87: 24,
+    93: 73,
+    95: 75,
+    99: 78
+  };
   final int players;
   final Random _random;
   final List<int> pos; // 0 = not on the board yet
@@ -32,7 +50,8 @@ class SnakesLaddersLogic extends LocalGameLogic {
   @override
   bool get finished => winner != null;
   @override
-  List<int> get scores => [for (var i = 0; i < players; i++) winner == i ? 1 : 0];
+  List<int> get scores =>
+      [for (var i = 0; i < players; i++) winner == i ? 1 : 0];
   @override
   void update(int elapsedMs) {}
 
@@ -104,7 +123,14 @@ final snakesLaddersInfo = LocalGameInfo(
   }),
   online: RelaySpec<SnakesLaddersLogic>(
     create: (n) => SnakesLaddersLogic(players: n),
-    save: (g) => {'pos': g.pos, 'turn': g.turn, 'roll': g.lastRoll, 'rolls': g.rolls, 'winner': g.winner, 'msg': g.message},
+    save: (g) => {
+      'pos': g.pos,
+      'turn': g.turn,
+      'roll': g.lastRoll,
+      'rolls': g.rolls,
+      'winner': g.winner,
+      'msg': g.message
+    },
     load: (g, s, me) {
       g.pos.setAll(0, ints(s['pos']));
       g.turn = asInt(s['turn']);
@@ -133,15 +159,22 @@ class _SnlTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final current = players[g.turn];
-    ResultScope.of(context)?.subtitle = g.winner == null ? null : '${players[g.winner!].name} reached 100';
+    ResultScope.of(context)?.subtitle =
+        g.winner == null ? null : '${players[g.winner!].name} reached 100';
     return MomentWatcher<int>(
       value: g.rolls,
       onChange: (fx, _, __) {
         final m = g.message;
         if (m.contains('Ladder!')) {
-          keyMoment(fx, 'LADDER!', sub: stripEmoji(m).replaceFirst('Ladder! ', ''), sound: 'jump');
+          keyMoment(fx, 'LADDER!',
+              sub: stripEmoji(m).replaceFirst('Ladder! ', ''), sound: 'jump');
         } else if (m.contains('Snake!')) {
-          keyMoment(fx, 'SNAKE!', sub: stripEmoji(m).replaceFirst('Snake! ', ''), sound: 'lose', color: StatusColors.danger, buzz: HapticWeight.heavy, shake: true);
+          keyMoment(fx, 'SNAKE!',
+              sub: stripEmoji(m).replaceFirst('Snake! ', ''),
+              sound: 'lose',
+              color: StatusColors.danger,
+              buzz: HapticWeight.heavy,
+              shake: true);
         } else if (g.lastRoll == 6 && !g.finished) {
           fx?.pop('ROLL AGAIN');
         }
@@ -163,8 +196,13 @@ class _SnlTable extends StatelessWidget {
               child: AspectRatio(
                 aspectRatio: 1,
                 child: Semantics(
-                  label: 'Board. ${[for (var i = 0; i < players.length; i++) '${players[i].name} on ${g.pos[i]}'].join(', ')}',
-                  child: BoardFrame(child: RepaintBoundary(child: _Board(players: players, g: g))),
+                  label: 'Board. ${[
+                    for (var i = 0; i < players.length; i++)
+                      '${players[i].name} on ${g.pos[i]}'
+                  ].join(', ')}',
+                  child: BoardFrame(
+                      child: RepaintBoundary(
+                          child: _Board(players: players, g: g))),
                 ),
               ),
             ),
@@ -208,9 +246,17 @@ class _Board extends StatelessWidget {
         if (n == 0) continue;
         final (col, row) = SnakesLaddersLogic.cell(n);
         // Fan out tokens sharing a square.
-        final same = [for (var q = 0; q < players.length; q++) if (g.pos[q] == n) q];
+        final same = [
+          for (var q = 0; q < players.length; q++)
+            if (g.pos[q] == n) q
+        ];
         final k = same.indexOf(p);
-        final off = same.length == 1 ? Offset.zero : Offset(cos(k * 2 * pi / same.length), sin(k * 2 * pi / same.length)) * s * 0.2;
+        final off = same.length == 1
+            ? Offset.zero
+            : Offset(cos(k * 2 * pi / same.length),
+                    sin(k * 2 * pi / same.length)) *
+                s *
+                0.2;
         tokens.add(AnimatedPositioned(
           key: ValueKey('t$p'),
           duration: Motion.of(context, const Duration(milliseconds: 600)),
@@ -219,11 +265,15 @@ class _Board extends StatelessWidget {
           top: row * s + s * 0.12 + off.dy,
           width: s * 0.66,
           height: s * 0.66,
-          child: CustomPaint(painter: PawnPainter(players[p].color, PlayerPalette.indexOf(players[p].color) ?? p, glow: p == g.turn && !g.finished)),
+          child: CustomPaint(
+              painter: PawnPainter(players[p].color,
+                  PlayerPalette.indexOf(players[p].color) ?? p,
+                  glow: p == g.turn && !g.finished)),
         ));
       }
       return Stack(children: [
-        const Positioned.fill(child: RepaintBoundary(child: CustomPaint(painter: _SnlPainter()))),
+        const Positioned.fill(
+            child: RepaintBoundary(child: CustomPaint(painter: _SnlPainter()))),
         ...tokens,
       ]);
     });
@@ -235,7 +285,13 @@ class _Board extends StatelessWidget {
 class _SnlPainter extends CustomPainter {
   const _SnlPainter();
   static const _cream = Color(0xFFFFF8EC);
-  static const _pastels = [Color(0xFFFFE3B3), Color(0xFFD4F1D2), Color(0xFFD3E6FB), Color(0xFFF6D6E8), Color(0xFFE7DDF8)];
+  static const _pastels = [
+    Color(0xFFFFE3B3),
+    Color(0xFFD4F1D2),
+    Color(0xFFD3E6FB),
+    Color(0xFFF6D6E8),
+    Color(0xFFE7DDF8)
+  ];
   static const _ink = Color(0xFF5A4A3A);
   static const _snakes = [
     (Color(0xFF2EAA4F), Color(0xFF1B7A35)),
@@ -255,7 +311,12 @@ class _SnlPainter extends CustomPainter {
     for (var n = 1; n <= 100; n++) {
       final (c, r) = SnakesLaddersLogic.cell(n);
       final rect = Rect.fromLTWH(c * s, r * s, s, s);
-      canvas.drawRect(rect, Paint()..color = (c + r).isEven ? _cream : _pastels[(n ~/ 10) % _pastels.length]);
+      canvas.drawRect(
+          rect,
+          Paint()
+            ..color = (c + r).isEven
+                ? _cream
+                : _pastels[(n ~/ 10) % _pastels.length]);
       canvas.drawRect(
           rect,
           Paint()
@@ -263,10 +324,20 @@ class _SnlPainter extends CustomPainter {
             ..strokeWidth = 0.6
             ..color = const Color(0x22704A20));
       if (n == 100) {
-        paintIcon(canvas, GameIcons.flag, Rect.fromCenter(center: rect.center, width: s * 0.62, height: s * 0.62));
+        paintIcon(
+            canvas,
+            GameIcons.flag,
+            Rect.fromCenter(
+                center: rect.center, width: s * 0.62, height: s * 0.62));
       } else {
         final tp = TextPainter(
-          text: TextSpan(text: '$n', style: TextStyle(fontFamily: Fonts.body, color: _ink.withValues(alpha: 0.75), fontSize: s * 0.24, fontWeight: FontWeight.w900)),
+          text: TextSpan(
+              text: '$n',
+              style: TextStyle(
+                  fontFamily: Fonts.body,
+                  color: _ink.withValues(alpha: 0.75),
+                  fontSize: s * 0.24,
+                  fontWeight: FontWeight.w900)),
           textDirection: TextDirection.ltr,
         )..layout();
         tp.paint(canvas, Offset(c * s + s * 0.08, r * s + s * 0.04));
@@ -283,7 +354,9 @@ class _SnlPainter extends CustomPainter {
         ..strokeWidth = s * 0.1
         ..strokeCap = StrokeCap.round;
       final rail = Paint()
-        ..shader = LinearGradient(colors: const [Color(0xFFC68A4E), Color(0xFF8B5A2B)]).createShader(Rect.fromPoints(a, b))
+        ..shader =
+            LinearGradient(colors: const [Color(0xFFC68A4E), Color(0xFF8B5A2B)])
+                .createShader(Rect.fromPoints(a, b))
         ..strokeWidth = s * 0.09
         ..strokeCap = StrokeCap.round;
       final rung = Paint()
@@ -292,7 +365,8 @@ class _SnlPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round;
       final rungs = (dir.distance / (s * 0.42)).floor();
       for (final side in [normal, -normal]) {
-        canvas.drawLine(a + side + const Offset(2, 3), b + side + const Offset(2, 3), shadow);
+        canvas.drawLine(a + side + const Offset(2, 3),
+            b + side + const Offset(2, 3), shadow);
       }
       for (var i = 1; i < rungs; i++) {
         final p = a + dir * (i / rungs);
@@ -311,7 +385,8 @@ class _SnlPainter extends CustomPainter {
       const steps = 32;
       for (var i = 0; i <= steps; i++) {
         final t = i / steps;
-        pts.add(a + dir * t + normal * sin(t * pi * 3) * s * 0.35 * (1 - t * 0.5));
+        pts.add(
+            a + dir * t + normal * sin(t * pi * 3) * s * 0.35 * (1 - t * 0.5));
       }
       final path = Path()..moveTo(pts.first.dx, pts.first.dy);
       for (final p in pts.skip(1)) {
@@ -335,11 +410,14 @@ class _SnlPainter extends CustomPainter {
               ..strokeWidth = w
               ..strokeCap = StrokeCap.round
               ..color = body);
-        if (i.isEven && i > 1) canvas.drawCircle(pts[i], w * 0.22, Paint()..color = dark);
+        if (i.isEven && i > 1)
+          canvas.drawCircle(pts[i], w * 0.22, Paint()..color = dark);
       }
       final fwd = (pts[0] - pts[1]) / (pts[0] - pts[1]).distance;
       final side = Offset(-fwd.dy, fwd.dx);
-      canvas.drawOval(Rect.fromCenter(center: a, width: s * 0.42, height: s * 0.42), Paint()..color = body);
+      canvas.drawOval(
+          Rect.fromCenter(center: a, width: s * 0.42, height: s * 0.42),
+          Paint()..color = body);
       canvas.drawLine(
           a + fwd * s * 0.2,
           a + fwd * s * 0.36,
@@ -350,7 +428,8 @@ class _SnlPainter extends CustomPainter {
       for (final sgn in [-1.0, 1.0]) {
         final e = a + side * sgn * s * 0.09 + fwd * s * 0.05;
         canvas.drawCircle(e, s * 0.055, Paint()..color = Colors.white);
-        canvas.drawCircle(e + fwd * s * 0.012, s * 0.028, Paint()..color = Colors.black);
+        canvas.drawCircle(
+            e + fwd * s * 0.012, s * 0.028, Paint()..color = Colors.black);
       }
     });
   }

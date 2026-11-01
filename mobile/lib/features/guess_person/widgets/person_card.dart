@@ -12,7 +12,13 @@ class PersonCard extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
   final String? badge; // e.g. "SELECTED" shown on the card, never colour-only
-  const PersonCard({super.key, required this.person, this.mark = CardMark.none, this.onTap, this.onLongPress, this.badge});
+  const PersonCard(
+      {super.key,
+      required this.person,
+      this.mark = CardMark.none,
+      this.onTap,
+      this.onLongPress,
+      this.badge});
 
   static const _grey = ColorFilter.matrix(<double>[
     0.33, 0.33, 0.33, 0, 0, //
@@ -40,22 +46,33 @@ class PersonCard extends StatelessWidget {
       duration: const Duration(milliseconds: 180),
       decoration: BoxDecoration(
         // Paper, like the other card games.
-        gradient: const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFFFFFDF6), Color(0xFFF5E9D2)]),
+        gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFFFFDF6), Color(0xFFF5E9D2)]),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: border, width: mark == CardMark.none || out ? 2 : 4),
+        border: Border.all(
+            color: border, width: mark == CardMark.none || out ? 2 : 4),
         boxShadow: [
-          if (mark == CardMark.selected) BoxShadow(color: GpColors.accent.withValues(alpha: 0.7), blurRadius: 14),
-          const BoxShadow(color: Color(0x40000000), offset: Offset(0, 3), blurRadius: 2),
+          if (mark == CardMark.selected)
+            BoxShadow(
+                color: GpColors.accent.withValues(alpha: 0.7), blurRadius: 14),
+          const BoxShadow(
+              color: Color(0x40000000), offset: Offset(0, 3), blurRadius: 2),
         ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Expanded(
             child: Stack(fit: StackFit.expand, children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(3, 4, 3, 0),
-                child: out ? ColorFiltered(colorFilter: _grey, child: PersonPortrait(person)) : PersonPortrait(person),
+                child: out
+                    ? ColorFiltered(
+                        colorFilter: _grey, child: PersonPortrait(person))
+                    : PersonPortrait(person),
               ),
               if (out) const CustomPaint(painter: _CrossPainter()),
             ]),
@@ -79,7 +96,10 @@ class PersonCard extends StatelessWidget {
       ),
     );
 
-    card = AnimatedOpacity(duration: const Duration(milliseconds: 220), opacity: out ? 0.55 : 1, child: card);
+    card = AnimatedOpacity(
+        duration: const Duration(milliseconds: 220),
+        opacity: out ? 0.55 : 1,
+        child: card);
     if (badge != null) {
       card = Stack(clipBehavior: Clip.none, children: [
         Positioned.fill(child: card),
@@ -90,8 +110,14 @@ class PersonCard extends StatelessWidget {
           child: Center(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(color: border == Colors.white ? GpColors.accent : border, borderRadius: BorderRadius.circular(8)),
-              child: Text(badge!, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: GpColors.ink)),
+              decoration: BoxDecoration(
+                  color: border == Colors.white ? GpColors.accent : border,
+                  borderRadius: BorderRadius.circular(8)),
+              child: Text(badge!,
+                  style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      color: GpColors.ink)),
             ),
           ),
         ),
@@ -104,7 +130,11 @@ class PersonCard extends StatelessWidget {
       child: AnimatedScale(
         duration: const Duration(milliseconds: 160),
         scale: mark == CardMark.selected ? 1.06 : 1.0,
-        child: GestureDetector(onTap: onTap, onLongPress: onLongPress, behavior: HitTestBehavior.opaque, child: card),
+        child: GestureDetector(
+            onTap: onTap,
+            onLongPress: onLongPress,
+            behavior: HitTestBehavior.opaque,
+            child: card),
       ),
     );
   }
@@ -116,7 +146,9 @@ String describePerson(Person p) {
   return [
     p.gender == Gender.female ? 'Female' : 'Male',
     '${cap(p.eyeColor)} eyes',
-    p.isBald ? 'Bald' : '${cap(p.hairColor)} ${p.hairStyle == 'short' ? 'short' : p.hairStyle} hair',
+    p.isBald
+        ? 'Bald'
+        : '${cap(p.hairColor)} ${p.hairStyle == 'short' ? 'short' : p.hairStyle} hair',
     '${cap(p.skinTone)} skin',
     if (p.hasGlasses) 'Glasses',
     if (p.hasHat) cap(p.hat),
@@ -139,12 +171,19 @@ Future<void> showPersonZoom(BuildContext context, Person p) {
           const SizedBox(height: 14),
           Container(
             padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(color: GpCoral.panel, borderRadius: BorderRadius.circular(18)),
+            decoration: BoxDecoration(
+                color: GpCoral.panel, borderRadius: BorderRadius.circular(18)),
             child: Text(describePerson(p),
-                textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700, height: 1.4)),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    height: 1.4)),
           ),
           const SizedBox(height: 8),
-          const Text('Tap anywhere to close', style: TextStyle(color: Colors.white70)),
+          const Text('Tap anywhere to close',
+              style: TextStyle(color: Colors.white70)),
         ]),
       ),
     ),
@@ -160,8 +199,10 @@ class _CrossPainter extends CustomPainter {
       ..color = GpColors.no
       ..strokeWidth = size.shortestSide * 0.1
       ..strokeCap = StrokeCap.round;
-    canvas.drawLine(Offset(pad, pad), Offset(size.width - pad, size.height - pad), p);
-    canvas.drawLine(Offset(size.width - pad, pad), Offset(pad, size.height - pad), p);
+    canvas.drawLine(
+        Offset(pad, pad), Offset(size.width - pad, size.height - pad), p);
+    canvas.drawLine(
+        Offset(size.width - pad, pad), Offset(pad, size.height - pad), p);
   }
 
   @override

@@ -18,8 +18,10 @@ class BingoLogic extends LocalGameLogic {
   static const size = 5;
   static const word = 'BINGO';
   static final List<List<int>> lines = [
-    for (var r = 0; r < size; r++) [for (var c = 0; c < size; c++) r * size + c],
-    for (var c = 0; c < size; c++) [for (var r = 0; r < size; r++) r * size + c],
+    for (var r = 0; r < size; r++)
+      [for (var c = 0; c < size; c++) r * size + c],
+    for (var c = 0; c < size; c++)
+      [for (var r = 0; r < size; r++) r * size + c],
     [for (var i = 0; i < size; i++) i * size + i],
     [for (var i = 0; i < size; i++) i * size + size - 1 - i],
   ];
@@ -29,17 +31,21 @@ class BingoLogic extends LocalGameLogic {
   final List<int> called = [];
   int turn = 0;
   Set<int> winners = {};
-  int revealedFor = -1; // one phone: whose card is uncovered (not part of the online state)
+  int revealedFor =
+      -1; // one phone: whose card is uncovered (not part of the online state)
 
   BingoLogic({this.players = 2, Random? random})
       : cards = [
-          for (var p = 0; p < players; p++) [for (var n = 1; n <= size * size; n++) n]..shuffle(random ?? Random()),
+          for (var p = 0; p < players; p++)
+            [for (var n = 1; n <= size * size; n++) n]
+              ..shuffle(random ?? Random()),
         ];
 
   @override
   bool get finished => winners.isNotEmpty;
   @override
-  List<int> get scores => [for (var p = 0; p < players; p++) winners.contains(p) ? 1 : 0];
+  List<int> get scores =>
+      [for (var p = 0; p < players; p++) winners.contains(p) ? 1 : 0];
   @override
   void update(int elapsedMs) {}
 
@@ -47,15 +53,21 @@ class BingoLogic extends LocalGameLogic {
   bool marked(int player, int cell) => called.contains(cards[player][cell]);
 
   /// Lines completed on a player's card (5 = BINGO).
-  int lineCount(int player) => lines.where((l) => l.every((cell) => marked(player, cell))).length;
-  List<List<int>> doneLines(int player) => lines.where((l) => l.every((cell) => marked(player, cell))).toList();
+  int lineCount(int player) =>
+      lines.where((l) => l.every((cell) => marked(player, cell))).length;
+  List<List<int>> doneLines(int player) =>
+      lines.where((l) => l.every((cell) => marked(player, cell))).toList();
 
   /// The player whose turn it is calls [number]. Returns false if it can't be called.
   bool call(int number) {
     if (forward('call', [number])) return false;
-    if (finished || number < 1 || number > size * size || isCalled(number)) return false;
+    if (finished || number < 1 || number > size * size || isCalled(number))
+      return false;
     called.add(number);
-    winners = {for (var p = 0; p < players; p++) if (lineCount(p) >= size) p};
+    winners = {
+      for (var p = 0; p < players; p++)
+        if (lineCount(p) >= size) p
+    };
     if (!finished) turn = (turn + 1) % players;
     notifyListeners();
     return true;
@@ -113,7 +125,12 @@ final bingoInfo = LocalGameInfo(
   }),
   online: RelaySpec<BingoLogic>(
     create: (n) => BingoLogic(players: n),
-    save: (g) => {'cards': [for (final c in g.cards) ...c], 'called': g.called, 'turn': g.turn, 'win': g.winners.toList()},
+    save: (g) => {
+      'cards': [for (final c in g.cards) ...c],
+      'called': g.called,
+      'turn': g.turn,
+      'win': g.winners.toList()
+    },
     load: (g, s, me) {
       final cards = ints(s['cards']);
       for (var p = 0; p < g.players; p++) {
@@ -128,14 +145,19 @@ final bingoInfo = LocalGameInfo(
     apply: (g, from, name, a) {
       if (name == 'call' && from == g.turn) g.call(asInt(a[0]));
     },
-    view: (context, g, players, me) => _BingoTable(g: g, players: players, me: me),
+    view: (context, g, players, me) =>
+        _BingoTable(g: g, players: players, me: me),
   ),
   play: (players, onFinished) => TickingPlay<BingoLogic>(
     create: () => BingoLogic(players: players.length),
     onFinished: onFinished,
     builder: (context, g) {
-      final bots = {for (var i = 0; i < players.length; i++) if (BotScope.isBot(context, i)) i};
-      return _BingoTable(g: g, players: players, me: BotScope.humanSeat(context), bots: bots);
+      final bots = {
+        for (var i = 0; i < players.length; i++)
+          if (BotScope.isBot(context, i)) i
+      };
+      return _BingoTable(
+          g: g, players: players, me: BotScope.humanSeat(context), bots: bots);
     },
   ),
 );
@@ -151,9 +173,12 @@ class _BingoTable extends StatelessWidget {
   final List<GpPlayer> players;
   final int? me; // whose card this phone shows (online, or one person vs bots)
   final Set<int> bots;
-  const _BingoTable({required this.g, required this.players, this.me, this.bots = const {}});
+  const _BingoTable(
+      {required this.g, required this.players, this.me, this.bots = const {}});
 
-  String _letters(int i) => g.lineCount(i) == 0 ? '–' : BingoLogic.word.substring(0, min(g.lineCount(i), 5));
+  String _letters(int i) => g.lineCount(i) == 0
+      ? '–'
+      : BingoLogic.word.substring(0, min(g.lineCount(i), 5));
 
   @override
   Widget build(BuildContext context) {
@@ -161,17 +186,36 @@ class _BingoTable extends StatelessWidget {
     // One phone, several people: the card on screen is the caller's, after the phone is passed.
     final passing = me == null;
     final holder = me ?? (bots.contains(g.turn) ? _lastPerson() : g.turn);
-    final covered = passing && !bots.contains(g.turn) && g.revealedFor != g.turn && !g.finished;
+    final covered = passing &&
+        !bots.contains(g.turn) &&
+        g.revealedFor != g.turn &&
+        !g.finished;
     final myTurn = holder == g.turn && !bots.contains(g.turn);
     final current = players[g.turn];
     ResultScope.of(context)
       ?..subtitle = g.finished ? '${g.called.length} numbers called' : null
-      ..detail = ((_, i) => Text(_letters(i), style: TextStyle(fontFamily: Fonts.display, fontSize: 18, letterSpacing: 2, color: nameColor(players[i].color))));
+      ..detail = ((_, i) => Text(_letters(i),
+          style: TextStyle(
+              fontFamily: Fonts.display,
+              fontSize: 18,
+              letterSpacing: 2,
+              color: nameColor(players[i].color))));
     final banner = g.finished
-        ? TurnBanner(text: 'BINGO!', sub: '${g.winners.map((w) => players[w].name).join(' & ')} ${g.winners.length > 1 ? 'win' : 'wins'}', color: current.color, kind: TurnBannerKind.success, icon: GameIcons.star, compact: true)
+        ? TurnBanner(
+            text: 'BINGO!',
+            sub:
+                '${g.winners.map((w) => players[w].name).join(' & ')} ${g.winners.length > 1 ? 'win' : 'wins'}',
+            color: current.color,
+            kind: TurnBannerKind.success,
+            icon: GameIcons.star,
+            compact: true)
         : TurnBanner(
-            text: myTurn ? (passing ? '${possessive(current.name)} turn' : 'Your turn') : '${current.name} is calling…',
-            sub: myTurn ? 'Tap a number on your card to call it' : 'Watch your card',
+            text: myTurn
+                ? (passing ? '${possessive(current.name)} turn' : 'Your turn')
+                : '${current.name} is calling…',
+            sub: myTurn
+                ? 'Tap a number on your card to call it'
+                : 'Watch your card',
             color: current.color,
             compact: true,
           );
@@ -179,14 +223,19 @@ class _BingoTable extends StatelessWidget {
       value: (g.called.length, g.lineCount(holder)),
       onChange: (fx, before, now) {
         if (g.finished) {
-          keyMoment(fx, 'BINGO!', sub: g.winners.map((w) => players[w].name).join(' & '), sound: 'win', confetti: true);
+          keyMoment(fx, 'BINGO!',
+              sub: g.winners.map((w) => players[w].name).join(' & '),
+              sound: 'win',
+              confetti: true);
         } else if (now.$2 > before.$2) {
-          keyMoment(fx, 'LINE!', sub: BingoLogic.word.substring(0, min(now.$2, 5)), sound: 'coin');
+          keyMoment(fx, 'LINE!',
+              sub: BingoLogic.word.substring(0, min(now.$2, 5)), sound: 'coin');
         }
       },
       child: Stack(children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(Space.s, Space.xs, Space.s, Space.m),
+          padding:
+              const EdgeInsets.fromLTRB(Space.s, Space.xs, Space.s, Space.m),
           child: Column(children: [
             ScoreHud(
               title: 'Bingo',
@@ -194,13 +243,23 @@ class _BingoTable extends StatelessWidget {
               players: players,
               turn: g.finished ? null : g.turn,
               score: _letters,
-              tag: (i) => !g.finished && i == g.turn ? 'CALLING' : (g.winners.contains(i) ? 'BINGO' : null),
+              tag: (i) => !g.finished && i == g.turn
+                  ? 'CALLING'
+                  : (g.winners.contains(i) ? 'BINGO' : null),
             ),
             const SizedBox(height: Space.s),
             _Letters(lines: g.lineCount(holder)),
             const SizedBox(height: 4),
             SizedBox(height: 54, child: Center(child: banner)),
-            Expanded(child: Center(child: AspectRatio(aspectRatio: 1, child: _Card(g: g, player: holder, players: players, canCall: myTurn && !covered)))),
+            Expanded(
+                child: Center(
+                    child: AspectRatio(
+                        aspectRatio: 1,
+                        child: _Card(
+                            g: g,
+                            player: holder,
+                            players: players,
+                            canCall: myTurn && !covered)))),
             const SizedBox(height: Space.s),
             SizedBox(
               height: 40,
@@ -210,27 +269,49 @@ class _BingoTable extends StatelessWidget {
                       Text('CALLED', style: t.styles.label),
                       const SizedBox(width: Space.s),
                       Expanded(
-                        child: ListView(scrollDirection: Axis.horizontal, children: [
-                          for (final n in g.called.reversed.take(12))
-                            Container(
-                              margin: const EdgeInsets.only(right: 6),
-                              width: 36,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: n == g.called.last ? Brand.gold : players[_callerOf(g, n)].color.withValues(alpha: 0.25),
-                                border: Border.all(color: n == g.called.last ? Brand.gold : players[_callerOf(g, n)].color, width: 1.5),
-                              ),
-                              child: Text('$n',
-                                  style: TextStyle(fontFamily: Fonts.display, fontSize: 16, color: n == g.called.last ? Brand.onGold : t.onBg, fontFeatures: const [FontFeature.tabularFigures()])),
-                            ),
-                        ]),
+                        child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              for (final n in g.called.reversed.take(12))
+                                Container(
+                                  margin: const EdgeInsets.only(right: 6),
+                                  width: 36,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: n == g.called.last
+                                        ? Brand.gold
+                                        : players[_callerOf(g, n)]
+                                            .color
+                                            .withValues(alpha: 0.25),
+                                    border: Border.all(
+                                        color: n == g.called.last
+                                            ? Brand.gold
+                                            : players[_callerOf(g, n)].color,
+                                        width: 1.5),
+                                  ),
+                                  child: Text('$n',
+                                      style: TextStyle(
+                                          fontFamily: Fonts.display,
+                                          fontSize: 16,
+                                          color: n == g.called.last
+                                              ? Brand.onGold
+                                              : t.onBg,
+                                          fontFeatures: const [
+                                            FontFeature.tabularFigures()
+                                          ])),
+                                ),
+                            ]),
                       ),
                     ]),
             ),
           ]),
         ),
-        if (covered) PassCover(player: current, holdLabel: 'Hold to see your card', onReveal: () => g.reveal(g.turn)),
+        if (covered)
+          PassCover(
+              player: current,
+              holdLabel: 'Hold to see your card',
+              onReveal: () => g.reveal(g.turn)),
       ]),
     );
   }
@@ -250,7 +331,9 @@ class _Letters extends StatelessWidget {
   const _Letters({required this.lines});
   @override
   Widget build(BuildContext context) => Semantics(
-        label: lines == 0 ? 'No lines yet' : '${BingoLogic.word.substring(0, min(lines, 5))}: $lines lines',
+        label: lines == 0
+            ? 'No lines yet'
+            : '${BingoLogic.word.substring(0, min(lines, 5))}: $lines lines',
         excludeSemantics: true,
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           for (var i = 0; i < BingoLogic.word.length; i++)
@@ -264,10 +347,24 @@ class _Letters extends StatelessWidget {
               decoration: BoxDecoration(
                 color: i < lines ? Brand.gold : context.tk.surface,
                 borderRadius: Radii.rCard,
-                border: Border.all(color: i < lines ? Brand.gold : context.tk.stroke, width: 2),
-                boxShadow: i < lines ? [...Shadows.edge(Brand.goldDeep, depth: 3), BoxShadow(color: Brand.gold.withValues(alpha: 0.5), blurRadius: 12)] : null,
+                border: Border.all(
+                    color: i < lines ? Brand.gold : context.tk.stroke,
+                    width: 2),
+                boxShadow: i < lines
+                    ? [
+                        ...Shadows.edge(Brand.goldDeep, depth: 3),
+                        BoxShadow(
+                            color: Brand.gold.withValues(alpha: 0.5),
+                            blurRadius: 12)
+                      ]
+                    : null,
               ),
-              child: Text(BingoLogic.word[i], style: TextStyle(fontFamily: Fonts.display, color: i < lines ? Brand.onGold : context.tk.onBgMuted, fontSize: 26, height: 1)),
+              child: Text(BingoLogic.word[i],
+                  style: TextStyle(
+                      fontFamily: Fonts.display,
+                      color: i < lines ? Brand.onGold : context.tk.onBgMuted,
+                      fontSize: 26,
+                      height: 1)),
             ),
         ]),
       );
@@ -280,7 +377,11 @@ class _Card extends StatelessWidget {
   final int player;
   final List<GpPlayer> players;
   final bool canCall;
-  const _Card({required this.g, required this.player, required this.players, required this.canCall});
+  const _Card(
+      {required this.g,
+      required this.player,
+      required this.players,
+      required this.canCall});
 
   static const _gap = 6.0, _pad = 10.0;
 
@@ -290,10 +391,16 @@ class _Card extends StatelessWidget {
     final last = g.called.isEmpty ? null : g.called.last;
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFFFFFDF6), Color(0xFFF5E9D2)]),
+        gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFFFFDF6), Color(0xFFF5E9D2)]),
         borderRadius: Radii.rBoard,
         border: Border.all(color: fillFor(color), width: 3),
-        boxShadow: const [BoxShadow(color: Color(0x80000000), blurRadius: 20, offset: Offset(0, 10))],
+        boxShadow: const [
+          BoxShadow(
+              color: Color(0x80000000), blurRadius: 20, offset: Offset(0, 10))
+        ],
       ),
       padding: const EdgeInsets.all(_pad),
       child: Stack(children: [
@@ -325,21 +432,40 @@ class _Card extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.7),
                         borderRadius: Radii.rTile,
-                        border: Border.all(color: n == last ? _ticketInk : const Color(0x22704A20), width: n == last ? 2.5 : 1),
+                        border: Border.all(
+                            color: n == last
+                                ? _ticketInk
+                                : const Color(0x22704A20),
+                            width: n == last ? 2.5 : 1),
                       ),
                       child: Stack(alignment: Alignment.center, children: [
                         if (ink != null)
                           TweenAnimationBuilder<double>(
-                            tween: Tween(begin: Motion.reduced(context) ? 1 : 0.4, end: 1),
+                            tween: Tween(
+                                begin: Motion.reduced(context) ? 1 : 0.4,
+                                end: 1),
                             duration: Motion.of(context, Motion.normal),
                             curve: Curves.easeOutBack,
-                            builder: (_, s, child) => Transform.scale(scale: s, child: child),
-                            child: FractionallySizedBox(widthFactor: 0.86, heightFactor: 0.86, child: CustomPaint(painter: _DabPainter(ink, n))),
+                            builder: (_, s, child) =>
+                                Transform.scale(scale: s, child: child),
+                            child: FractionallySizedBox(
+                                widthFactor: 0.86,
+                                heightFactor: 0.86,
+                                child:
+                                    CustomPaint(painter: _DabPainter(ink, n))),
                           ),
                         FittedBox(
                           child: Padding(
                             padding: const EdgeInsets.all(6),
-                            child: Text('$n', style: TextStyle(fontFamily: Fonts.display, color: _ticketInk.withValues(alpha: isMarked ? 0.85 : 1), fontSize: 28, fontFeatures: const [FontFeature.tabularFigures()])),
+                            child: Text('$n',
+                                style: TextStyle(
+                                    fontFamily: Fonts.display,
+                                    color: _ticketInk.withValues(
+                                        alpha: isMarked ? 0.85 : 1),
+                                    fontSize: 28,
+                                    fontFeatures: const [
+                                      FontFeature.tabularFigures()
+                                    ])),
                           ),
                         ),
                       ]),
@@ -349,7 +475,11 @@ class _Card extends StatelessWidget {
               }),
           ],
         ),
-        Positioned.fill(child: IgnorePointer(child: CustomPaint(painter: _LinesPainter(g.doneLines(player), fillFor(color))))),
+        Positioned.fill(
+            child: IgnorePointer(
+                child: CustomPaint(
+                    painter:
+                        _LinesPainter(g.doneLines(player), fillFor(color))))),
       ]),
     );
   }
@@ -373,7 +503,8 @@ class _DabPainter extends CustomPainter {
       i == 0 ? p.moveTo(pt.dx, pt.dy) : p.lineTo(pt.dx, pt.dy);
     }
     canvas.drawPath(p..close(), Paint()..color = color.withValues(alpha: 0.5));
-    canvas.drawCircle(c, r * 0.55, Paint()..color = color.withValues(alpha: 0.2));
+    canvas.drawCircle(
+        c, r * 0.55, Paint()..color = color.withValues(alpha: 0.2));
   }
 
   @override
@@ -389,7 +520,8 @@ class _LinesPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     const n = BingoLogic.size, gap = _Card._gap;
     final cell = (size.width - gap * (n - 1)) / n;
-    Offset at(int i) => Offset((i % n) * (cell + gap) + cell / 2, (i ~/ n) * (cell + gap) + cell / 2);
+    Offset at(int i) => Offset(
+        (i % n) * (cell + gap) + cell / 2, (i ~/ n) * (cell + gap) + cell / 2);
     final paint = Paint()
       ..color = color.withValues(alpha: 0.55)
       ..strokeWidth = cell * 0.22
@@ -400,5 +532,6 @@ class _LinesPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_LinesPainter o) => o.lines.length != lines.length || o.color != color;
+  bool shouldRepaint(_LinesPainter o) =>
+      o.lines.length != lines.length || o.color != color;
 }

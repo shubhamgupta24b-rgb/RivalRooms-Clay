@@ -18,7 +18,7 @@ function createServer({ graceMs = config.graceMs } = {}) {
   attachSockets(io, rooms);
   const ticker = setInterval(() => rooms.tick(Date.now()), 250);
   ticker.unref();
-  httpServer.on('close', () => clearInterval(ticker));
+  httpServer.on('close', () => { clearInterval(ticker); rooms.close(); });
   return { httpServer, io, rooms };
 }
 module.exports = { createServer };

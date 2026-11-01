@@ -37,6 +37,7 @@ class Person {
 
   bool get hasHat => hat != 'none';
   bool get hasBeard => facialHair == 'beard';
+
   /// Beards are drawn with a mustache, so they count too.
   bool get hasMustache => facialHair != 'none';
   bool get isBald => hairStyle == 'bald';

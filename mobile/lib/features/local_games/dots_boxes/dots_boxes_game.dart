@@ -13,37 +13,57 @@ import '../shell/ticking_play.dart';
 class DotsBoxesLogic extends LocalGameLogic {
   final int size; // boxes per side
   final int players;
-  late final List<List<int>> hLines = List.generate(size + 1, (_) => List.filled(size, -1)); // [row][col]
-  late final List<List<int>> vLines = List.generate(size, (_) => List.filled(size + 1, -1));
-  late final List<List<int>> boxes = List.generate(size, (_) => List.filled(size, -1));
+  late final List<List<int>> hLines =
+      List.generate(size + 1, (_) => List.filled(size, -1)); // [row][col]
+  late final List<List<int>> vLines =
+      List.generate(size, (_) => List.filled(size + 1, -1));
+  late final List<List<int>> boxes =
+      List.generate(size, (_) => List.filled(size, -1));
   int turn = 0;
   (bool, int, int)? lastLine; // (horizontal, row, col)
 
   DotsBoxesLogic({this.players = 2, this.size = 5});
 
   int get totalLines => 2 * size * (size + 1);
-  int get drawn => hLines.expand((r) => r).where((x) => x >= 0).length + vLines.expand((r) => r).where((x) => x >= 0).length;
+  int get drawn =>
+      hLines.expand((r) => r).where((x) => x >= 0).length +
+      vLines.expand((r) => r).where((x) => x >= 0).length;
   @override
   bool get finished => drawn == totalLines;
   @override
-  List<int> get scores => [for (var p = 0; p < players; p++) boxes.expand((r) => r).where((x) => x == p).length];
+  List<int> get scores => [
+        for (var p = 0; p < players; p++)
+          boxes.expand((r) => r).where((x) => x == p).length
+      ];
   @override
   void update(int elapsedMs) {}
 
-  bool _boxDone(int r, int c) => hLines[r][c] >= 0 && hLines[r + 1][c] >= 0 && vLines[r][c] >= 0 && vLines[r][c + 1] >= 0;
+  bool _boxDone(int r, int c) =>
+      hLines[r][c] >= 0 &&
+      hLines[r + 1][c] >= 0 &&
+      vLines[r][c] >= 0 &&
+      vLines[r][c + 1] >= 0;
 
   /// Draws a line. Returns how many boxes it closed, or null if it was already drawn / off the grid.
-  int? drawLine({required bool horizontal, required int row, required int col}) {
+  int? drawLine(
+      {required bool horizontal, required int row, required int col}) {
     if (forward('line', [horizontal, row, col])) return null;
     final lines = horizontal ? hLines : vLines;
-    if (row < 0 || row >= lines.length || col < 0 || col >= lines[row].length || lines[row][col] >= 0) return null;
+    if (row < 0 ||
+        row >= lines.length ||
+        col < 0 ||
+        col >= lines[row].length ||
+        lines[row][col] >= 0) return null;
     lines[row][col] = turn;
     lastLine = (horizontal, row, col);
     // Boxes either side of the line.
-    final candidates = horizontal ? [(row - 1, col), (row, col)] : [(row, col - 1), (row, col)];
+    final candidates = horizontal
+        ? [(row - 1, col), (row, col)]
+        : [(row, col - 1), (row, col)];
     var closed = 0;
     for (final (r, c) in candidates) {
-      if (r < 0 || r >= size || c < 0 || c >= size || boxes[r][c] >= 0) continue;
+      if (r < 0 || r >= size || c < 0 || c >= size || boxes[r][c] >= 0)
+        continue;
       if (_boxDone(r, c)) {
         boxes[r][c] = turn;
         closed++;
@@ -73,8 +93,14 @@ final dotsBoxesInfo = LocalGameInfo(
     if (g.finished || g.turn != b.seat) return;
     if (!b.thinkFirst(g.drawn, now, 500, 1000)) return;
     final n = g.size;
-    int sides(int r, int c) => [g.hLines[r][c], g.hLines[r + 1][c], g.vLines[r][c], g.vLines[r][c + 1]].where((x) => x >= 0).length;
-    List<(int, int)> boxesOf(bool h, int r, int c) => h ? [(r - 1, c), (r, c)] : [(r, c - 1), (r, c)];
+    int sides(int r, int c) => [
+          g.hLines[r][c],
+          g.hLines[r + 1][c],
+          g.vLines[r][c],
+          g.vLines[r][c + 1]
+        ].where((x) => x >= 0).length;
+    List<(int, int)> boxesOf(bool h, int r, int c) =>
+        h ? [(r - 1, c), (r, c)] : [(r, c - 1), (r, c)];
     bool inside((int, int) p) => p.$1 >= 0 && p.$1 < n && p.$2 >= 0 && p.$2 < n;
     final free = <(bool, int, int)>[
       for (var r = 0; r <= n; r++)
@@ -85,9 +111,14 @@ final dotsBoxesInfo = LocalGameInfo(
           if (g.vLines[r][c] < 0) (false, r, c),
     ];
     // Take a box if one is ready; otherwise avoid handing over a box (a third side); otherwise anything.
-    final closing = free.where((l) => boxesOf(l.$1, l.$2, l.$3).where(inside).any((p) => sides(p.$1, p.$2) == 3));
-    final safe = free.where((l) => boxesOf(l.$1, l.$2, l.$3).where(inside).every((p) => sides(p.$1, p.$2) < 2));
-    final (bool, int, int) line = closing.firstOrNull ?? (safe.isNotEmpty ? b.pick(safe.toList()) : b.pick(free));
+    final closing = free.where((l) => boxesOf(l.$1, l.$2, l.$3)
+        .where(inside)
+        .any((p) => sides(p.$1, p.$2) == 3));
+    final safe = free.where((l) => boxesOf(l.$1, l.$2, l.$3)
+        .where(inside)
+        .every((p) => sides(p.$1, p.$2) < 2));
+    final (bool, int, int) line = closing.firstOrNull ??
+        (safe.isNotEmpty ? b.pick(safe.toList()) : b.pick(free));
     g.drawLine(horizontal: line.$1, row: line.$2, col: line.$3);
   }),
   online: RelaySpec<DotsBoxesLogic>(
@@ -97,7 +128,9 @@ final dotsBoxesInfo = LocalGameInfo(
       'v': [for (final r in g.vLines) ...r],
       'b': [for (final r in g.boxes) ...r],
       'turn': g.turn,
-      'last': g.lastLine == null ? null : [g.lastLine!.$1, g.lastLine!.$2, g.lastLine!.$3],
+      'last': g.lastLine == null
+          ? null
+          : [g.lastLine!.$1, g.lastLine!.$2, g.lastLine!.$3],
     },
     load: (g, s, me) {
       void fill(List<List<int>> grid, List<int> flat) {
@@ -117,7 +150,9 @@ final dotsBoxesInfo = LocalGameInfo(
       g.lastLine = l == null ? null : (l[0] as bool, asInt(l[1]), asInt(l[2]));
     },
     apply: (g, from, name, a) {
-      if (name == 'line' && from == g.turn) g.drawLine(horizontal: a[0] == true, row: asInt(a[1]), col: asInt(a[2]));
+      if (name == 'line' && from == g.turn)
+        g.drawLine(
+            horizontal: a[0] == true, row: asInt(a[1]), col: asInt(a[2]));
     },
     view: (context, g, players, me) => _DotsTable(players: players, g: g),
   ),
@@ -143,19 +178,23 @@ class _DotsTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final scores = g.scores;
     final claimed = scores.fold(0, (a, b) => a + b);
-    ResultScope.of(context)?.subtitle = g.finished ? '${scores.join(' – ')} boxes of ${g.size * g.size}' : null;
+    ResultScope.of(context)?.subtitle =
+        g.finished ? '${scores.join(' – ')} boxes of ${g.size * g.size}' : null;
     return MomentWatcher<int>(
       value: claimed,
       onChange: (fx, before, now) {
         if (now <= before || g.finished) return;
-        keyMoment(fx, now - before > 1 ? 'DOUBLE BOX!' : 'BOX!', sub: 'Go again', sound: 'coin');
+        keyMoment(fx, now - before > 1 ? 'DOUBLE BOX!' : 'BOX!',
+            sub: 'Go again', sound: 'coin');
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(Space.s, Space.xs, Space.s, Space.l),
         child: Column(children: [
           ScoreHud(
             title: 'Dots & Boxes',
-            state: g.finished ? 'Board complete' : '${players[g.turn].name} · ${g.totalLines - g.drawn} lines left',
+            state: g.finished
+                ? 'Board complete'
+                : '${players[g.turn].name} · ${g.totalLines - g.drawn} lines left',
             players: players,
             turn: g.finished ? null : g.turn,
             score: (i) => '${scores[i]}',
@@ -171,19 +210,35 @@ class _DotsTable extends StatelessWidget {
                   final pad = w * 0.08;
                   final cell = (w - 2 * pad) / g.size;
                   return Semantics(
-                    label: 'Dots and boxes board, ${g.totalLines - g.drawn} lines left. Tap between two dots to draw a line.',
+                    label:
+                        'Dots and boxes board, ${g.totalLines - g.drawn} lines left. Tap between two dots to draw a line.',
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTapUp: (d) {
-                        final u = (d.localPosition.dx - pad) / cell, v = (d.localPosition.dy - pad) / cell;
-                        final dh = (v - v.round()).abs(), dv = (u - u.round()).abs();
-                        final res = dh < dv ? g.drawLine(horizontal: true, row: v.round(), col: u.floor()) : g.drawLine(horizontal: false, row: v.floor(), col: u.round());
+                        final u = (d.localPosition.dx - pad) / cell,
+                            v = (d.localPosition.dy - pad) / cell;
+                        final dh = (v - v.round()).abs(),
+                            dv = (u - u.round()).abs();
+                        final res = dh < dv
+                            ? g.drawLine(
+                                horizontal: true,
+                                row: v.round(),
+                                col: u.floor())
+                            : g.drawLine(
+                                horizontal: false,
+                                row: v.floor(),
+                                col: u.round());
                         if (res != null) {
-                          haptic(res > 0 ? HapticWeight.medium : HapticWeight.selection);
+                          haptic(res > 0
+                              ? HapticWeight.medium
+                              : HapticWeight.selection);
                           GameAudio.sfx(res > 0 ? 'coin' : 'tap');
                         }
                       },
-                      child: RepaintBoundary(child: CustomPaint(size: Size(w, w), painter: _DotsPainter(g, players, pad, cell))),
+                      child: RepaintBoundary(
+                          child: CustomPaint(
+                              size: Size(w, w),
+                              painter: _DotsPainter(g, players, pad, cell))),
                     ),
                   );
                 }),
@@ -207,8 +262,10 @@ class _DotsPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     Offset dot(int r, int c) => Offset(pad + c * cell, pad + r * cell);
     // The page: paper, blue rules, a red margin line, a soft shadow under it.
-    final page = RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(size.width * 0.04));
-    canvas.drawRRect(page.shift(const Offset(0, 6)), Paint()..color = Colors.black38);
+    final page = RRect.fromRectAndRadius(
+        Offset.zero & size, Radius.circular(size.width * 0.04));
+    canvas.drawRRect(
+        page.shift(const Offset(0, 6)), Paint()..color = Colors.black38);
     canvas.drawRRect(page, Paint()..color = _paper);
     canvas.save();
     canvas.clipRRect(page);
@@ -230,8 +287,11 @@ class _DotsPainter extends CustomPainter {
       for (var c = 0; c < g.size; c++) {
         final o = g.boxes[r][c];
         if (o < 0) continue;
-        final rect = Rect.fromPoints(dot(r, c), dot(r + 1, c + 1)).deflate(cell * 0.1);
-        canvas.drawRRect(RRect.fromRectAndRadius(rect, Radius.circular(cell * 0.1)), Paint()..color = players[o].color.withValues(alpha: 0.25));
+        final rect =
+            Rect.fromPoints(dot(r, c), dot(r + 1, c + 1)).deflate(cell * 0.1);
+        canvas.drawRRect(
+            RRect.fromRectAndRadius(rect, Radius.circular(cell * 0.1)),
+            Paint()..color = players[o].color.withValues(alpha: 0.25));
         final seat = PlayerPalette.indexOf(players[o].color) ?? o;
         final s = rect.deflate(rect.width * 0.27);
         final shape = PlayerShapePainter.pathFor(PlayerPalette.shape(seat), s);
@@ -276,12 +336,14 @@ class _DotsPainter extends CustomPainter {
 
     for (var r = 0; r <= g.size; r++) {
       for (var c = 0; c < g.size; c++) {
-        line(dot(r, c), dot(r, c + 1), g.hLines[r][c], g.lastLine == (true, r, c));
+        line(dot(r, c), dot(r, c + 1), g.hLines[r][c],
+            g.lastLine == (true, r, c));
       }
     }
     for (var r = 0; r < g.size; r++) {
       for (var c = 0; c <= g.size; c++) {
-        line(dot(r, c), dot(r + 1, c), g.vLines[r][c], g.lastLine == (false, r, c));
+        line(dot(r, c), dot(r + 1, c), g.vLines[r][c],
+            g.lastLine == (false, r, c));
       }
     }
     for (var r = 0; r <= g.size; r++) {
@@ -292,5 +354,6 @@ class _DotsPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_DotsPainter old) => old.drawn != drawn || old.cell != cell || !identical(old.g, g);
+  bool shouldRepaint(_DotsPainter old) =>
+      old.drawn != drawn || old.cell != cell || !identical(old.g, g);
 }

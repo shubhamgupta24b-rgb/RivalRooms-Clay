@@ -9,7 +9,8 @@ class _ZoneTint extends StatelessWidget {
   final Color color;
   final double strength;
   final Widget child;
-  const _ZoneTint({required this.color, required this.strength, required this.child});
+  const _ZoneTint(
+      {required this.color, required this.strength, required this.child});
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
@@ -30,11 +31,18 @@ class SplitScreen extends StatelessWidget {
   final Widget middle;
   final List<Color>? colors;
   final double tint;
-  const SplitScreen({super.key, required this.half, required this.middle, this.colors, this.tint = 0.10});
+  const SplitScreen(
+      {super.key,
+      required this.half,
+      required this.middle,
+      this.colors,
+      this.tint = 0.10});
 
   Widget _half(int i) {
     final h = RepaintBoundary(child: half(i));
-    return colors == null ? h : _ZoneTint(color: colors![i], strength: tint, child: h);
+    return colors == null
+        ? h
+        : _ZoneTint(color: colors![i], strength: tint, child: h);
   }
 
   @override
@@ -58,28 +66,44 @@ class PlayerZones extends StatelessWidget {
   final Widget center;
   final List<Color>? colors;
   final double tint;
-  const PlayerZones({super.key, required this.count, required this.zone, required this.middle, required this.center, this.colors, this.tint = 0.10});
+  const PlayerZones(
+      {super.key,
+      required this.count,
+      required this.zone,
+      required this.middle,
+      required this.center,
+      this.colors,
+      this.tint = 0.10});
 
   /// Players 1..ceil(n/2) sit on the left side (top to bottom), the rest on the right.
   static int leftCount(int n) => (n + 1) ~/ 2;
 
   @override
   Widget build(BuildContext context) {
-    if (count <= 2) return SplitScreen(half: zone, middle: middle, colors: colors, tint: tint);
+    if (count <= 2)
+      return SplitScreen(
+          half: zone, middle: middle, colors: colors, tint: tint);
     final left = leftCount(count);
     Widget one(int i) {
       final z = RepaintBoundary(child: zone(i));
       if (colors == null) return z;
-      return ClipRRect(borderRadius: Radii.rLg, child: _ZoneTint(color: colors![i], strength: tint, child: z));
+      return ClipRRect(
+          borderRadius: Radii.rLg,
+          child: _ZoneTint(color: colors![i], strength: tint, child: z));
     }
 
     Widget column(Iterable<int> ids, int turns) => Column(children: [
-          for (final i in ids) Expanded(child: Padding(padding: const EdgeInsets.all(3), child: RotatedBox(quarterTurns: turns, child: one(i)))),
+          for (final i in ids)
+            Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: RotatedBox(quarterTurns: turns, child: one(i)))),
         ]);
     return Stack(children: [
       Row(children: [
         Expanded(child: column(Iterable.generate(left), 1)),
-        Expanded(child: column(Iterable.generate(count - left, (i) => left + i), 3)),
+        Expanded(
+            child: column(Iterable.generate(count - left, (i) => left + i), 3)),
       ]),
       Center(child: center),
     ]);
@@ -93,7 +117,12 @@ class ControlStrip extends StatelessWidget {
   final List<Widget> children;
   final bool top;
   final double height;
-  const ControlStrip({super.key, required this.player, required this.children, this.top = false, this.height = 108});
+  const ControlStrip(
+      {super.key,
+      required this.player,
+      required this.children,
+      this.top = false,
+      this.height = 108});
 
   @override
   Widget build(BuildContext context) {
@@ -102,10 +131,16 @@ class ControlStrip extends StatelessWidget {
       height: height,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [c.withValues(alpha: 0.10), c.withValues(alpha: 0.24)]),
+        gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [c.withValues(alpha: 0.10), c.withValues(alpha: 0.24)]),
         border: Border(top: BorderSide(color: c, width: 2)),
       ),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.center, children: children),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: children),
     );
     return top ? RotatedBox(quarterTurns: 2, child: strip) : strip;
   }
@@ -117,13 +152,19 @@ class SideTimer extends StatelessWidget {
   final int secondsLeft;
   final double fraction; // 1 = full time left
   final bool right;
-  const SideTimer({super.key, required this.secondsLeft, required this.fraction, this.right = true});
+  const SideTimer(
+      {super.key,
+      required this.secondsLeft,
+      required this.fraction,
+      this.right = true});
 
   @override
   Widget build(BuildContext context) {
     final urgent = secondsLeft <= 5;
     final c = urgent ? StatusColors.danger : Brand.gold;
-    final text = secondsLeft >= 60 ? '${secondsLeft ~/ 60}:${(secondsLeft % 60).toString().padLeft(2, '0')}' : '$secondsLeft';
+    final text = secondsLeft >= 60
+        ? '${secondsLeft ~/ 60}:${(secondsLeft % 60).toString().padLeft(2, '0')}'
+        : '$secondsLeft';
     return Semantics(
       label: '$secondsLeft seconds left',
       excludeSemantics: true,
@@ -136,11 +177,22 @@ class SideTimer extends StatelessWidget {
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             GameIcon(GameIcons.clock, size: 14, color: c),
             const SizedBox(width: 6),
-            Text(text, style: TextStyle(fontFamily: Fonts.display, fontSize: 17, color: urgent ? c : Colors.white, fontFeatures: const [FontFeature.tabularFigures()])),
+            Text(text,
+                style: TextStyle(
+                    fontFamily: Fonts.display,
+                    fontSize: 17,
+                    color: urgent ? c : Colors.white,
+                    fontFeatures: const [FontFeature.tabularFigures()])),
             const SizedBox(width: 8),
             SizedBox(
               width: 70,
-              child: ClipRRect(borderRadius: BorderRadius.circular(3), child: LinearProgressIndicator(value: fraction.clamp(0, 1), minHeight: 5, color: c, backgroundColor: Colors.white.withValues(alpha: 0.16))),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: LinearProgressIndicator(
+                      value: fraction.clamp(0, 1),
+                      minHeight: 5,
+                      color: c,
+                      backgroundColor: Colors.white.withValues(alpha: 0.16))),
             ),
           ]),
         ),
@@ -161,7 +213,12 @@ class ZoneCenterChip extends StatelessWidget {
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Semantics(
           liveRegion: true,
-          child: Text(stripEmoji(text), style: const TextStyle(fontFamily: Fonts.display, fontSize: 17, color: Colors.white, fontFeatures: [FontFeature.tabularFigures()])),
+          child: Text(stripEmoji(text),
+              style: const TextStyle(
+                  fontFamily: Fonts.display,
+                  fontSize: 17,
+                  color: Colors.white,
+                  fontFeatures: [FontFeature.tabularFigures()])),
         ),
         const SizedBox(width: 4),
         const PauseButton(),
@@ -179,12 +236,28 @@ class PlayerTagSmall extends StatelessWidget {
     final seat = PlayerPalette.indexOf(player.color);
     final fill = fillFor(player.color);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: Space.s, vertical: Space.xs),
+      padding:
+          const EdgeInsets.symmetric(horizontal: Space.s, vertical: Space.xs),
       decoration: Skin.pill(color: fill),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        if (seat != null) ...[SizedBox(width: 12, height: 12, child: CustomPaint(painter: PlayerShapePainter(PlayerPalette.shape(seat), onColor(fill)))), const SizedBox(width: 5)],
+        if (seat != null) ...[
+          SizedBox(
+              width: 12,
+              height: 12,
+              child: CustomPaint(
+                  painter: PlayerShapePainter(
+                      PlayerPalette.shape(seat), onColor(fill)))),
+          const SizedBox(width: 5)
+        ],
         Flexible(
-          child: Text(player.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.body, color: onColor(fill), fontWeight: FontWeight.w900, fontSize: 13)),
+          child: Text(player.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontFamily: Fonts.body,
+                  color: onColor(fill),
+                  fontWeight: FontWeight.w900,
+                  fontSize: 13)),
         ),
       ]),
     );
@@ -206,12 +279,25 @@ class _ScoreBadge extends StatelessWidget {
         constraints: const BoxConstraints(minWidth: 58),
         height: 36,
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: Skin.surface(tint: player.color, ring: player.color, radius: Radii.chip, depth: 0.6),
-        child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
-          PlayerBadge(index: seat, size: 16, color: player.color),
-          const SizedBox(width: 6),
-          Text('$score', style: const TextStyle(fontFamily: Fonts.display, fontSize: 22, height: 1, color: Colors.white, fontFeatures: [FontFeature.tabularFigures()])),
-        ]),
+        decoration: Skin.surface(
+            tint: player.color,
+            ring: player.color,
+            radius: Radii.chip,
+            depth: 0.6),
+        child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              PlayerBadge(index: seat, size: 16, color: player.color),
+              const SizedBox(width: 6),
+              Text('$score',
+                  style: const TextStyle(
+                      fontFamily: Fonts.display,
+                      fontSize: 22,
+                      height: 1,
+                      color: Colors.white,
+                      fontFeatures: [FontFeature.tabularFigures()])),
+            ]),
       ),
     );
   }
@@ -219,7 +305,8 @@ class _ScoreBadge extends StatelessWidget {
 
 BoxDecoration _barDecoration() => BoxDecoration(
       color: NeonPalette.bgBottom,
-      border: Border.symmetric(horizontal: BorderSide(color: Colors.white.withValues(alpha: 0.14))),
+      border: Border.symmetric(
+          horizontal: BorderSide(color: Colors.white.withValues(alpha: 0.14))),
       boxShadow: const [BoxShadow(color: Color(0x66000000), blurRadius: 12)],
     );
 
@@ -228,7 +315,11 @@ class ScoreMiddleBar extends StatelessWidget {
   final List<GpPlayer> players;
   final List<int> scores;
   final String label; // e.g. "FIRST TO 5"
-  const ScoreMiddleBar({super.key, required this.players, required this.scores, required this.label});
+  const ScoreMiddleBar(
+      {super.key,
+      required this.players,
+      required this.scores,
+      required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +331,15 @@ class ScoreMiddleBar extends StatelessWidget {
         RotatedBox(quarterTurns: 2, child: _ScoreBadge(players[1], scores[1])),
         Expanded(
           child: Text(stripEmoji(label).toUpperCase(),
-              textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontFamily: Fonts.body, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.6, color: NeonPalette.label)),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  fontFamily: Fonts.body,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.6,
+                  color: NeonPalette.label)),
         ),
         const PauseButton(),
         const SizedBox(width: Space.xs),
@@ -256,7 +355,12 @@ class DuelMiddleBar extends StatelessWidget {
   final List<int> scores;
   final int secondsLeft;
   final double progress;
-  const DuelMiddleBar({super.key, required this.players, required this.scores, required this.secondsLeft, required this.progress});
+  const DuelMiddleBar(
+      {super.key,
+      required this.players,
+      required this.scores,
+      required this.secondsLeft,
+      required this.progress});
 
   @override
   Widget build(BuildContext context) {
@@ -273,22 +377,31 @@ class DuelMiddleBar extends StatelessWidget {
         const SizedBox(width: Space.s),
         Expanded(
           child: ExcludeSemantics(
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(6),
                 child: SizedBox(
                   height: 10,
                   child: Row(children: [
-                    Expanded(flex: (share * 1000).round().clamp(1, 999), child: Container(color: players[0].color)),
+                    Expanded(
+                        flex: (share * 1000).round().clamp(1, 999),
+                        child: Container(color: players[0].color)),
                     Container(width: 2, color: Colors.white),
-                    Expanded(flex: ((1 - share) * 1000).round().clamp(1, 999), child: Container(color: players[1].color)),
+                    Expanded(
+                        flex: ((1 - share) * 1000).round().clamp(1, 999),
+                        child: Container(color: players[1].color)),
                   ]),
                 ),
               ),
               const SizedBox(height: Space.xs),
               ClipRRect(
                 borderRadius: BorderRadius.circular(3),
-                child: LinearProgressIndicator(value: 1 - progress, minHeight: 4, color: urgent ? StatusColors.danger : Brand.gold, backgroundColor: Colors.white.withValues(alpha: 0.14)),
+                child: LinearProgressIndicator(
+                    value: 1 - progress,
+                    minHeight: 4,
+                    color: urgent ? StatusColors.danger : Brand.gold,
+                    backgroundColor: Colors.white.withValues(alpha: 0.14)),
               ),
             ]),
           ),
@@ -298,7 +411,12 @@ class DuelMiddleBar extends StatelessWidget {
         Semantics(
           label: '$secondsLeft seconds left',
           excludeSemantics: true,
-          child: Text('${secondsLeft}s', style: TextStyle(fontFamily: Fonts.display, fontSize: 20, color: urgent ? StatusColors.danger : Colors.white, fontFeatures: const [FontFeature.tabularFigures()])),
+          child: Text('${secondsLeft}s',
+              style: TextStyle(
+                  fontFamily: Fonts.display,
+                  fontSize: 20,
+                  color: urgent ? StatusColors.danger : Colors.white,
+                  fontFeatures: const [FontFeature.tabularFigures()])),
         ),
         const SizedBox(width: Space.s),
         _ScoreBadge(players[0], scores[0]),

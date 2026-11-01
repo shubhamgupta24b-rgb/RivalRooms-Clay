@@ -42,7 +42,8 @@ class FruitDuelLogic extends TimedDuel {
       _starts.add(t);
       // Never the same lane twice in a row, so every fruit visibly moves.
       var lane = r.nextInt(lanes);
-      if (i > 0 && lane == _lanes.last) lane = (lane + 1 + r.nextInt(lanes - 1)) % lanes;
+      if (i > 0 && lane == _lanes.last)
+        lane = (lane + 1 + r.nextInt(lanes - 1)) % lanes;
       _lanes.add(lane);
       _emoji.add(fruits[r.nextInt(fruits.length)]);
       t += max(550, 1000 - i * 15);
@@ -57,9 +58,12 @@ class FruitDuelLogic extends TimedDuel {
 
   /// 1 -> 0 as the current fruit's time runs out.
   double get fruitTimeLeft {
-    final end = current + 1 < _starts.length ? _starts[current + 1] : durationMs;
+    final end =
+        current + 1 < _starts.length ? _starts[current + 1] : durationMs;
     final span = end - _starts[current];
-    return span <= 0 ? 0 : (1 - (elapsedMs - _starts[current]) / span).clamp(0.0, 1.0);
+    return span <= 0
+        ? 0
+        : (1 - (elapsedMs - _starts[current]) / span).clamp(0.0, 1.0);
   }
 
   @override
@@ -74,7 +78,8 @@ class FruitDuelLogic extends TimedDuel {
 
   /// Returns points scored, or null if this player already slashed this fruit.
   int? slash(int player, int lane) {
-    if (finished || lane < 0 || lane >= lanes || slashedCurrent(player)) return null;
+    if (finished || lane < 0 || lane >= lanes || slashedCurrent(player))
+      return null;
     var pts = 0;
     if (lane == fruitLane) {
       pts = _firstHitTaken ? 1 : 2;
@@ -105,7 +110,10 @@ final LocalGameInfo fruitDuelInfo = LocalGameInfo(
   bot: botFor<FruitDuelLogic>((g, b, now) {
     if (g.finished || g.slashedCurrent(b.seat)) return;
     if (!b.thinkFirst(g.current, now, 380, 900)) return;
-    final lane = b.chance(0.85) ? g.fruitLane : (g.fruitLane + 1 + b.rng.nextInt(FruitDuelLogic.lanes - 1)) % FruitDuelLogic.lanes;
+    final lane = b.chance(0.85)
+        ? g.fruitLane
+        : (g.fruitLane + 1 + b.rng.nextInt(FruitDuelLogic.lanes - 1)) %
+            FruitDuelLogic.lanes;
     g.slash(b.seat, lane);
   }),
   // One phone: each player gets the whole screen for the chosen time.
@@ -114,11 +122,16 @@ final LocalGameInfo fruitDuelInfo = LocalGameInfo(
       create: () => FruitDuelLogic(players: 1, durationMs: ms),
       onFinished: (s) => onDone(s.first),
       builder: (context, g) => Column(children: [
-        TurnBar(player: player, score: g.scores.first, secondsLeft: g.secondsLeft),
+        TurnBar(
+            player: player, score: g.scores.first, secondsLeft: g.secondsLeft),
         Expanded(child: _FruitHalf(player: player, index: 0, g: g)),
       ]),
     ),
-    simulate: (ms, rng) => simulateTurn(FruitDuelLogic(players: 1, durationMs: ms, random: rng), fruitDuelInfo.bot!, ms, rng),
+    simulate: (ms, rng) => simulateTurn(
+        FruitDuelLogic(players: 1, durationMs: ms, random: rng),
+        fruitDuelInfo.bot!,
+        ms,
+        rng),
   ),
   play: (players, onFinished) => TickingPlay<FruitDuelLogic>(
     create: () => FruitDuelLogic(players: players.length),
@@ -126,7 +139,11 @@ final LocalGameInfo fruitDuelInfo = LocalGameInfo(
     builder: (context, g) => PlayerZones(
       count: players.length,
       colors: [for (final p in players) p.color],
-      middle: DuelMiddleBar(players: players, scores: g.scores, secondsLeft: g.secondsLeft, progress: g.progress),
+      middle: DuelMiddleBar(
+          players: players,
+          scores: g.scores,
+          secondsLeft: g.secondsLeft,
+          progress: g.progress),
       center: ZoneCenterChip('${g.secondsLeft}s'),
       zone: (i) => _FruitHalf(player: players[i], index: i, g: g),
     ),
@@ -137,7 +154,8 @@ class _FruitHalf extends StatelessWidget {
   final GpPlayer player;
   final int index;
   final FruitDuelLogic g;
-  const _FruitHalf({required this.player, required this.index, required this.g});
+  const _FruitHalf(
+      {required this.player, required this.index, required this.g});
 
   @override
   Widget build(BuildContext context) {
@@ -147,10 +165,27 @@ class _FruitHalf extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       child: Column(children: [
         Row(children: [
-          PlayerBadge(index: PlayerPalette.indexOf(player.color) ?? index, size: 22, color: player.color, initial: player.name),
+          PlayerBadge(
+              index: PlayerPalette.indexOf(player.color) ?? index,
+              size: 22,
+              color: player.color,
+              initial: player.name),
           const SizedBox(width: 6),
-          Expanded(child: Text(player.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.body, color: nameColor(player.color), fontWeight: FontWeight.w900, fontSize: 15))),
-          Text('${g.score[index]}', style: const TextStyle(fontFamily: Fonts.display, color: Colors.white, fontSize: 24, fontFeatures: [FontFeature.tabularFigures()])),
+          Expanded(
+              child: Text(player.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontFamily: Fonts.body,
+                      color: nameColor(player.color),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15))),
+          Text('${g.score[index]}',
+              style: const TextStyle(
+                  fontFamily: Fonts.display,
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontFeatures: [FontFeature.tabularFigures()])),
         ]),
         const SizedBox(height: 8),
         Expanded(
@@ -161,7 +196,11 @@ class _FruitHalf extends StatelessWidget {
                   behavior: HitTestBehavior.opaque,
                   onPointerDown: (_) {
                     final pts = g.slash(index, lane);
-                    if (pts != null) (pts > 0 ? HapticFeedback.lightImpact() : HapticFeedback.heavyImpact()).ignore();
+                    if (pts != null)
+                      (pts > 0
+                              ? HapticFeedback.lightImpact()
+                              : HapticFeedback.heavyImpact())
+                          .ignore();
                   },
                   child: _Lane(
                     color: player.color,
@@ -201,7 +240,13 @@ class _Lane extends StatelessWidget {
   final double timeLeft;
   final Slash? slashHere;
   final bool dim;
-  const _Lane({required this.color, required this.fruit, required this.fruitId, required this.timeLeft, required this.slashHere, required this.dim});
+  const _Lane(
+      {required this.color,
+      required this.fruit,
+      required this.fruitId,
+      required this.timeLeft,
+      required this.slashHere,
+      required this.dim});
 
   @override
   Widget build(BuildContext context) {
@@ -215,8 +260,13 @@ class _Lane extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: fruit != null ? color : Colors.black.withValues(alpha: 0.4), width: fruit != null ? 3 : 1.5),
-        boxShadow: [if (fruit != null) BoxShadow(color: color.withValues(alpha: 0.45), blurRadius: 16)],
+        border: Border.all(
+            color: fruit != null ? color : Colors.black.withValues(alpha: 0.4),
+            width: fruit != null ? 3 : 1.5),
+        boxShadow: [
+          if (fruit != null)
+            BoxShadow(color: color.withValues(alpha: 0.45), blurRadius: 16)
+        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -224,7 +274,12 @@ class _Lane extends StatelessWidget {
           painter: const WoodPainter(radius: 0),
           child: Stack(alignment: Alignment.center, children: [
             // A faint blade at the bottom of every lane: tap here to slice.
-            Positioned(bottom: 12, child: Opacity(opacity: 0.35, child: GameIcon(GameIcons.arrowUp, size: 20, color: Colors.white.withValues(alpha: 0.9)))),
+            Positioned(
+                bottom: 12,
+                child: Opacity(
+                    opacity: 0.35,
+                    child: GameIcon(GameIcons.arrowUp,
+                        size: 20, color: Colors.white.withValues(alpha: 0.9)))),
             if (art != null)
               TweenAnimationBuilder<double>(
                 key: ValueKey('$fruitId${sliced ? 's' : ''}'),
@@ -232,15 +287,23 @@ class _Lane extends StatelessWidget {
                 duration: Duration(milliseconds: sliced ? 420 : 180),
                 curve: sliced ? Curves.easeIn : Curves.easeOutBack,
                 builder: (_, v, __) => sliced
-                    ? SizedBox(width: 90, height: 120, child: CustomPaint(painter: _SlicePainter(art.$1, art.$2, v)))
+                    ? SizedBox(
+                        width: 90,
+                        height: 120,
+                        child: CustomPaint(
+                            painter: _SlicePainter(art.$1, art.$2, v)))
                     : Transform.scale(
                         scale: v,
                         child: Opacity(
-                          opacity: dim && (s == null || s.points == 0) ? 0.35 : 1,
-                          child: Column(mainAxisSize: MainAxisSize.min, children: [
+                          opacity:
+                              dim && (s == null || s.points == 0) ? 0.35 : 1,
+                          child:
+                              Column(mainAxisSize: MainAxisSize.min, children: [
                             GameIcon(art.$1, size: 56, semanticLabel: 'fruit'),
                             const SizedBox(height: 6),
-                            SizedBox(width: 50, child: MeterBar(value: timeLeft, height: 5)),
+                            SizedBox(
+                                width: 50,
+                                child: MeterBar(value: timeLeft, height: 5)),
                           ]),
                         ),
                       ),
@@ -249,8 +312,17 @@ class _Lane extends StatelessWidget {
               Positioned(
                 bottom: 30,
                 child: Text(
-                  s.points == 0 ? 'MISS' : (s.points > 1 ? '+${s.points} FIRST!' : '+${s.points}'),
-                  style: TextStyle(fontFamily: Fonts.display, color: s.points == 0 ? const Color(0xFFFF8E8B) : Brand.gold, fontSize: 20, shadows: const [Shadow(color: Color(0x99000000), offset: Offset(0, 2))]),
+                  s.points == 0
+                      ? 'MISS'
+                      : (s.points > 1 ? '+${s.points} FIRST!' : '+${s.points}'),
+                  style: TextStyle(
+                      fontFamily: Fonts.display,
+                      color:
+                          s.points == 0 ? const Color(0xFFFF8E8B) : Brand.gold,
+                      fontSize: 20,
+                      shadows: const [
+                        Shadow(color: Color(0x99000000), offset: Offset(0, 2))
+                      ]),
                 ),
               ),
           ]),
@@ -275,14 +347,17 @@ class _SlicePainter extends CustomPainter {
     final splash = Paint()..color = juice.withValues(alpha: (1 - t) * 0.8);
     for (var k = 0; k < 7; k++) {
       final a = k * 0.9 + 0.3;
-      canvas.drawCircle(c + Offset(cos(a), sin(a)) * (10 + t * 30), 5 * (1 - t) + 2, splash);
+      canvas.drawCircle(
+          c + Offset(cos(a), sin(a)) * (10 + t * 30), 5 * (1 - t) + 2, splash);
     }
     // Two halves sliding apart and falling.
     for (final side in [-1.0, 1.0]) {
       canvas.save();
       canvas.translate(c.dx + side * t * 18, c.dy + t * t * 40);
       canvas.rotate(side * t * 0.6);
-      canvas.clipRect(side < 0 ? const Rect.fromLTWH(-s / 2, -s / 2, s / 2, s) : const Rect.fromLTWH(0, -s / 2, s / 2, s));
+      canvas.clipRect(side < 0
+          ? const Rect.fromLTWH(-s / 2, -s / 2, s / 2, s)
+          : const Rect.fromLTWH(0, -s / 2, s / 2, s));
       paintIcon(canvas, icon, const Rect.fromLTWH(-s / 2, -s / 2, s, s));
       canvas.restore();
     }
@@ -293,7 +368,12 @@ class _SlicePainter extends CustomPainter {
         ..strokeWidth = 4
         ..strokeCap = StrokeCap.round
         ..color = Colors.white.withValues(alpha: 1 - t / 0.6);
-      canvas.drawArc(Rect.fromCircle(center: c + const Offset(0, 6), radius: 34), -2.4, 1.9, false, arc);
+      canvas.drawArc(
+          Rect.fromCircle(center: c + const Offset(0, 6), radius: 34),
+          -2.4,
+          1.9,
+          false,
+          arc);
     }
   }
 

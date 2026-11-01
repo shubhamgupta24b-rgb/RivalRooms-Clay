@@ -19,7 +19,10 @@ class SlidingLogic extends SoloLogic {
     _shuffle();
   }
 
-  bool get solved => [for (var i = 0; i < tiles.length - 1; i++) tiles[i] == i + 1].every((x) => x) && tiles.last == 0;
+  bool get solved =>
+      [for (var i = 0; i < tiles.length - 1; i++) tiles[i] == i + 1]
+          .every((x) => x) &&
+      tiles.last == 0;
 
   /// Shuffles by making random legal moves from the solved board, so it's always solvable.
   void _shuffle() {
@@ -38,7 +41,12 @@ class SlidingLogic extends SoloLogic {
 
   List<int> _neighbours(int i) {
     final r = i ~/ size, c = i % size;
-    return [if (r > 0) i - size, if (r < size - 1) i + size, if (c > 0) i - 1, if (c < size - 1) i + 1];
+    return [
+      if (r > 0) i - size,
+      if (r < size - 1) i + size,
+      if (c > 0) i - 1,
+      if (c < size - 1) i + 1
+    ];
   }
 
   /// Slides the tile at [i] into the gap if it's next to it.
@@ -101,7 +109,11 @@ final slidingInfo = LocalGameInfo(
           child: Container(
             padding: const EdgeInsets.all(8),
             // A dark wooden frame around the tiles.
-            decoration: BoxDecoration(color: const Color(0xFF4A2C14), borderRadius: Radii.rBoard, border: Border.all(color: const Color(0xFF7A4A22), width: 4), boxShadow: Shadows.large),
+            decoration: BoxDecoration(
+                color: const Color(0xFF4A2C14),
+                borderRadius: Radii.rBoard,
+                border: Border.all(color: const Color(0xFF7A4A22), width: 4),
+                boxShadow: Shadows.large),
             child: LayoutBuilder(builder: (context, c) {
               final cell = c.maxWidth / g.size;
               return Stack(children: [
@@ -122,12 +134,31 @@ final slidingInfo = LocalGameInfo(
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             // Light wooden blocks with a bevel; tiles in their home spot get a green edge.
-                            gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFFF3D19C), Color(0xFFD9A863), Color(0xFFC08A48)]),
+                            gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Color(0xFFF3D19C),
+                                  Color(0xFFD9A863),
+                                  Color(0xFFC08A48)
+                                ]),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: g.tiles[i] == i + 1 ? StatusColors.success : const Color(0x66FFF3D6), width: g.tiles[i] == i + 1 ? 3 : 1.5),
-                            boxShadow: const [BoxShadow(color: Color(0xFF3A200C), offset: Offset(0, 4))],
+                            border: Border.all(
+                                color: g.tiles[i] == i + 1
+                                    ? StatusColors.success
+                                    : const Color(0x66FFF3D6),
+                                width: g.tiles[i] == i + 1 ? 3 : 1.5),
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Color(0xFF3A200C),
+                                  offset: Offset(0, 4))
+                            ],
                           ),
-                          child: Text('${g.tiles[i]}', style: TextStyle(fontFamily: Fonts.display, color: const Color(0xFF4A2C14), fontSize: cell * 0.42)),
+                          child: Text('${g.tiles[i]}',
+                              style: TextStyle(
+                                  fontFamily: Fonts.display,
+                                  color: const Color(0xFF4A2C14),
+                                  fontSize: cell * 0.42)),
                         ),
                       ),
                     ),

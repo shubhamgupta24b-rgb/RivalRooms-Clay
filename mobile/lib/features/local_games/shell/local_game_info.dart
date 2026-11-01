@@ -6,7 +6,8 @@ import 'local_game_logic.dart';
 
 export 'bots.dart' show BotSeat, BotTurn, botFor, BotScope;
 
-typedef PlayBuilder = Widget Function(List<GpPlayer> players, void Function(List<int> scores) onFinished);
+typedef PlayBuilder = Widget Function(
+    List<GpPlayer> players, void Function(List<int> scores) onFinished);
 
 /// How a game is played online: the host's phone runs [create]d logic; everyone else
 /// mirrors the host's [save]d state with [load]. Every player's actions (including the
@@ -16,13 +17,21 @@ abstract class RelayGame {
   Map<String, dynamic> save(LocalGameLogic g);
   void load(LocalGameLogic g, Map<String, dynamic> state, int me);
   void apply(LocalGameLogic g, int from, String name, List<Object?> args);
-  Widget view(BuildContext context, LocalGameLogic g, List<GpPlayer> players, int me);
+  Widget view(
+      BuildContext context, LocalGameLogic g, List<GpPlayer> players, int me);
 
   /// Actions sent many times a second (paddle moves); only the latest is sent, ~20 a second.
   Set<String> get continuous;
 
   /// Host-side housekeeping after each change, e.g. skipping pass-the-phone screens.
   void hostAuto(LocalGameLogic g);
+
+  /// State published to every phone. Defaults to [save]. Games with hidden information
+  /// override this so opponents never receive private cards, ships, or roles.
+  Map<String, dynamic> wireState(LocalGameLogic g) => save(g);
+
+  /// Per-seat secrets merged into that player's copy only (`_seat` on the payload).
+  List<Map<String, dynamic>>? seatViews(LocalGameLogic g) => null;
 }
 
 class RelaySpec<T extends LocalGameLogic> implements RelayGame {
@@ -30,8 +39,11 @@ class RelaySpec<T extends LocalGameLogic> implements RelayGame {
   final Map<String, dynamic> Function(T g) _save;
   final void Function(T g, Map<String, dynamic> s, int me) _load;
   final void Function(T g, int from, String name, List<Object?> args) _apply;
-  final Widget Function(BuildContext context, T g, List<GpPlayer> players, int me) _view;
+  final Widget Function(
+      BuildContext context, T g, List<GpPlayer> players, int me) _view;
   final void Function(T g)? _hostAuto;
+  final Map<String, dynamic> Function(T g)? _wire;
+  final List<Map<String, dynamic>>? Function(T g)? _views;
   @override
   final Set<String> continuous;
 
@@ -39,35 +51,54 @@ class RelaySpec<T extends LocalGameLogic> implements RelayGame {
     required T Function(int players) create,
     required Map<String, dynamic> Function(T g) save,
     required void Function(T g, Map<String, dynamic> s, int me) load,
-    required void Function(T g, int from, String name, List<Object?> args) apply,
-    required Widget Function(BuildContext context, T g, List<GpPlayer> players, int me) view,
+    required void Function(T g, int from, String name, List<Object?> args)
+        apply,
+    required Widget Function(
+            BuildContext context, T g, List<GpPlayer> players, int me)
+        view,
     void Function(T g)? hostAuto,
+    Map<String, dynamic> Function(T g)? wire,
+    List<Map<String, dynamic>>? Function(T g)? views,
     this.continuous = const {},
   })  : _create = create,
         _save = save,
         _load = load,
         _apply = apply,
         _view = view,
-        _hostAuto = hostAuto;
+        _hostAuto = hostAuto,
+        _wire = wire,
+        _views = views;
 
   @override
   LocalGameLogic create(int players) => _create(players);
   @override
   Map<String, dynamic> save(LocalGameLogic g) => _save(g as T);
   @override
-  void load(LocalGameLogic g, Map<String, dynamic> state, int me) => _load(g as T, state, me);
+  void load(LocalGameLogic g, Map<String, dynamic> state, int me) =>
+      _load(g as T, state, me);
   @override
-  void apply(LocalGameLogic g, int from, String name, List<Object?> args) => _apply(g as T, from, name, args);
+  void apply(LocalGameLogic g, int from, String name, List<Object?> args) =>
+      _apply(g as T, from, name, args);
   @override
-  Widget view(BuildContext context, LocalGameLogic g, List<GpPlayer> players, int me) => _view(context, g as T, players, me);
+  Widget view(BuildContext context, LocalGameLogic g, List<GpPlayer> players,
+          int me) =>
+      _view(context, g as T, players, me);
   @override
   void hostAuto(LocalGameLogic g) => _hostAuto?.call(g as T);
+  @override
+  Map<String, dynamic> wireState(LocalGameLogic g) =>
+      _wire != null ? _wire(g as T) : save(g);
+  @override
+  List<Map<String, dynamic>>? seatViews(LocalGameLogic g) =>
+      _views?.call(g as T);
 }
 
 /// JSON helpers for [RelaySpec.save]/[RelaySpec.load].
 List<int> ints(Object? v) => [for (final x in v as List) (x as num).toInt()];
-List<int?> nInts(Object? v) => [for (final x in v as List) (x as num?)?.toInt()];
-List<double> doubles(Object? v) => [for (final x in v as List) (x as num).toDouble()];
+List<int?> nInts(Object? v) =>
+    [for (final x in v as List) (x as num?)?.toInt()];
+List<double> doubles(Object? v) =>
+    [for (final x in v as List) (x as num).toDouble()];
 int? nInt(Object? v) => (v as num?)?.toInt();
 int asInt(Object? v) => (v as num).toInt();
 double asDouble(Object? v) => (v as num).toDouble();
@@ -79,7 +110,8 @@ const turnMinuteOptions = [1, 2, 3, 5];
 /// screen for the chosen time, one after another. Highest score wins.
 class TurnsSpec {
   /// One player's turn, full screen, lasting [durationMs]; calls [onDone] with the score.
-  final Widget Function(GpPlayer player, int durationMs, void Function(int score) onDone) play;
+  final Widget Function(
+      GpPlayer player, int durationMs, void Function(int score) onDone) play;
 
   /// A computer player's turn, played instantly without a screen; returns its score.
   final int Function(int durationMs, Random rng) simulate;
@@ -114,12 +146,17 @@ class LocalGameInfo {
   final BotTurn? bot; // how the computer plays a seat, if it can
   /// A 2 vs 2 version (4 players), offered as a TEAMS switch on this game's start screen.
   final LocalGameInfo? teamVariant;
+
   /// Offers "take turns" (full screen, one player at a time) instead of a split screen.
   final TurnsSpec? turns;
+
+  /// Hidden from the one-phone hub. Played only from an online room (two devices).
+  final bool remoteOnly;
   const LocalGameInfo({
     this.bot,
     this.teamVariant,
     this.turns,
+    this.remoteOnly = false,
     this.minPlayers = 2,
     this.maxPlayers = 2,
     this.online,

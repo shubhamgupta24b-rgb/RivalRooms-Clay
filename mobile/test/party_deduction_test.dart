@@ -30,7 +30,8 @@ void main() {
       return g;
     }
 
-    test('setup: one spy, a location, 8 guess options including the answer', () {
+    test('setup: one spy, a location, 8 guess options including the answer',
+        () {
       final g = FindSpyLogic(players: 5, random: Random(1));
       expect(g.spy, inInclusiveRange(0, 4));
       expect(g.options, hasLength(8));
@@ -58,7 +59,9 @@ void main() {
       expect(g.scores.reduce((a, b) => a + b), 2);
     });
 
-    test('spy caught: a wrong guess means everyone else +1, a right guess steals it', () {
+    test(
+        'spy caught: a wrong guess means everyone else +1, a right guess steals it',
+        () {
       final g = revealed(4)..startVote();
       g.accuse(g.spy);
       expect(g.phase, SpyPhase.spyGuess);
@@ -93,7 +96,9 @@ void main() {
   });
 
   group('Undercover', () {
-    test('one player has the other word; voting out civilians to the last two: undercover wins', () {
+    test(
+        'one player has the other word; voting out civilians to the last two: undercover wins',
+        () {
       final g = UndercoverLogic(players: 4, random: Random(1));
       final words = [for (var i = 0; i < 4; i++) g.wordFor(i)];
       expect(words.toSet(), hasLength(2));
@@ -101,7 +106,10 @@ void main() {
       for (var i = 0; i < 4; i++) {
         g.seenCard(i);
       }
-      final civilians = [for (var i = 0; i < 4; i++) if (i != g.undercover) i];
+      final civilians = [
+        for (var i = 0; i < 4; i++)
+          if (i != g.undercover) i
+      ];
       g.startVote();
       g.accuse(civilians[0]);
       expect(g.phase, UcPhase.out);
@@ -115,13 +123,18 @@ void main() {
       expect(g.scores[g.undercover], 3);
     });
 
-    test('catching the undercover: +1 for everyone else; the out player cannot vote', () {
+    test(
+        'catching the undercover: +1 for everyone else; the out player cannot vote',
+        () {
       final g = UndercoverLogic(players: 3, random: Random(2));
       for (var i = 0; i < 3; i++) {
         g.seenCard(i);
       }
       g.startVote();
-      final civ = [for (var i = 0; i < 3; i++) if (i != g.undercover) i];
+      final civ = [
+        for (var i = 0; i < 3; i++)
+          if (i != g.undercover) i
+      ];
       g.vote(civ[0], g.undercover);
       g.vote(civ[1], g.undercover);
       g.vote(g.undercover, civ[0]);
@@ -145,7 +158,8 @@ void main() {
     test('roles: 1 mafia (2 with six), a doctor and a detective', () {
       for (final n in [4, 5, 6]) {
         final g = MafiaLogic(players: n, random: Random(n));
-        expect(g.roles.where((r) => r == MafiaRole.mafia), hasLength(n >= 6 ? 2 : 1));
+        expect(g.roles.where((r) => r == MafiaRole.mafia),
+            hasLength(n >= 6 ? 2 : 1));
         expect(g.roles.where((r) => r == MafiaRole.doctor), hasLength(1));
         expect(g.roles.where((r) => r == MafiaRole.detective), hasLength(1));
       }
@@ -154,7 +168,9 @@ void main() {
     test('night: the doctor saves the target; next night the victim dies', () {
       final g = start(5, 1);
       expect(g.phase, MafiaPhase.night);
-      final mafia = roleOf(g, MafiaRole.mafia), doctor = roleOf(g, MafiaRole.doctor), det = roleOf(g, MafiaRole.detective);
+      final mafia = roleOf(g, MafiaRole.mafia),
+          doctor = roleOf(g, MafiaRole.doctor),
+          det = roleOf(g, MafiaRole.detective);
       final victim = roleOf(g, MafiaRole.villager);
       g.act(mafia, mafia); // can't target mafia
       expect(g.acted, isEmpty);
@@ -177,17 +193,33 @@ void main() {
       expect(g.day, 2);
       for (final p in [...g.alive]) {
         // The doctor guards the detective, so the mafia's hit on the doctor goes through.
-        g.act(p, p == mafia ? doctor : (g.roles[p] == MafiaRole.doctor ? det : (p == det ? mafia : -1)));
+        g.act(
+            p,
+            p == mafia
+                ? doctor
+                : (g.roles[p] == MafiaRole.doctor
+                    ? det
+                    : (p == det ? mafia : -1)));
       }
       expect(g.killed, doctor);
       expect(g.alive.contains(doctor), isFalse);
     });
 
-    test('town wins when the mafia is voted out; mafia wins when it equals the rest', () {
+    test(
+        'town wins when the mafia is voted out; mafia wins when it equals the rest',
+        () {
       final g = start(4, 2);
       final mafia = roleOf(g, MafiaRole.mafia);
       for (final p in [...g.alive]) {
-        g.act(p, g.isMafia(p) ? (mafia + 1) % 4 : (g.roles[p] == MafiaRole.detective ? (p + 1) % 4 == p ? (p + 2) % 4 : (p + 1) % 4 : p));
+        g.act(
+            p,
+            g.isMafia(p)
+                ? (mafia + 1) % 4
+                : (g.roles[p] == MafiaRole.detective
+                    ? (p + 1) % 4 == p
+                        ? (p + 2) % 4
+                        : (p + 1) % 4
+                    : p));
       }
       if (g.phase == MafiaPhase.morning) {
         g.startVote();
@@ -200,15 +232,25 @@ void main() {
 
       final m = start(4, 3);
       final boss = roleOf(m, MafiaRole.mafia);
-      final town = [for (var i = 0; i < 4; i++) if (i != boss) i];
+      final town = [
+        for (var i = 0; i < 4; i++)
+          if (i != boss) i
+      ];
       // Night 1: kill a villager-side player nobody saves.
       final doc = roleOf(m, MafiaRole.doctor);
       final t1 = town.firstWhere((i) => i != doc);
       for (final p in [...m.alive]) {
-        m.act(p, p == boss ? t1 : (p == doc ? doc : (m.roles[p] == MafiaRole.detective ? boss : -1)));
+        m.act(
+            p,
+            p == boss
+                ? t1
+                : (p == doc
+                    ? doc
+                    : (m.roles[p] == MafiaRole.detective ? boss : -1)));
       }
       m.startVote();
-      m.accuse(m.alive.firstWhere((i) => i != boss)); // town votes out an innocent
+      m.accuse(
+          m.alive.firstWhere((i) => i != boss)); // town votes out an innocent
       expect(m.phase, MafiaPhase.result);
       expect(m.mafiaWins, isTrue);
       m.finish();
@@ -217,8 +259,15 @@ void main() {
   });
 
   group('Word turns (Charades, Heads Up)', () {
-    test('timed turns: GOT IT scores the performer, SKIP moves on, time up ends the turn', () {
-      final g = WordTurnsLogic(players: 2, words: charadesMovies, turnsEach: 1, turnMs: 1000, random: Random(1));
+    test(
+        'timed turns: GOT IT scores the performer, SKIP moves on, time up ends the turn',
+        () {
+      final g = WordTurnsLogic(
+          players: 2,
+          words: charadesMovies,
+          turnsEach: 1,
+          turnMs: 1000,
+          random: Random(1));
       final first = g.current;
       g.gotIt();
       expect(g.score, [0, 0], reason: 'not started');
@@ -247,7 +296,9 @@ void main() {
   });
 
   group('Draw & Guess', () {
-    test('drawing, typed guesses (wrong ones listed, right one scores both), turns end', () {
+    test(
+        'drawing, typed guesses (wrong ones listed, right one scores both), turns end',
+        () {
       final g = DrawGuessLogic(players: 3, random: Random(1));
       expect(g.turnsEach, 2);
       g.start();
@@ -276,7 +327,12 @@ void main() {
 
   group('Most Likely To / Would You Rather', () {
     test('most likely: the most-voted (all of them on a tie) get a point', () {
-      final g = PromptVoteLogic(mode: VoteMode.mostLikely, players: 3, prompts: mostLikelyPrompts, rounds: 2, random: Random(1));
+      final g = PromptVoteLogic(
+          mode: VoteMode.mostLikely,
+          players: 3,
+          prompts: mostLikelyPrompts,
+          rounds: 2,
+          random: Random(1));
       g.vote(0, 2);
       g.vote(1, 2);
       g.vote(2, 0);
@@ -293,7 +349,12 @@ void main() {
     });
 
     test('would you rather: the majority scores, a split scores nobody', () {
-      final g = PromptVoteLogic(mode: VoteMode.wouldRather, players: 4, prompts: wouldRatherPrompts, rounds: 2, random: Random(2));
+      final g = PromptVoteLogic(
+          mode: VoteMode.wouldRather,
+          players: 4,
+          prompts: wouldRatherPrompts,
+          rounds: 2,
+          random: Random(2));
       expect(g.prompt.split('|'), hasLength(2));
       g.vote(0, 0);
       g.vote(1, 0);
@@ -319,7 +380,8 @@ void main() {
       g.pick(1, 2);
       expect(g.runs, [4, 0]);
       g.pick(0, 6);
-      expect(g.picks[0], 4, reason: 'still showing the last ball: no new pick yet');
+      expect(g.picks[0], 4,
+          reason: 'still showing the last ball: no new pick yet');
       g.update(20);
       g.pick(0, 6);
       g.pick(1, 3);
@@ -342,7 +404,9 @@ void main() {
   });
 
   group('Quiz Battle', () {
-    test('bank is well formed; first right answer scores; wrong answers lock you out', () {
+    test(
+        'bank is well formed; first right answer scores; wrong answers lock you out',
+        () {
       for (final (_, q, a, wrong) in quizBank) {
         expect(q, isNotEmpty);
         expect(wrong, hasLength(3));
@@ -350,7 +414,8 @@ void main() {
       }
       final g = QuizBattleLogic(players: 2, pauseMs: 10, random: Random(1));
       expect(g.question.options, contains(g.question.answer));
-      final wrong = g.question.options.firstWhere((o) => o != g.question.answer);
+      final wrong =
+          g.question.options.firstWhere((o) => o != g.question.answer);
       expect(g.answer(0, wrong), isFalse);
       expect(g.answer(0, g.question.answer), isNull, reason: 'locked out');
       expect(g.answer(1, g.question.answer), isTrue);

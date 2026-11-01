@@ -43,13 +43,18 @@ class _RajaMantriScreenState extends State<RajaMantriScreen> {
     if (_busy) return;
     HapticFeedback.selectionClick().ignore();
     setState(() => _busy = true);
-    final r = await context.read<GameSessionManager>().action('raja_mantri:guess', {'targetId': targetId});
+    final r = await context
+        .read<GameSessionManager>()
+        .action('raja_mantri:guess', {'targetId': targetId});
     if (!mounted) return;
     setState(() => _busy = false);
     if (r['ok'] != true) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(r['error'] == 'BAD_PHASE' ? 'Too late: time is up!' : 'Could not do that (${r['error']}).')));
+        ..showSnackBar(SnackBar(
+            content: Text(r['error'] == 'BAD_PHASE'
+                ? 'Too late: time is up!'
+                : 'Could not do that (${r['error']}).')));
     }
   }
 
@@ -72,17 +77,31 @@ class _RajaMantriScreenState extends State<RajaMantriScreen> {
     }
     final players = (st['players'] as List).cast<Map>();
     final ids = [for (final p in players) p['userId'] as String];
-    String name(String id) => (players.firstWhere((p) => p['userId'] == id)['username'] ?? id).toString();
+    String name(String id) =>
+        (players.firstWhere((p) => p['userId'] == id)['username'] ?? id)
+            .toString();
     final scores = Map<String, dynamic>.from(st['scores'] as Map);
-    final roles = {for (final e in Map<String, dynamic>.from(st['roles'] as Map).entries) e.key: RmcsRole.parse(e.value as String)};
-    final myRole = st['yourRole'] == null ? null : RmcsRole.parse(st['yourRole'] as String);
-    final result = st['result'] == null ? null : Map<String, dynamic>.from(st['result'] as Map);
+    final roles = {
+      for (final e in Map<String, dynamic>.from(st['roles'] as Map).entries)
+        e.key: RmcsRole.parse(e.value as String)
+    };
+    final myRole = st['yourRole'] == null
+        ? null
+        : RmcsRole.parse(st['yourRole'] as String);
+    final result = st['result'] == null
+        ? null
+        : Map<String, dynamic>.from(st['result'] as Map);
     final endsAt = (st['phaseEndsAt'] as num?)?.toInt();
-    final msLeft = endsAt == null ? 0 : (endsAt - session.serverNowMs).clamp(0, 1 << 30);
+    final msLeft =
+        endsAt == null ? 0 : (endsAt - session.serverNowMs).clamp(0, 1 << 30);
     final guessMs = (st['guessMs'] as num?)?.toInt() ?? 10000;
-    String? holder(RmcsRole r) => roles.entries.where((e) => e.value == r).map((e) => e.key).firstOrNull;
+    String? holder(RmcsRole r) =>
+        roles.entries.where((e) => e.value == r).map((e) => e.key).firstOrNull;
     final raja = holder(RmcsRole.raja), mantri = holder(RmcsRole.mantri);
-    final suspects = [for (final id in ids) if (id != raja && id != mantri) id];
+    final suspects = [
+      for (final id in ids)
+        if (id != raja && id != mantri) id
+    ];
     final iAmMantri = myRole == RmcsRole.mantri;
     final over = phase == 'reveal' || phase == 'finished';
     final caught = result?['caught'] == true;
@@ -103,7 +122,8 @@ class _RajaMantriScreenState extends State<RajaMantriScreen> {
         badge = _peeking ? 'TAP TO HIDE' : 'TAP TO SEE YOUR CARD';
         onTap = () => setState(() => _peeking = !_peeking);
       }
-      if (phase == 'raja' || phase == 'guessing') highlight = role == RmcsRole.raja || role == RmcsRole.mantri;
+      if (phase == 'raja' || phase == 'guessing')
+        highlight = role == RmcsRole.raja || role == RmcsRole.mantri;
       if (phase == 'guessing' && suspects.contains(id)) {
         highlight = iAmMantri;
         if (iAmMantri) {
@@ -122,7 +142,9 @@ class _RajaMantriScreenState extends State<RajaMantriScreen> {
         }
         highlight = role == RmcsRole.chor;
       }
-      final points = result == null ? null : Map<String, dynamic>.from(result['points'] as Map)[id] as num?;
+      final points = result == null
+          ? null
+          : Map<String, dynamic>.from(result['points'] as Map)[id] as num?;
       return RmcsSeat(
         name: me ? '${name(id)} (you)' : name(id),
         color: gpPlayerColors[i % gpPlayerColors.length],
@@ -139,16 +161,27 @@ class _RajaMantriScreenState extends State<RajaMantriScreen> {
 
     final Widget headline = switch (phase) {
       'dealing' => RmcsHeadline(
-          title: myRole == null ? 'Dealing…' : (_peeking ? 'You are the ${myRole.title}' : 'Check your card'),
-          subtitle: _peeking ? '${myRole!.subtitle} · ${myRole.pointsLine}' : "Only you can see it. Raja revealed in ${(msLeft / 1000).ceil()}s.",
+          title: myRole == null
+              ? 'Dealing…'
+              : (_peeking ? 'You are the ${myRole.title}' : 'Check your card'),
+          subtitle: _peeking
+              ? '${myRole!.subtitle} · ${myRole.pointsLine}'
+              : "Only you can see it. Raja revealed in ${(msLeft / 1000).ceil()}s.",
         ),
       'raja' => RmcsHeadline(
           title: '${raja == null ? '?' : name(raja)} is the RAJA!',
-          subtitle: '${mantri == null ? '?' : name(mantri)} is the Mantri and must find the Chor.',
+          subtitle:
+              '${mantri == null ? '?' : name(mantri)} is the Mantri and must find the Chor.',
         ),
       'guessing' => RmcsHeadline(
-          title: iAmMantri ? 'Who is the CHOR?' : '${mantri == null ? 'The Mantri' : name(mantri)} is choosing…',
-          subtitle: iAmMantri ? 'Tap ${suspects.map(name).join(' or ')}.' : (myRole == RmcsRole.chor ? 'Act natural…' : 'Who will they pick?'),
+          title: iAmMantri
+              ? 'Who is the CHOR?'
+              : '${mantri == null ? 'The Mantri' : name(mantri)} is choosing…',
+          subtitle: iAmMantri
+              ? 'Tap ${suspects.map(name).join(' or ')}.'
+              : (myRole == RmcsRole.chor
+                  ? 'Act natural…'
+                  : 'Who will they pick?'),
           trailing: CountdownRing(msLeft: msLeft, totalMs: guessMs, size: 52),
         ),
       _ => ResultBanner(caught: caught, timedOut: result?['timedOut'] == true),
@@ -156,29 +189,45 @@ class _RajaMantriScreenState extends State<RajaMantriScreen> {
 
     // Clockwise round the table from my seat at the bottom left.
     final mine = ids.indexOf(myId).clamp(0, ids.length - 1);
-    final order = [for (var k = 0; k < ids.length; k++) ids[(mine + k) % ids.length]];
-    final seats = ids.length == 4 ? [order[1], order[2], order[0], order[3]].map(seat).toList() : ids.map(seat).toList();
+    final order = [
+      for (var k = 0; k < ids.length; k++) ids[(mine + k) % ids.length]
+    ];
+    final seats = ids.length == 4
+        ? [order[1], order[2], order[0], order[3]].map(seat).toList()
+        : ids.map(seat).toList();
 
     return RmcsBackground(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 8, 10, 12),
         child: Column(children: [
-          Text('ROUND $round / ${st['totalRounds']}', style: const TextStyle(color: RmcsColors.gold, fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 2)),
+          Text('ROUND $round / ${st['totalRounds']}',
+              style: const TextStyle(
+                  color: RmcsColors.gold,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18,
+                  letterSpacing: 2)),
           const SizedBox(height: 6),
           headline,
           const SizedBox(height: 8),
           Expanded(
             child: phase == 'dealing' && !_dealt
-                ? ShuffleDeal(key: ValueKey('deal$round'), onDone: () => setState(() => _dealt = true))
+                ? ShuffleDeal(
+                    key: ValueKey('deal$round'),
+                    onDone: () => setState(() => _dealt = true))
                 : seats.length == 4
                     ? SeatGrid(seats: seats)
-                    : Row(children: [for (final s in seats) Expanded(child: s)]),
+                    : Row(
+                        children: [for (final s in seats) Expanded(child: s)]),
           ),
           if (phase == 'reveal')
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: Text(round >= (st['totalRounds'] as num) ? 'Final scores coming up…' : 'Next round in ${(msLeft / 1000).ceil()}s',
-                  style: const TextStyle(color: GpColors.muted, fontWeight: FontWeight.w800)),
+              child: Text(
+                  round >= (st['totalRounds'] as num)
+                      ? 'Final scores coming up…'
+                      : 'Next round in ${(msLeft / 1000).ceil()}s',
+                  style: const TextStyle(
+                      color: GpColors.muted, fontWeight: FontWeight.w800)),
             ),
         ]),
       ),

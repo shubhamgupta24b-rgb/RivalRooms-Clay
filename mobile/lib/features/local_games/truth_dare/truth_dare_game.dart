@@ -150,7 +150,14 @@ final truthDareInfo = LocalGameInfo(
   maxPlayers: 6,
   online: RelaySpec<TruthDareLogic>(
     create: (n) => TruthDareLogic(players: n),
-    save: (g) => {'phase': g.phase.index, 'spins': g.spins, 'chosen': g.chosen, 'truth': g.truth, 'prompt': g.prompt, 'points': g.points},
+    save: (g) => {
+      'phase': g.phase.index,
+      'spins': g.spins,
+      'chosen': g.chosen,
+      'truth': g.truth,
+      'prompt': g.prompt,
+      'points': g.points
+    },
     load: (g, s, me) {
       g.phase = TodPhase.values[asInt(s['phase'])];
       g.spins = asInt(s['spins']);
@@ -215,8 +222,11 @@ class _TodTableState extends State<_TodTable> {
     return MomentWatcher<TodPhase>(
       value: g.phase,
       onChange: (fx, before, now) {
-        if (now == TodPhase.choose && g.chosen != null) fx?.announce(players[g.chosen!].name, sub: 'Truth or dare?');
-        if (before == TodPhase.prompt && now != TodPhase.prompt && g.points.fold(0, (a, b) => a + b) > _lastTotal) {
+        if (now == TodPhase.choose && g.chosen != null)
+          fx?.announce(players[g.chosen!].name, sub: 'Truth or dare?');
+        if (before == TodPhase.prompt &&
+            now != TodPhase.prompt &&
+            g.points.fold(0, (a, b) => a + b) > _lastTotal) {
           fx?.pop('+1');
           GameAudio.sfx('coin');
         }
@@ -229,9 +239,17 @@ class _TodTableState extends State<_TodTable> {
             title: 'Truth or Dare',
             state: 'Spin ${min(g.spins + 1, g.totalSpins)} of ${g.totalSpins}',
             players: players,
-            turn: g.phase == TodPhase.spin || g.phase == TodPhase.spinning ? null : g.chosen,
+            turn: g.phase == TodPhase.spin || g.phase == TodPhase.spinning
+                ? null
+                : g.chosen,
             score: (i) => '${g.points[i]}',
-            tag: (i) => g.chosen == i && g.phase != TodPhase.spinning && g.phase != TodPhase.spin ? (g.phase == TodPhase.prompt ? (g.truth ? 'TRUTH' : 'DARE') : 'PICKED') : null,
+            tag: (i) => g.chosen == i &&
+                    g.phase != TodPhase.spinning &&
+                    g.phase != TodPhase.spin
+                ? (g.phase == TodPhase.prompt
+                    ? (g.truth ? 'TRUTH' : 'DARE')
+                    : 'PICKED')
+                : null,
           ),
           Expanded(
             child: LayoutBuilder(builder: (context, c) {
@@ -245,13 +263,23 @@ class _TodTableState extends State<_TodTable> {
                   width: 2 * r + 40,
                   height: 2 * r + 40,
                   child: DecoratedBox(
-                    decoration: const BoxDecoration(shape: BoxShape.circle, boxShadow: [BoxShadow(color: Color(0x80000000), offset: Offset(0, 12), blurRadius: 20)]),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color(0x80000000),
+                              offset: Offset(0, 12),
+                              blurRadius: 20)
+                        ]),
                     child: ClipOval(
                       child: CustomPaint(
                         painter: const WoodPainter(radius: 0),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
-                          child: ClipOval(child: const CustomPaint(painter: FeltPainter(rim: false, radius: 0), size: Size.infinite)),
+                          child: ClipOval(
+                              child: const CustomPaint(
+                                  painter: FeltPainter(rim: false, radius: 0),
+                                  size: Size.infinite)),
                         ),
                       ),
                     ),
@@ -264,21 +292,45 @@ class _TodTableState extends State<_TodTable> {
                     width: 116,
                     child: AnimatedScale(
                       duration: const Duration(milliseconds: 300),
-                      scale: g.chosen == i && g.phase != TodPhase.spinning && g.phase != TodPhase.spin ? 1.15 : 1,
+                      scale: g.chosen == i &&
+                              g.phase != TodPhase.spinning &&
+                              g.phase != TodPhase.spin
+                          ? 1.15
+                          : 1,
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(5, 5, 10, 5),
                         decoration: BoxDecoration(
                           color: NeonPalette.sheet,
                           borderRadius: Radii.rChip,
-                          border: Border.all(color: g.chosen == i ? Brand.gold : players[i].color, width: g.chosen == i ? 2.5 : 1.5),
-                          boxShadow: [if (g.chosen == i && g.phase != TodPhase.spinning) BoxShadow(color: Brand.gold.withValues(alpha: 0.6), blurRadius: 16, spreadRadius: 1)],
+                          border: Border.all(
+                              color:
+                                  g.chosen == i ? Brand.gold : players[i].color,
+                              width: g.chosen == i ? 2.5 : 1.5),
+                          boxShadow: [
+                            if (g.chosen == i && g.phase != TodPhase.spinning)
+                              BoxShadow(
+                                  color: Brand.gold.withValues(alpha: 0.6),
+                                  blurRadius: 16,
+                                  spreadRadius: 1)
+                          ],
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          PlayerBadge(index: PlayerPalette.indexOf(players[i].color) ?? i, size: 22, color: players[i].color, initial: players[i].name),
+                          PlayerBadge(
+                              index:
+                                  PlayerPalette.indexOf(players[i].color) ?? i,
+                              size: 22,
+                              color: players[i].color,
+                              initial: players[i].name),
                           const SizedBox(width: 6),
                           Flexible(
                               child: Text(players[i].name,
-                                  maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontFamily: Fonts.body, color: Colors.white, fontWeight: FontWeight.w900, fontSize: 12))),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      fontFamily: Fonts.body,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 12))),
                         ]),
                       ),
                     ),
@@ -300,7 +352,9 @@ class _TodTableState extends State<_TodTable> {
                           : null,
                       child: TweenAnimationBuilder<double>(
                         tween: Tween(begin: _angle, end: end),
-                        duration: g.phase == TodPhase.spinning ? const Duration(milliseconds: 2600) : Duration.zero,
+                        duration: g.phase == TodPhase.spinning
+                            ? const Duration(milliseconds: 2600)
+                            : Duration.zero,
                         curve: Curves.easeOutCubic,
                         onEnd: () {
                           if (g.phase == TodPhase.spinning) {
@@ -310,7 +364,10 @@ class _TodTableState extends State<_TodTable> {
                             g.landed();
                           }
                         },
-                        builder: (_, a, __) => Transform.rotate(angle: a, child: const CustomPaint(painter: _BottlePainter())),
+                        builder: (_, a, __) => Transform.rotate(
+                            angle: a,
+                            child:
+                                const CustomPaint(painter: _BottlePainter())),
                       ),
                     ),
                   ),
@@ -329,33 +386,63 @@ class _TodTableState extends State<_TodTable> {
   Widget _bottom(TruthDareLogic g, List<GpPlayer> players) {
     switch (g.phase) {
       case TodPhase.spin:
-        return GoldButton('Spin the bottle', icon: GameIcons.rotate, height: 58, onPressed: () {
+        return GoldButton('Spin the bottle', icon: GameIcons.rotate, height: 58,
+            onPressed: () {
           haptic(HapticWeight.medium);
           GameAudio.sfx('throw');
           g.spin();
         });
       case TodPhase.spinning:
-        return SizedBox(height: 58, child: Center(child: Text('Spinning…', style: context.tk.styles.h3.copyWith(color: context.tk.onBgMuted))));
+        return SizedBox(
+            height: 58,
+            child: Center(
+                child: Text('Spinning…',
+                    style: context.tk.styles.h3
+                        .copyWith(color: context.tk.onBgMuted))));
       case TodPhase.choose:
         final p = players[g.chosen!];
         return Column(mainAxisSize: MainAxisSize.min, children: [
-          TurnBanner(text: '${p.name}, pick one!', color: p.color, compact: true),
+          TurnBanner(
+              text: '${p.name}, pick one!', color: p.color, compact: true),
           const SizedBox(height: 10),
           Row(children: [
-            Expanded(child: _PickCard(label: 'TRUTH', icon: GameIcons.speech, color: _truthBlue, onTap: () => g.choose(truth: true))),
+            Expanded(
+                child: _PickCard(
+                    label: 'TRUTH',
+                    icon: GameIcons.speech,
+                    color: _truthBlue,
+                    onTap: () => g.choose(truth: true))),
             const SizedBox(width: 12),
-            Expanded(child: _PickCard(label: 'DARE', icon: GameIcons.bolt, color: _dareRed, onTap: () => g.choose(truth: false))),
+            Expanded(
+                child: _PickCard(
+                    label: 'DARE',
+                    icon: GameIcons.bolt,
+                    color: _dareRed,
+                    onTap: () => g.choose(truth: false))),
           ]),
         ]);
       case TodPhase.prompt:
         final color = g.truth ? _truthBlue : _dareRed;
         return Column(mainAxisSize: MainAxisSize.min, children: [
-          PromptCard(key: ValueKey(g.prompt), header: g.truth ? 'Truth' : 'Dare', text: g.prompt, icon: g.truth ? GameIcons.speech : GameIcons.bolt, color: color),
+          PromptCard(
+              key: ValueKey(g.prompt),
+              header: g.truth ? 'Truth' : 'Dare',
+              text: g.prompt,
+              icon: g.truth ? GameIcons.speech : GameIcons.bolt,
+              color: color),
           const SizedBox(height: 10),
           Row(children: [
-            Expanded(child: KitButton('Skip', icon: GameIcons.skip, style: KitButtonStyle.soft, height: 56, onPressed: () => g.complete(done: false))),
+            Expanded(
+                child: KitButton('Skip',
+                    icon: GameIcons.skip,
+                    style: KitButtonStyle.soft,
+                    height: 56,
+                    onPressed: () => g.complete(done: false))),
             const SizedBox(width: 10),
-            Expanded(child: GoldButton('Did it +1', icon: GameIcons.check, onPressed: () => g.complete(done: true))),
+            Expanded(
+                child: GoldButton('Did it +1',
+                    icon: GameIcons.check,
+                    onPressed: () => g.complete(done: true))),
           ]),
         ]);
       case TodPhase.finished:
@@ -370,7 +457,11 @@ class _PickCard extends StatelessWidget {
   final GameIcons icon;
   final Color color;
   final VoidCallback onTap;
-  const _PickCard({required this.label, required this.icon, required this.color, required this.onTap});
+  const _PickCard(
+      {required this.label,
+      required this.icon,
+      required this.color,
+      required this.onTap});
   @override
   Widget build(BuildContext context) => Semantics(
         button: true,
@@ -384,15 +475,28 @@ class _PickCard extends StatelessWidget {
           child: Container(
             height: 110,
             decoration: BoxDecoration(
-              gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color.lerp(color, Colors.white, 0.1)!, Color.lerp(color, Colors.black, 0.25)!]),
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color.lerp(color, Colors.white, 0.1)!,
+                    Color.lerp(color, Colors.black, 0.25)!
+                  ]),
               borderRadius: Radii.rButton,
-              border: Border.all(color: Colors.white.withValues(alpha: 0.6), width: 2),
+              border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.6), width: 2),
               boxShadow: Shadows.edge(Color.lerp(color, Colors.black, 0.5)!),
             ),
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               GameIcon(icon, size: 34),
               const SizedBox(height: 6),
-              Text(label, style: const TextStyle(fontFamily: Fonts.display, fontSize: 28, letterSpacing: 2, color: Colors.white)),
+              Text(label,
+                  style: const TextStyle(
+                      fontFamily: Fonts.display,
+                      fontSize: 28,
+                      letterSpacing: 2,
+                      color: Colors.white)),
             ]),
           ),
         ),
@@ -414,7 +518,8 @@ class _BottlePainter extends CustomPainter {
       ..lineTo(cx + neckW / 2, h * 0.3)
       ..quadraticBezierTo(cx + bodyW / 2, h * 0.36, cx + bodyW / 2, h * 0.48)
       ..lineTo(cx + bodyW / 2, h * 0.9)
-      ..quadraticBezierTo(cx + bodyW / 2, h * 0.95, cx + bodyW / 2 - 6, h * 0.95)
+      ..quadraticBezierTo(
+          cx + bodyW / 2, h * 0.95, cx + bodyW / 2 - 6, h * 0.95)
       ..lineTo(cx - bodyW / 2 + 6, h * 0.95)
       ..quadraticBezierTo(cx - bodyW / 2, h * 0.95, cx - bodyW / 2, h * 0.9)
       ..lineTo(cx - bodyW / 2, h * 0.48)
@@ -426,19 +531,48 @@ class _BottlePainter extends CustomPainter {
         Paint()
           ..color = const Color(0x66000000)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
-    canvas.drawPath(path, Paint()..shader = const LinearGradient(colors: [Color(0xCC0F5C2A), Color(0xCC3FB86A), Color(0xCC1E7A3E), Color(0xCC0B4420)], stops: [0, 0.35, 0.7, 1]).createShader(body));
+    canvas.drawPath(
+        path,
+        Paint()
+          ..shader = const LinearGradient(colors: [
+            Color(0xCC0F5C2A),
+            Color(0xCC3FB86A),
+            Color(0xCC1E7A3E),
+            Color(0xCC0B4420)
+          ], stops: [
+            0,
+            0.35,
+            0.7,
+            1
+          ]).createShader(body));
     // Paper label with a gold band.
     final label = Rect.fromLTWH(cx - bodyW / 2, h * 0.56, bodyW, h * 0.2);
-    canvas.drawRect(label, Paint()..shader = const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFFFFFDF6), Color(0xFFF0E1C2)]).createShader(label));
-    canvas.drawRect(Rect.fromLTWH(label.left, label.top + label.height * 0.42, label.width, label.height * 0.16), Paint()..color = Brand.gold);
+    canvas.drawRect(
+        label,
+        Paint()
+          ..shader = const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFFFFFDF6), Color(0xFFF0E1C2)])
+              .createShader(label));
+    canvas.drawRect(
+        Rect.fromLTWH(label.left, label.top + label.height * 0.42, label.width,
+            label.height * 0.16),
+        Paint()..color = Brand.gold);
     // Cork.
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx - neckW / 2 - 1, h * 0.02, neckW + 2, h * 0.07), const Radius.circular(3)), Paint()..color = const Color(0xFFC8925A));
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(cx - neckW / 2 - 1, h * 0.02, neckW + 2, h * 0.07),
+            const Radius.circular(3)),
+        Paint()..color = const Color(0xFFC8925A));
     // Glass highlights.
     final shine = Paint()
       ..strokeCap = StrokeCap.round
       ..color = Colors.white.withValues(alpha: 0.55);
-    canvas.drawLine(Offset(cx - bodyW * 0.3, h * 0.5), Offset(cx - bodyW * 0.3, h * 0.88), shine..strokeWidth = bodyW * 0.09);
-    canvas.drawLine(Offset(cx - neckW * 0.2, h * 0.12), Offset(cx - neckW * 0.2, h * 0.28), shine..strokeWidth = neckW * 0.18);
+    canvas.drawLine(Offset(cx - bodyW * 0.3, h * 0.5),
+        Offset(cx - bodyW * 0.3, h * 0.88), shine..strokeWidth = bodyW * 0.09);
+    canvas.drawLine(Offset(cx - neckW * 0.2, h * 0.12),
+        Offset(cx - neckW * 0.2, h * 0.28), shine..strokeWidth = neckW * 0.18);
     canvas.drawPath(
         path,
         Paint()

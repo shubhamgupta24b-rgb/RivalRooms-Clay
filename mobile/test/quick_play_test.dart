@@ -40,7 +40,8 @@ void main() {
     expectReq(socket, 'quick_play', {});
   });
 
-  testWidgets('Quick Play: pick a game and only rooms for it are joined', (tester) async {
+  testWidgets('Quick Play: pick a game and only rooms for it are joined',
+      (tester) async {
     final socket = await pumpQuickPlay(tester);
     await tester.tap(find.text('Ludo').first);
     await tester.pump();
@@ -52,7 +53,12 @@ void main() {
 
   testWidgets('a Quick Play room says so in the lobby', (tester) async {
     final r = Room.fromJson({
-      'code': 'QK2345', 'gameType': 'ludo', 'hostId': 'me', 'status': 'lobby', 'maxPlayers': 6, 'isPublic': true,
+      'code': 'QK2345',
+      'gameType': 'ludo',
+      'hostId': 'me',
+      'status': 'lobby',
+      'maxPlayers': 6,
+      'isPublic': true,
       'players': [
         {'userId': 'me', 'username': 'Asha', 'ready': true, 'connected': true},
       ],

@@ -8,7 +8,8 @@ import 'package:multiplayer_game/features/local_games/truth_dare/truth_dare_game
 
 /// Builds a Colour Clash game whose deck is dealt exactly as listed: each player's hand,
 /// then the starting card, then the draw pile (drawn from the end of [rest]).
-ColourClashLogic rigged(List<List<ClashCard>> hands, ClashCard start, [List<ClashCard> rest = const []]) {
+ColourClashLogic rigged(List<List<ClashCard>> hands, ClashCard start,
+    [List<ClashCard> rest = const []]) {
   final n = hands.length;
   // The constructor deals round-robin from the end, then flips one card.
   final dealOrder = <ClashCard>[];
@@ -27,7 +28,8 @@ ColourClashLogic rigged(List<List<ClashCard>> hands, ClashCard start, [List<Clas
 var _id = 1000;
 ClashCard n(ClashColor c, int v) => ClashCard(_id++, c, ClashKind.number, v);
 ClashCard k(ClashColor c, ClashKind kind) => ClashCard(_id++, c, kind);
-List<ClashCard> fill(int count, ClashColor c, [int value = 9]) => [for (var i = 0; i < count; i++) n(c, value)];
+List<ClashCard> fill(int count, ClashColor c, [int value = 9]) =>
+    [for (var i = 0; i < count; i++) n(c, value)];
 
 void main() {
   group('Colour Clash', () {
@@ -37,22 +39,31 @@ void main() {
       expect(d.map((c) => c.id).toSet().length, 108);
       expect(d.where((c) => c.kind == ClashKind.wildFour).length, 4);
       expect(d.where((c) => c.kind == ClashKind.wild).length, 4);
-      expect(d.where((c) => c.kind == ClashKind.number && c.number == 0).length, 4);
+      expect(d.where((c) => c.kind == ClashKind.number && c.number == 0).length,
+          4);
       expect(d.where((c) => c.kind == ClashKind.drawTwo).length, 8);
     });
 
-    test('deals 7 each, starts on a number card, hand hidden until revealed', () {
+    test('deals 7 each, starts on a number card, hand hidden until revealed',
+        () {
       for (var seed = 0; seed < 20; seed++) {
         final g = ColourClashLogic(players: 4, random: Random(seed));
         expect(g.hands.every((h) => h.length == 7), isTrue);
         expect(g.top.kind, ClashKind.number);
         expect(g.phase, ClashPhase.handoff);
-        expect(g.hands.expand((h) => h).length + g.drawPile.length + g.discard.length, 108);
+        expect(
+            g.hands.expand((h) => h).length +
+                g.drawPile.length +
+                g.discard.length,
+            108);
       }
     });
 
     test('only matching colour, number, symbol or wild can be played', () {
-      final red5 = n(ClashColor.red, 5), blue5 = n(ClashColor.blue, 5), green7 = n(ClashColor.green, 7), wild = k(ClashColor.wild, ClashKind.wild);
+      final red5 = n(ClashColor.red, 5),
+          blue5 = n(ClashColor.blue, 5),
+          green7 = n(ClashColor.green, 7),
+          wild = k(ClashColor.wild, ClashKind.wild);
       final g = rigged([
         [red5, blue5, green7, wild, ...fill(3, ClashColor.yellow)],
         fill(7, ClashColor.green),
@@ -115,18 +126,22 @@ void main() {
       expect(g4.turn, 0);
     });
 
-    test('draw: unplayable ends the turn, playable may be played or passed', () {
-      final g = rigged([fill(7, ClashColor.blue), fill(7, ClashColor.green)], n(ClashColor.red, 1), [n(ClashColor.yellow, 2)]);
+    test('draw: unplayable ends the turn, playable may be played or passed',
+        () {
+      final g = rigged([fill(7, ClashColor.blue), fill(7, ClashColor.green)],
+          n(ClashColor.red, 1), [n(ClashColor.yellow, 2)]);
       final drawn = g.draw();
       expect(drawn!.color, ClashColor.yellow);
       expect(g.hands[0].length, 8);
       expect(g.turn, 1, reason: 'could not play it');
 
       final red4 = n(ClashColor.red, 4);
-      final g2 = rigged([fill(7, ClashColor.blue), fill(7, ClashColor.green)], n(ClashColor.red, 1), [red4]);
+      final g2 = rigged([fill(7, ClashColor.blue), fill(7, ClashColor.green)],
+          n(ClashColor.red, 1), [red4]);
       g2.draw();
       expect(g2.turn, 0);
-      expect(g2.playable.map((c) => c.id), [red4.id], reason: 'only the drawn card');
+      expect(g2.playable.map((c) => c.id), [red4.id],
+          reason: 'only the drawn card');
       expect(g2.draw(), isNull, reason: 'one draw per turn');
       expect(g2.play(red4.id), isTrue);
       expect(g2.turn, 1);
@@ -186,7 +201,11 @@ void main() {
         }
       }
       // Whatever happened, no card was lost or duplicated.
-      expect(g.hands.expand((h) => h).length + g.drawPile.length + g.discard.length, 108);
+      expect(
+          g.hands.expand((h) => h).length +
+              g.drawPile.length +
+              g.discard.length,
+          108);
     });
   });
 
@@ -251,7 +270,8 @@ void main() {
       expect(g.turn, 0);
     });
 
-    test('capturing sends a token home and earns a roll; safe squares protect', () {
+    test('capturing sends a token home and earns a roll; safe squares protect',
+        () {
       final g = LudoLogic(players: 2);
       // Player 0 (seat 0, start 0) and player 1 (seat 2, start 26).
       g.tokens[1][0] = 30; // absolute (26 + 30) % 52 = 4
@@ -270,7 +290,8 @@ void main() {
       expect(s.tokens[1][0], 34, reason: 'safe square');
     });
 
-    test('exact roll to get home; all four home wins; three 6s lose the turn', () {
+    test('exact roll to get home; all four home wins; three 6s lose the turn',
+        () {
       final g = LudoLogic(players: 2);
       g.tokens[0] = [56, 56, 56, 53];
       g.roll(4);
@@ -303,12 +324,15 @@ void main() {
       g.drawLine(horizontal: true, row: 0, col: 0); // p0
       g.drawLine(horizontal: true, row: 1, col: 0); // p1
       g.drawLine(horizontal: false, row: 0, col: 0); // p0
-      expect(g.drawLine(horizontal: false, row: 0, col: 0), isNull, reason: 'already drawn');
+      expect(g.drawLine(horizontal: false, row: 0, col: 0), isNull,
+          reason: 'already drawn');
       expect(g.turn, 1);
-      expect(g.drawLine(horizontal: false, row: 0, col: 1), 1, reason: 'p1 closes the box');
+      expect(g.drawLine(horizontal: false, row: 0, col: 1), 1,
+          reason: 'p1 closes the box');
       expect(g.boxes[0][0], 1);
       expect(g.turn, 1, reason: 'goes again');
-      expect(g.drawLine(horizontal: true, row: 5, col: 0), isNull, reason: 'off the grid');
+      expect(g.drawLine(horizontal: true, row: 5, col: 0), isNull,
+          reason: 'off the grid');
       // Fill the rest.
       for (var r = 0; r <= 2; r++) {
         for (var c = 0; c < 2; c++) {
@@ -338,7 +362,10 @@ void main() {
         g.landed();
         g.choose(truth: i.isEven);
         expect(g.prompt, isNotEmpty);
-        expect((i.isEven ? TruthDareLogic.truths : TruthDareLogic.dares).contains(g.prompt), isTrue);
+        expect(
+            (i.isEven ? TruthDareLogic.truths : TruthDareLogic.dares)
+                .contains(g.prompt),
+            isTrue);
         g.complete(done: i != 5);
       }
       expect(g.finished, isTrue);

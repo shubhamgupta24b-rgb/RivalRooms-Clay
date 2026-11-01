@@ -11,11 +11,11 @@ function register(mod) {
 const get=id=>games.get(id), has=id=>games.has(id), list=()=>[...games.values()];
 register(require('./guess_person').game);
 register(require('./memory').game);
-register(require('./crush_it').game);
 // basketball_hoops is played through the relay now (the swipe-to-shoot version).
-register(require('./fruit_duel').game);
+// crush_it and fruit_duel were removed from the catalog; their modules stay for unit tests.
 register(require('./paint_fight').game);
 register(require('./guess_who').game);
 register(require('./raja_mantri').game);
+register(require('./nitro_knockout').game);
 for (const g of require('./relay').games) register(g);
 module.exports={register,get,has,list};

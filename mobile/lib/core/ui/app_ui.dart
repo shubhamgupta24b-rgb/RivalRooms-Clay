@@ -28,7 +28,9 @@ class AppColors {
 final appTokens = flatStyle ? GameTokens.flatSet : GameTokens.neon;
 
 ThemeData buildAppTheme() {
-  final scheme = ColorScheme.fromSeed(seedColor: AppColors.purple, brightness: Brightness.dark).copyWith(
+  final scheme = ColorScheme.fromSeed(
+          seedColor: AppColors.purple, brightness: Brightness.dark)
+      .copyWith(
     primary: AppColors.gold,
     onPrimary: AppColors.night,
     secondary: AppColors.blue,
@@ -41,14 +43,25 @@ ThemeData buildAppTheme() {
     extensions: [appTokens],
     scaffoldBackgroundColor: AppColors.deep,
     pageTransitionsTheme: Skin.pageTransitions,
-    appBarTheme: const AppBarTheme(backgroundColor: AppColors.night, foregroundColor: Colors.white, centerTitle: true),
-    snackBarTheme: const SnackBarThemeData(behavior: SnackBarBehavior.floating, backgroundColor: AppColors.navy, contentTextStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+    appBarTheme: const AppBarTheme(
+        backgroundColor: AppColors.night,
+        foregroundColor: Colors.white,
+        centerTitle: true),
+    snackBarTheme: const SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: AppColors.navy,
+        contentTextStyle:
+            TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
     dialogTheme: const DialogThemeData(backgroundColor: AppColors.night),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Skin.fieldFill,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(Skin.rChip), borderSide: BorderSide.none),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(Skin.rChip), borderSide: const BorderSide(color: Skin.fieldFocus, width: 2)),
+      border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Skin.rChip),
+          borderSide: BorderSide.none),
+      focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Skin.rChip),
+          borderSide: const BorderSide(color: Skin.fieldFocus, width: 2)),
       hintStyle: const TextStyle(color: Colors.white54),
     ),
   );
@@ -59,7 +72,8 @@ class AppBackground extends StatelessWidget {
   final Widget child;
   const AppBackground({super.key, required this.child});
   @override
-  Widget build(BuildContext context) => flatStyle ? FlatBackground(child: child) : Skin.background(child: child);
+  Widget build(BuildContext context) =>
+      flatStyle ? FlatBackground(child: child) : Skin.background(child: child);
 }
 
 /// The app logo with a soft neon glow behind it.
@@ -73,8 +87,14 @@ class AppLogo extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           boxShadow: [
-            BoxShadow(color: AppColors.blue.withValues(alpha: 0.35), blurRadius: size * 0.3, offset: Offset(-size * 0.06, 0)),
-            BoxShadow(color: AppColors.red.withValues(alpha: 0.3), blurRadius: size * 0.3, offset: Offset(size * 0.06, 0)),
+            BoxShadow(
+                color: AppColors.blue.withValues(alpha: 0.35),
+                blurRadius: size * 0.3,
+                offset: Offset(-size * 0.06, 0)),
+            BoxShadow(
+                color: AppColors.red.withValues(alpha: 0.3),
+                blurRadius: size * 0.3,
+                offset: Offset(size * 0.06, 0)),
           ],
         ),
         child: PartyLogoIcon(size: size),
@@ -90,9 +110,20 @@ class SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 22, bottom: 10, left: 2),
         child: Row(children: [
-          Container(width: 4, height: 16, decoration: BoxDecoration(color: AppColors.gold, borderRadius: BorderRadius.circular(2))),
+          Container(
+              width: 4,
+              height: 16,
+              decoration: BoxDecoration(
+                  color: AppColors.gold,
+                  borderRadius: BorderRadius.circular(2))),
           const SizedBox(width: 8),
-          Expanded(child: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15, letterSpacing: 1.6))),
+          Expanded(
+              child: Text(text,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15,
+                      letterSpacing: 1.6))),
           if (trailing != null) trailing!,
         ]),
       );
@@ -105,7 +136,13 @@ class PressableCard extends StatefulWidget {
   final VoidCallback? onTap;
   final EdgeInsetsGeometry padding;
   final String? semanticLabel;
-  const PressableCard({super.key, required this.colors, required this.child, this.onTap, this.padding = const EdgeInsets.all(16), this.semanticLabel});
+  const PressableCard(
+      {super.key,
+      required this.colors,
+      required this.child,
+      this.onTap,
+      this.padding = const EdgeInsets.all(16),
+      this.semanticLabel});
   @override
   State<PressableCard> createState() => _PressableCardState();
 }

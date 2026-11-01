@@ -8,7 +8,9 @@ import 'package:multiplayer_game/features/local_games/solo/sudoku.dart';
 
 void main() {
   group('Ball Sort', () {
-    test('a level has every colour exactly 4 times plus two empty tubes, not already solved', () {
+    test(
+        'a level has every colour exactly 4 times plus two empty tubes, not already solved',
+        () {
       final g = BallSortLogic(random: Random(1));
       expect(g.tubes.length, g.colors + 2);
       final all = [for (final t in g.tubes) ...t];
@@ -18,7 +20,9 @@ void main() {
       expect(g.solved, isFalse);
     });
 
-    test('pour rules: only onto the same colour or into an empty tube, never over capacity', () {
+    test(
+        'pour rules: only onto the same colour or into an empty tube, never over capacity',
+        () {
       final g = BallSortLogic(random: Random(2));
       g.tubes = [
         [0, 1, 1],
@@ -59,12 +63,15 @@ void main() {
   });
 
   group('Sliding Puzzle', () {
-    test('the shuffle is solvable and not already solved; tiles only slide into the gap', () {
+    test(
+        'the shuffle is solvable and not already solved; tiles only slide into the gap',
+        () {
       final g = SlidingLogic(random: Random(4));
       expect(g.solved, isFalse);
       expect(g.tiles.toSet(), {for (var i = 0; i < 9; i++) i});
       final gap = g.tiles.indexOf(0);
-      final far = [for (var i = 0; i < 9; i++) i].firstWhere((i) => (i ~/ 3 - gap ~/ 3).abs() + (i % 3 - gap % 3).abs() > 1);
+      final far = [for (var i = 0; i < 9; i++) i].firstWhere(
+          (i) => (i ~/ 3 - gap ~/ 3).abs() + (i % 3 - gap % 3).abs() > 1);
       final before = List.of(g.tiles);
       g.tap(far);
       expect(g.tiles, before, reason: 'not next to the gap');
@@ -94,7 +101,8 @@ void main() {
       expect(g.puzzle.where((v) => v == 0).length, 40);
     });
 
-    test('right numbers fill in, wrong ones cost a mistake, 3 mistakes ends it', () {
+    test('right numbers fill in, wrong ones cost a mistake, 3 mistakes ends it',
+        () {
       final g = SudokuLogic(random: Random(7), blanks: 30);
       final blank = g.puzzle.indexOf(0);
       g.select(blank);
@@ -124,7 +132,9 @@ void main() {
   });
 
   group('Hangman', () {
-    test('right letters show, wrong ones cost lives, a full word scores and a new one comes', () {
+    test(
+        'right letters show, wrong ones cost lives, a full word scores and a new one comes',
+        () {
       final g = HangmanLogic(random: Random(9));
       final first = g.word;
       for (final l in first.split('').toSet()) {
@@ -140,12 +150,16 @@ void main() {
 
     test('six wrong letters ends the game', () {
       final g = HangmanLogic(random: Random(10));
-      final misses = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').where((l) => !g.word.contains(l)).take(6);
+      final misses = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+          .split('')
+          .where((l) => !g.word.contains(l))
+          .take(6);
       for (final l in misses) {
         g.guess(l);
       }
       expect(g.over, isTrue);
-      expect(g.shown.replaceAll(' ', ''), g.word, reason: 'the word is shown at the end');
+      expect(g.shown.replaceAll(' ', ''), g.word,
+          reason: 'the word is shown at the end');
     });
 
     test('every word is letters only', () {
@@ -158,7 +172,8 @@ void main() {
   });
 
   group('Dino Run', () {
-    test('running scores metres and speeds up; never jumping hits a cactus', () {
+    test('running scores metres and speeds up; never jumping hits a cactus',
+        () {
       final g = DinoLogic(random: Random(11));
       var t = 0;
       while (!g.over && t < 60000) {
@@ -176,7 +191,10 @@ void main() {
         t += 16;
         g.update(t);
         // Jump when a cactus or low bird is just ahead.
-        final close = g.obstacles.any((o) => !(o.bird && o.high) && o.x - g.dinoX < 2.2 + g.speed * 0.05 && o.x - g.dinoX > 0.3);
+        final close = g.obstacles.any((o) =>
+            !(o.bird && o.high) &&
+            o.x - g.dinoX < 2.2 + g.speed * 0.05 &&
+            o.x - g.dinoX > 0.3);
         if (close) g.jump();
       }
       expect(g.score, greaterThan(200));

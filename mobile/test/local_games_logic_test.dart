@@ -48,7 +48,9 @@ void main() {
       expect(moved, isTrue);
     });
 
-    test('straight shot at a still hoop is a swish; wide shots miss; cooldown applies', () {
+    test(
+        'straight shot at a still hoop is a swish; wide shots miss; cooldown applies',
+        () {
       final g = BasketballLogic();
       g.update(1000);
       expect(g.shoot(0, 0), 3);
@@ -64,17 +66,22 @@ void main() {
       expect(g.shoot(1, 0.05), 3, reason: 'players have their own cooldown');
     });
 
-    test('a moving hoop has to be led: the ball is judged where the hoop will be', () {
+    test(
+        'a moving hoop has to be led: the ball is judged where the hoop will be',
+        () {
       final g = BasketballLogic();
       g.update(12000);
       final later = BasketballLogic.hoopXAt(12000 + BasketballLogic.flightMs);
-      expect((later - g.hoopX).abs(), greaterThan(0.25), reason: 'the hoop moves a lot during a flight');
+      expect((later - g.hoopX).abs(), greaterThan(0.25),
+          reason: 'the hoop moves a lot during a flight');
       expect(g.shoot(0, later), 3);
       g.update(13000);
       final now = g.hoopX;
       final shot = g.shoot(1, now)!;
-      expect(g.lastShot[1]!.hoopX, BasketballLogic.hoopXAt(13000 + BasketballLogic.flightMs));
-      expect(shot, BasketballLogic.pointsFor((now - g.lastShot[1]!.hoopX).abs()));
+      expect(g.lastShot[1]!.hoopX,
+          BasketballLogic.hoopXAt(13000 + BasketballLogic.flightMs));
+      expect(
+          shot, BasketballLogic.pointsFor((now - g.lastShot[1]!.hoopX).abs()));
     });
 
     test('no shots after time is up', () {
@@ -86,7 +93,8 @@ void main() {
   });
 
   group('Fruit Duel', () {
-    test('first correct slash +2, second +1, wrong lane 0, one try per fruit', () {
+    test('first correct slash +2, second +1, wrong lane 0, one try per fruit',
+        () {
       final g = FruitDuelLogic(random: Random(3));
       g.update(10);
       final lane = g.fruitLane;
@@ -127,10 +135,13 @@ void main() {
   });
 
   group('Memory', () {
-    test('pairs score and keep the turn, misses pass the turn after a delay', () {
+    test('pairs score and keep the turn, misses pass the turn after a delay',
+        () {
       final g = MemoryLogic(random: Random(5), mismatchMs: 900);
-      int pairOf(int id) => g.cards.indexWhere((c) => c.id != id && c.symbol == g.cards[id].symbol);
-      int notPairOf(int id) => g.cards.indexWhere((c) => c.id != id && c.symbol != g.cards[id].symbol);
+      int pairOf(int id) => g.cards
+          .indexWhere((c) => c.id != id && c.symbol == g.cards[id].symbol);
+      int notPairOf(int id) => g.cards
+          .indexWhere((c) => c.id != id && c.symbol != g.cards[id].symbol);
 
       expect(g.flip(0), isTrue);
       expect(g.flip(pairOf(0)), isTrue);
@@ -138,12 +149,17 @@ void main() {
       expect(g.turn, 0, reason: 'match = go again');
 
       final a = g.cards.indexWhere((c) => !c.matched);
-      final b = g.cards.indexWhere((c) => !c.matched && c.symbol != g.cards[a].symbol);
+      final b = g.cards
+          .indexWhere((c) => !c.matched && c.symbol != g.cards[a].symbol);
       expect(notPairOf(a), isNot(-1));
       g.flip(a);
       g.flip(b);
       expect(g.showingMismatch, isTrue);
-      expect(g.flip(g.cards.indexWhere((c) => !c.matched && c.id != a && c.id != b)), isFalse, reason: 'board locked during mismatch');
+      expect(
+          g.flip(
+              g.cards.indexWhere((c) => !c.matched && c.id != a && c.id != b)),
+          isFalse,
+          reason: 'board locked during mismatch');
       g.update(899);
       expect(g.turn, 0);
       g.update(900);
@@ -155,7 +171,8 @@ void main() {
       final g = MemoryLogic(random: Random(6));
       while (!g.finished) {
         final a = g.cards.firstWhere((c) => !c.matched);
-        final b = g.cards.firstWhere((c) => !c.matched && c.id != a.id && c.symbol == a.symbol);
+        final b = g.cards.firstWhere(
+            (c) => !c.matched && c.id != a.id && c.symbol == a.symbol);
         g.flip(a.id);
         g.flip(b.id);
       }
@@ -181,7 +198,8 @@ void main() {
       expect(g.turn, 0);
     });
 
-    test('rejects taken squares, out-of-range squares and moves after the end', () {
+    test('rejects taken squares, out-of-range squares and moves after the end',
+        () {
       final g = TicTacToeLogic();
       expect(g.play(0), isTrue);
       expect(g.play(0), isFalse);
@@ -193,7 +211,10 @@ void main() {
     test('every line wins', () {
       for (final line in TicTacToeLogic.lines) {
         final g = TicTacToeLogic();
-        final others = [for (var i = 0; i < 9; i++) if (!line.contains(i)) i];
+        final others = [
+          for (var i = 0; i < 9; i++)
+            if (!line.contains(i)) i
+        ];
         // X takes the line, O plays elsewhere in between.
         g.play(line[0]);
         g.play(others[0]);

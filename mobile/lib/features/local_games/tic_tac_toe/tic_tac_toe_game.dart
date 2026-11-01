@@ -82,12 +82,23 @@ final ticTacToeInfo = LocalGameInfo(
     }
 
     // Win, else block, else centre, else a corner, else anything. Sometimes it slips up.
-    final int move = b.chance(0.12) ? b.pick(empty) : finishing(b.seat) ?? finishing(1 - b.seat) ?? (g.cells[4] < 0 ? 4 : null) ?? [0, 2, 6, 8].where(empty.contains).firstOrNull ?? b.pick<int>(empty);
+    final int move = b.chance(0.12)
+        ? b.pick(empty)
+        : finishing(b.seat) ??
+            finishing(1 - b.seat) ??
+            (g.cells[4] < 0 ? 4 : null) ??
+            [0, 2, 6, 8].where(empty.contains).firstOrNull ??
+            b.pick<int>(empty);
     g.play(move);
   }),
   online: RelaySpec<TicTacToeLogic>(
     create: (n) => TicTacToeLogic(),
-    save: (g) => {'cells': g.cells, 'turn': g.turn, 'winLine': g.winLine, 'winner': g.winner},
+    save: (g) => {
+      'cells': g.cells,
+      'turn': g.turn,
+      'winLine': g.winLine,
+      'winner': g.winner
+    },
     load: (g, s, me) {
       g.cells.setAll(0, ints(s['cells']));
       g.turn = asInt(s['turn']);
@@ -143,15 +154,21 @@ class _BoardState extends State<_Board> {
   Widget build(BuildContext context) {
     final g = widget.g, players = widget.players;
     final current = players[g.turn];
-    ResultScope.of(context)?.subtitle = g.winner != null ? 'Three in a row' : (g.isDraw ? 'Every square taken' : null);
+    ResultScope.of(context)?.subtitle = g.winner != null
+        ? 'Three in a row'
+        : (g.isDraw ? 'Every square taken' : null);
     return MomentWatcher<bool>(
       value: g.finished,
       onChange: (fx, _, done) {
         if (!done) return;
         if (g.winner != null) {
-          keyMoment(fx, 'THREE IN A ROW!', sub: '${players[g.winner!].name} wins', sound: 'win', confetti: true);
+          keyMoment(fx, 'THREE IN A ROW!',
+              sub: '${players[g.winner!].name} wins',
+              sound: 'win',
+              confetti: true);
         } else {
-          keyMoment(fx, 'DRAW!', sub: 'Every square taken', color: Colors.white);
+          keyMoment(fx, 'DRAW!',
+              sub: 'Every square taken', color: Colors.white);
         }
       },
       child: Padding(
@@ -159,11 +176,17 @@ class _BoardState extends State<_Board> {
         child: Column(children: [
           ScoreHud(
             title: 'Tic-Tac-Toe',
-            state: g.winner != null ? '${players[g.winner!].name} wins' : (g.isDraw ? 'Draw' : '${possessive(current.name)} turn (${_Board.mark(g.turn)})'),
+            state: g.winner != null
+                ? '${players[g.winner!].name} wins'
+                : (g.isDraw
+                    ? 'Draw'
+                    : '${possessive(current.name)} turn (${_Board.mark(g.turn)})'),
             players: players,
             turn: g.finished ? null : g.turn,
             score: (i) => _Board.mark(i),
-            tag: (i) => !g.finished && i == g.turn ? 'YOUR TURN' : (g.winner == i ? 'WINNER' : null),
+            tag: (i) => !g.finished && i == g.turn
+                ? 'YOUR TURN'
+                : (g.winner == i ? 'WINNER' : null),
           ),
           const Spacer(),
           LayoutBuilder(builder: (context, c) {
@@ -186,7 +209,8 @@ class _BoardState extends State<_Board> {
                             for (var i = 0; i < 9; i++)
                               Semantics(
                                 button: g.cells[i] < 0 && !g.finished,
-                                label: 'Row ${i ~/ 3 + 1}, column ${i % 3 + 1}: ${g.cells[i] < 0 ? 'empty' : _Board.mark(g.cells[i])}',
+                                label:
+                                    'Row ${i ~/ 3 + 1}, column ${i % 3 + 1}: ${g.cells[i] < 0 ? 'empty' : _Board.mark(g.cells[i])}',
                                 excludeSemantics: true,
                                 child: GestureDetector(
                                   behavior: HitTestBehavior.opaque,
@@ -194,12 +218,22 @@ class _BoardState extends State<_Board> {
                                   child: g.cells[i] < 0
                                       ? const SizedBox.expand()
                                       : _Mark(
-                                          key: ValueKey('m$i${g.cells[i]}'), x: g.cells[i] == 0, color: Color.lerp(players[g.cells[i]].color, _chalk, 0.25)!, glow: g.winLine?.contains(i) ?? false),
+                                          key: ValueKey('m$i${g.cells[i]}'),
+                                          x: g.cells[i] == 0,
+                                          color: Color.lerp(
+                                              players[g.cells[i]].color,
+                                              _chalk,
+                                              0.25)!,
+                                          glow:
+                                              g.winLine?.contains(i) ?? false),
                                 ),
                               ),
                           ],
                         ),
-                        if (g.winLine != null) Positioned.fill(child: IgnorePointer(child: _WinLine(line: g.winLine!))),
+                        if (g.winLine != null)
+                          Positioned.fill(
+                              child: IgnorePointer(
+                                  child: _WinLine(line: g.winLine!))),
                       ]),
                     ),
                   ),
@@ -220,9 +254,18 @@ class _SlatePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final r = Offset.zero & size;
-    final frame = RRect.fromRectAndRadius(r, Radius.circular(size.width * 0.06));
-    canvas.drawRRect(frame.shift(const Offset(0, 6)), Paint()..color = Colors.black38);
-    canvas.drawRRect(frame, Paint()..shader = LinearGradient(colors: _wood, begin: Alignment.topLeft, end: Alignment.bottomRight).createShader(r));
+    final frame =
+        RRect.fromRectAndRadius(r, Radius.circular(size.width * 0.06));
+    canvas.drawRRect(
+        frame.shift(const Offset(0, 6)), Paint()..color = Colors.black38);
+    canvas.drawRRect(
+        frame,
+        Paint()
+          ..shader = LinearGradient(
+                  colors: _wood,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight)
+              .createShader(r));
     // Wood grain.
     final grain = Paint()
       ..color = Colors.black.withValues(alpha: 0.12)
@@ -233,17 +276,38 @@ class _SlatePainter extends CustomPainter {
       canvas.drawPath(
           Path()
             ..moveTo(0, y)
-            ..quadraticBezierTo(size.width / 2, y + (k.isEven ? 6 : -6), size.width, y),
+            ..quadraticBezierTo(
+                size.width / 2, y + (k.isEven ? 6 : -6), size.width, y),
           grain);
     }
     final inner = r.deflate(size.width * 0.045);
-    final slate = RRect.fromRectAndRadius(inner, Radius.circular(size.width * 0.03));
-    canvas.drawRRect(slate, Paint()..shader = LinearGradient(colors: _slate, begin: Alignment.topCenter, end: Alignment.bottomCenter).createShader(inner));
+    final slate =
+        RRect.fromRectAndRadius(inner, Radius.circular(size.width * 0.03));
+    canvas.drawRRect(
+        slate,
+        Paint()
+          ..shader = LinearGradient(
+                  colors: _slate,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter)
+              .createShader(inner));
     // Chalk dust smudges.
-    for (final (x, y, rad) in const [(0.3, 0.25, 0.18), (0.72, 0.6, 0.22), (0.4, 0.8, 0.15)]) {
-      final c = Offset(inner.left + inner.width * x, inner.top + inner.height * y);
-      canvas.drawCircle(c, inner.width * rad,
-          Paint()..shader = RadialGradient(colors: [Colors.white.withValues(alpha: 0.05), Colors.white.withValues(alpha: 0)]).createShader(Rect.fromCircle(center: c, radius: inner.width * rad)));
+    for (final (x, y, rad) in const [
+      (0.3, 0.25, 0.18),
+      (0.72, 0.6, 0.22),
+      (0.4, 0.8, 0.15)
+    ]) {
+      final c =
+          Offset(inner.left + inner.width * x, inner.top + inner.height * y);
+      canvas.drawCircle(
+          c,
+          inner.width * rad,
+          Paint()
+            ..shader = RadialGradient(colors: [
+              Colors.white.withValues(alpha: 0.05),
+              Colors.white.withValues(alpha: 0)
+            ]).createShader(
+                Rect.fromCircle(center: c, radius: inner.width * rad)));
     }
     // Grid: two slightly wobbly chalk lines each way.
     final play = r.deflate(size.width * 0.07);
@@ -252,7 +316,8 @@ class _SlatePainter extends CustomPainter {
       ..strokeWidth = size.width * 0.018
       ..strokeCap = StrokeCap.round;
     for (var k = 1; k <= 2; k++) {
-      final x = play.left + play.width * k / 3, y = play.top + play.height * k / 3;
+      final x = play.left + play.width * k / 3,
+          y = play.top + play.height * k / 3;
       canvas.drawPath(
           Path()
             ..moveTo(x - 2, play.top + 6)
@@ -275,14 +340,16 @@ class _Mark extends StatelessWidget {
   final bool x;
   final Color color;
   final bool glow;
-  const _Mark({super.key, required this.x, required this.color, required this.glow});
+  const _Mark(
+      {super.key, required this.x, required this.color, required this.glow});
 
   @override
   Widget build(BuildContext context) => TweenAnimationBuilder<double>(
         tween: Tween(begin: Motion.reduced(context) ? 1 : 0, end: 1),
         duration: Motion.of(context, const Duration(milliseconds: 260)),
         curve: Motion.standard,
-        builder: (_, p, __) => CustomPaint(painter: _MarkPainter(x, color, p, glow), size: Size.infinite),
+        builder: (_, p, __) => CustomPaint(
+            painter: _MarkPainter(x, color, p, glow), size: Size.infinite),
       );
 }
 
@@ -301,18 +368,24 @@ class _MarkPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width * 0.11
       ..strokeCap = StrokeCap.round;
-    if (glow) canvas.drawCircle(r.center, size.width * 0.42, Paint()..color = Brand.gold.withValues(alpha: 0.28));
+    if (glow)
+      canvas.drawCircle(r.center, size.width * 0.42,
+          Paint()..color = Brand.gold.withValues(alpha: 0.28));
     if (x) {
       final a = (p * 2).clamp(0.0, 1.0), b = (p * 2 - 1).clamp(0.0, 1.0);
-      canvas.drawLine(r.topLeft, Offset.lerp(r.topLeft, r.bottomRight, a)!, paint);
-      if (b > 0) canvas.drawLine(r.topRight, Offset.lerp(r.topRight, r.bottomLeft, b)!, paint);
+      canvas.drawLine(
+          r.topLeft, Offset.lerp(r.topLeft, r.bottomRight, a)!, paint);
+      if (b > 0)
+        canvas.drawLine(
+            r.topRight, Offset.lerp(r.topRight, r.bottomLeft, b)!, paint);
     } else {
       canvas.drawArc(r, -1.6, 6.283 * p, false, paint);
     }
   }
 
   @override
-  bool shouldRepaint(_MarkPainter o) => o.p != p || o.color != color || o.glow != glow;
+  bool shouldRepaint(_MarkPainter o) =>
+      o.p != p || o.color != color || o.glow != glow;
 }
 
 /// The chalk line struck through the winning three.
@@ -334,10 +407,12 @@ class _WinLinePainter extends CustomPainter {
   _WinLinePainter(this.line, this.p);
   @override
   void paint(Canvas canvas, Size size) {
-    Offset centre(int i) => Offset((i % 3 + 0.5) * size.width / 3, (i ~/ 3 + 0.5) * size.height / 3);
+    Offset centre(int i) => Offset(
+        (i % 3 + 0.5) * size.width / 3, (i ~/ 3 + 0.5) * size.height / 3);
     final a = centre(line.first), b = centre(line.last);
     final dir = (b - a) / (b - a).distance;
-    final start = a - dir * size.width * 0.12, end = b + dir * size.width * 0.12;
+    final start = a - dir * size.width * 0.12,
+        end = b + dir * size.width * 0.12;
     canvas.drawLine(
         start,
         Offset.lerp(start, end, p)!,

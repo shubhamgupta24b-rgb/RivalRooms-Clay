@@ -1,7 +1,7 @@
 // Renders the Party Games logo to PNG files.
 // Run from mobile/:  flutter test tool/render_logo_test.dart
 // Writes build/logo/: icon_1024.png (rounded tile), foreground_1024.png (Android adaptive
-// foreground, full bleed) and logo_full.png (icon + wordmark, a preview of the splash).
+// foreground, full bleed), playstore_512.png (square; Play rounds it) and logo_full.png (icon + wordmark, a preview of the splash).
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -42,7 +42,8 @@ void main() {
       }
     });
     await _save(tester, const CustomPaint(painter: PartyLogoPainter()), const Size(1024, 1024), 'icon_1024.png');
-    await _save(tester, const CustomPaint(painter: PartyLogoPainter(rounded: false, artScale: 0.72)), const Size(1024, 1024), 'foreground_1024.png');
+    await _save(tester, const CustomPaint(painter: PartyLogoPainter(rounded: false, artScale: 0.70)), const Size(1024, 1024), 'foreground_1024.png');
+    await _save(tester, const CustomPaint(painter: PartyLogoPainter(rounded: false)), const Size(512, 512), 'playstore_512.png');
     await _save(
       tester,
       const ColoredBox(color: Color(0xFF0E1150), child: Center(child: PartyLogoFull(width: 640, fontFamily: 'LogoFont'))),

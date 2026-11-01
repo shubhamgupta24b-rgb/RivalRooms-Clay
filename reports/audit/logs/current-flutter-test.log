@@ -1,0 +1,1461 @@
+00:00 +0: loading C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart
+00:00 +0: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob inventory deduplicates pending and cached loads
+00:00 +1: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob inventory retries at 2, 4, 8 seconds then stops
+Ad inventory load unavailable: Bad state: no fill
+Ad inventory load unavailable: Bad state: no fill
+Ad inventory load unavailable: Bad state: no fill
+Ad inventory load unavailable: Bad state: still no fill
+00:00 +2: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob inventory successful loads reset the retry budget
+Ad inventory load unavailable: Bad state: no fill
+Ad inventory load unavailable: Bad state: new no fill
+00:00 +3: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob inventory revocation disposes cache and cancels retries
+Ad inventory load unavailable: Bad state: no fill
+00:00 +4: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob inventory stale callbacks cannot clobber a new pending load
+00:00 +5: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob inventory duplicate callbacks do not dispose accepted inventory
+00:00 +6: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob inventory synchronous load and disposal errors stay contained
+Ad inventory load unavailable: Bad state: channel unavailable
+Ad inventory load unavailable: Bad state: channel unavailable
+Ad inventory disposal unavailable: Bad state: dispose unavailable
+00:00 +7: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel shared initialization, sample IDs, no ad while loading
+00:00 +8: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel denied consent makes no SDK or ad requests
+00:00 +9: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel privacy withdrawal disposes both formats and rejects late loads
+00:00 +10: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel privacy form errors still recheck changed consent
+Ad privacy form unavailable: Instance of 'FormError'
+#4      AdMobService.showPrivacyOptions.<anonymous closure> (package:multiplayer_game/core/ads/ad_mob_service.dart:334:60)
+#5      ConsentForm.showPrivacyOptionsForm (package:google_mobile_ads/src/ump/consent_form.dart:39:35)
+#7      ConsentForm.showPrivacyOptionsForm (package:google_mobile_ads/src/ump/consent_form.dart:40:7)
+#8      AdMobService.showPrivacyOptions (package:multiplayer_game/core/ads/ad_mob_service.dart:332:25)
+#9      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart:241:21)
+#11     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart:235:7)
+#12     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:29)
+#14     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:189:25)
+#15     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:19)
+#17     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1942:5)
+#20     TestWidgetsFlutterBinding._runTest (package:flutter_test/src/binding.dart:1927:10)
+#21     AutomatedTestWidgetsFlutterBinding.runTest.<anonymous closure> (package:flutter_test/src/binding.dart:2490:24)
+#22     FakeAsync.run.<anonymous closure>.<anonymous closure> (package:fake_async/fake_async.dart:182:47)
+#27     withClock (package:clock/src/default.dart:52:10)
+#28     FakeAsync.run.<anonymous closure> (package:fake_async/fake_async.dart:182:15)
+#33     FakeAsync.run (package:fake_async/fake_async.dart:181:52)
+#34     AutomatedTestWidgetsFlutterBinding.runTest (package:flutter_test/src/binding.dart:2487:15)
+#35     testWidgets.<anonymous closure> (package:flutter_test/src/widget_tester.dart:184:24)
+#36     Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:25)
+#38     Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:252:15)
+#43     Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:17)
+#44     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:17)
+#49     Invoker._waitForOutstandingCallbacks (package:test_api/src/backend/invoker.dart:314:5)
+#50     Invoker._onRun.<anonymous closure>.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/invoker.dart:457:21)
+#52     Invoker._onRun.<anonymous closure>.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/invoker.dart:455:15)
+#57     Invoker._onRun.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/invoker.dart:445:11)
+#58     Invoker._guardIfGuarded (package:test_api/src/backend/invoker.dart:500:15)
+#59     Invoker._onRun.<anonymous closure> (package:test_api/src/backend/invoker.dart:444:9)
+#66     Invoker._onRun (package:test_api/src/backend/invoker.dart:442:11)
+#67     LiveTestController.run (package:test_api/src/backend/live_test_controller.dart:161:11)
+#68     RemoteListener._runLiveTest.<anonymous closure> (package:test_api/src/backend/remote_listener.dart:320:16)
+#73     RemoteListener._runLiveTest (package:test_api/src/backend/remote_listener.dart:319:5)
+#74     RemoteListener._serializeTest.<anonymous closure> (package:test_api/src/backend/remote_listener.dart:261:7)
+#92     _GuaranteeSink.add (package:stream_channel/src/guarantee_channel.dart:125:12)
+#93     new _MultiChannel.<anonymous closure> (package:stream_channel/src/multi_channel.dart:159:31)
+#95     CastStreamSubscription._onData (dart:_internal/async_cast.dart:95:11)
+#121    new _WebSocketImpl._fromSocket.<anonymous closure> (dart:_http/websocket_impl.dart:1530:27)
+#127    _WebSocketProtocolTransformer._messageFrameEnd (dart:_http/websocket_impl.dart:525:23)
+#128    _WebSocketProtocolTransformer.add (dart:_http/websocket_impl.dart:409:46)
+#136    _Socket._onData (dart:io-patch/socket_patch.dart:2906:41)
+#143    new _RawSocket.<anonymous closure> (dart:io-patch/socket_patch.dart:2344:31)
+#144    _NativeSocket.issueReadEvent.issue (dart:io-patch/socket_patch.dart:1679:14)
+(elided 104 frames from dart:async and package:stack_trace)
+00:00 +11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel late full-screen callbacks dispose and reload only once
+00:00 +12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel show request failure releases the ad without gating gameplay
+Interstitial show request failed: PlatformException(show_failed, null, null, null)
+00:00 +13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel reward is once-only and late reward ignored after dismiss
+00:01 +14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel reward is once-only and late reward ignored after watchdog
+Rewarded interstitial did not finish within two minutes; releasing it.
+00:02 +15: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel reward is once-only and late reward ignored after dispose
+00:02 +16: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel reward is once-only and late reward ignored after revoke
+00:02 +17: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/ad_mob_service_test.dart: AdMob service with official SDK channel reward is once-only and late reward ignored after revoke
+00:02 +18: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf the ball never goes through a wall or off the course
+00:02 +19: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf the ball never goes through a wall or off the course
+00:02 +20: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf the ball never goes through a wall or off the course
+00:02 +21: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf the ball never goes through a wall or off the course
+00:02 +22: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf the ball never goes through a wall or off the course
+00:02 +23: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf the bot finds a putt that sinks it or gets close
+00:02 +24: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:02 +25: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:02 +26: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:02 +27: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:02 +28: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:02 +29: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:02 +30: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:02 +31: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:02 +32: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:02 +33: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:03 +34: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:03 +35: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Mini Golf scores: 7 minus strokes, all holes, then finished; online state round-trips
+00:03 +36: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Slingshot every fort is the same for everyone and has pigs
+00:03 +37: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Slingshot a falling block squashes the pig under it
+00:03 +38: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Slingshot the bot nearly always hits the fort
+00:03 +39: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: every game that can be played against someone has a bot (except the talking games)
+00:03 +40: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: every game that can be played against someone has a bot (except the talking games)
+00:03 +41: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: every game that can be played against someone has a bot (except the talking games)
+00:03 +42: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: every game that can be played against someone has a bot (except the talking games)
+00:03 +43: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: every game that can be played against someone has a bot (except the talking games)
+00:03 +44: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: every game that can be played against someone has a bot (except the talking games)
+00:03 +45: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: Archery a bullseye scores 10, the outer ring less, a miss nothing
+00:03 +46: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end tic_tac_toe with 2 computer players
+00:03 +47: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: music every music tune exists and renders a WAV
+00:03 +48: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: music every music tune exists and renders a WAV
+00:03 +49: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end dots_boxes with 3 computer players
+00:03 +50: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/batch3_games_test.dart: music every game with music is a real game
+00:03 +51: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end snakes_ladders with 4 computer players
+00:03 +52: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end ludo with 2 computer players
+00:03 +53: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end colour_clash with 4 computer players
+00:03 +54: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end hand_cricket with 2 computer players
+00:03 +55: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end quiz_battle with 3 computer players
+00:03 +56: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end math_duel with 2 computer players
+00:03 +57: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end reaction_tap with 4 computer players
+00:03 +58: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end memory with 3 computer players
+00:03 +59: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/clay_new_games_test.dart: chess rules fool's mate is checkmate for player 2
+00:03 +60: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/clay_new_games_test.dart: chess rules fool's mate is checkmate for player 2
+00:03 +61: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/clay_new_games_test.dart: chess rules fool's mate is checkmate for player 2
+00:03 +62: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end ping_pong with 2 computer players
+00:03 +63: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end ping_pong with 2 computer players
+00:03 +64: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end ping_pong with 2 computer players
+00:03 +65: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end ping_pong with 2 computer players
+00:03 +66: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end ping_pong with 2 computer players
+00:03 +67: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end ping_pong with 2 computer players
+00:03 +68: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/clay_new_games_test.dart: tug of war: pulling over the line wins
+00:04 +69: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/clay_new_games_test.dart: knife hit: a spot taken by a knife bounces, a clear one sticks
+00:04 +70: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/clay_new_games_test.dart: knife hit: a spot taken by a knife bounces, a clear one sticks
+00:04 +71: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +72: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +73: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +74: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +75: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +76: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +77: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +78: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +79: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +80: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +81: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +82: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +83: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +84: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +85: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +86: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +87: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +88: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +89: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: bots play whole games to the end mini_golf with 2 computer players
+00:04 +90: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +91: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +92: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +93: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +94: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +95: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +96: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +97: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +98: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +99: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +100: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:04 +101: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/design_tokens_test.dart: context.tk follows the nearest TokenScope
+00:05 +102: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +103: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +104: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +105: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +106: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +107: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +108: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +109: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +110: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +111: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +112: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +113: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +114: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:05 +115: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +116: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +117: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +118: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +119: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +120: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +121: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +122: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +122: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: muting during generation cancels playback and can resume
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  muting during generation cancels playback and can resume
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:06 +122 -1: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +122 -1: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: muting during generation cancels playback and can resume [E]
+  Test failed. See exception logs above.
+  The test description was: muting during generation cancels playback and can resume
+  
+00:06 +122 -1: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: returning to the same track rejects an older generation
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  returning to the same track rejects an older generation
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:06 +122 -2: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +122 -2: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: returning to the same track rejects an older generation [E]
+  Test failed. See exception logs above.
+  The test description was: returning to the same track rejects an older generation
+  
+00:06 +122 -2: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: a late native reply cannot restore stopped playback
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  a late native reply cannot restore stopped playback
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:06 +122 -3: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: VS COMPUTER: you are Player 1, the computer plays the rest
+00:06 +122 -3: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: a late native reply cannot restore stopped playback [E]
+  Test failed. See exception logs above.
+  The test description was: a late native reply cannot restore stopped playback
+  
+00:07 +123 -3: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:07 +124 -3: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:08 +124 -3: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: slider release sends and persists the previewed volume
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  slider release sends and persists the previewed volume
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:08 +124 -4: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:08 +124 -4: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: slider release sends and persists the previewed volume [E]
+  Test failed. See exception logs above.
+  The test description was: slider release sends and persists the previewed volume
+  
+00:08 +124 -4: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: muting takes effect before preferences finish writing
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  muting takes effect before preferences finish writing
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:08 +124 -5: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:08 +124 -5: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: muting takes effect before preferences finish writing [E]
+  Test failed. See exception logs above.
+  The test description was: muting takes effect before preferences finish writing
+  
+00:08 +124 -5: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume -0.5 is safe for the slider
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  loaded volume -0.5 is safe for the slider
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:08 +124 -6: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:08 +124 -6: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume -0.5 is safe for the slider [E]
+  Test failed. See exception logs above.
+  The test description was: loaded volume -0.5 is safe for the slider
+  
+00:08 +124 -6: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume 1.5 is safe for the slider
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  loaded volume 1.5 is safe for the slider
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:08 +124 -7: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:08 +124 -7: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume 1.5 is safe for the slider [E]
+  Test failed. See exception logs above.
+  The test description was: loaded volume 1.5 is safe for the slider
+  
+00:08 +124 -7: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume NaN is safe for the slider
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  loaded volume NaN is safe for the slider
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:08 +124 -8: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:08 +124 -8: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume NaN is safe for the slider [E]
+  Test failed. See exception logs above.
+  The test description was: loaded volume NaN is safe for the slider
+  
+00:08 +124 -8: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume Infinity is safe for the slider
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  loaded volume Infinity is safe for the slider
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:08 +124 -9: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:08 +124 -9: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume Infinity is safe for the slider [E]
+  Test failed. See exception logs above.
+  The test description was: loaded volume Infinity is safe for the slider
+  
+00:08 +124 -9: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume -Infinity is safe for the slider
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  loaded volume -Infinity is safe for the slider
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:08 +124 -10: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:08 +124 -10: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume -Infinity is safe for the slider [E]
+  Test failed. See exception logs above.
+  The test description was: loaded volume -Infinity is safe for the slider
+  
+00:08 +125 -10: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:08 +125 -10: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume 0.35 is safe for the slider
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The value of a foundation debug variable was changed by the test.
+
+When the exception was thrown, this was the stack:
+#0      debugAssertAllFoundationVarsUnset.<anonymous closure> (package:flutter/src/foundation/debug.dart:45:7)
+#1      debugAssertAllFoundationVarsUnset (package:flutter/src/foundation/debug.dart:48:4)
+#2      TestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:1996:7)
+#3      AutomatedTestWidgetsFlutterBinding._verifyInvariants (package:flutter_test/src/binding.dart:2525:11)
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1974:7)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  loaded volume 0.35 is safe for the slider
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:08 +125 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: Smash Karts cannot be found from the local games screen
+00:08 +125 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume 0.35 is safe for the slider [E]
+  Test failed. See exception logs above.
+  The test description was: loaded volume 0.35 is safe for the slider
+  
+00:08 +126 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/bots_test.dart: games without bots (talking games) have no VS COMPUTER switch
+00:09 +127 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: search finds games by name or description
+00:09 +128 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +129 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +130 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +131 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +132 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +133 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +134 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +135 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +136 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +137 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +138 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +139 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +140 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +141 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +142 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +143 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +144 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +145 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +146 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +147 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: categories: solo shows only solo games, cards only card games
+00:10 +148 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_kit_test.dart: PlayerScoreCard shows name, score and tag; out players are announced
+00:11 +149 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: long-press stars a favourite; the Favourites chip lists it
+00:11 +150 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: long-press stars a favourite; the Favourites chip lists it
+00:11 +151 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/games_hub_test.dart: long-press stars a favourite; the Favourites chip lists it
+00:11 +152 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:11 +153 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:11 +154 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:11 +155 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:11 +156 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:12 +157 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:12 +158 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:12 +159 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +160 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +161 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +162 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +163 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +164 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +165 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +166 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +167 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +168 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +169 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +170 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +171 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +172 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +173 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +174 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +175 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +176 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +177 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +178 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +179 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:13 +180 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/guess_person_widget_test.dart: full round renders without overflow on small phone
+00:14 +181 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:14 +182 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:14 +183 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:14 +184 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:14 +185 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:14 +186 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:14 +187 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:15 +188 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:16 +189 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:16 +189 -11: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: hub lists all games with their player counts
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "71 games": []>
+   Which: means none were found but one was expected
+the count includes local games and the two built-in games
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart:87:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart line 87
+The test description was:
+  hub lists all games with their player counts
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:16 +189 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:16 +189 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: hub lists all games with their player counts [E]
+  Test failed. See exception logs above.
+  The test description was: hub lists all games with their player counts
+  
+00:17 +190 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:17 +191 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:17 +192 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:18 +193 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:18 +194 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:19 +195 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:19 +196 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:19 +197 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:20 +198 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:20 +199 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:20 +200 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:20 +201 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:20 +202 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +203 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +204 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +205 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +206 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +207 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +208 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +209 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +210 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +211 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +212 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +213 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +214 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:21 +215 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:22 +216 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:22 +217 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:22 +218 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:22 +219 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:22 +220 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:22 +221 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +222 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +223 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +224 -12: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +224 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +224 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/new_games_logic_test.dart: 69 shell games in the hub (+ Guess the Person + Raja Mantri = 71), unique ids, 1-6 players [E]
+  Expected: an object with length of <69>
+    Actual: [
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              Instance of 'LocalGameInfo',
+              ...
+            ]
+     Which: has length of <70>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\new_games_logic_test.dart 24:5                 main.<fn>
+  
+00:23 +225 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +226 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +227 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +228 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +229 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +230 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +231 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +232 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +233 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +234 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +235 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +236 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +237 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +238 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +239 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +240 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +241 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +242 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +243 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +244 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +245 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +246 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +247 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +248 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +249 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/lan_server_test.dart: bad sign-ins are turned away
+00:23 +250 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Paint Fight plays through on small phone
+00:23 +251 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Paint Fight plays through on small phone
+00:23 +252 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/math_duel_ui_test.dart: 2 desks fit Size(800.0, 1280.0) with large text and answer feedback
+00:24 +253 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Tic-Tac-Toe plays through on small phone
+00:24 +254 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/math_duel_ui_test.dart: 3 desks fit Size(800.0, 1280.0) with large text and answer feedback
+00:24 +255 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Air Hockey plays through on small phone
+00:24 +256 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/math_duel_ui_test.dart: 4 desks fit Size(800.0, 1280.0) with large text and answer feedback
+00:24 +257 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ping Pong plays through on small phone
+00:24 +258 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Reaction Tap plays through on small phone
+00:25 +259 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Math Duel plays through on small phone
+00:25 +260 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: Nitro has dedicated online 2–10, solo bot combat, and no phone LAN
+00:25 +261 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Connect Four plays through on small phone
+00:25 +262 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Connect Four plays through on small phone
+00:25 +263 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Connect Four plays through on small phone
+00:25 +264 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Connect Four plays through on small phone
+00:25 +265 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: asset entry is local classic JS; embedded WASM and explicit bridge boot
+00:25 +266 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dots & Boxes plays through on small phone
+00:25 +267 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dots & Boxes plays through on small phone
+00:26 +268 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +269 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +270 -13: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +270 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +270 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: game catalog and routing every catalog game is playable and has a screen [E]
+  Expected: Set:[
+              'colour_clash',
+              'raja_mantri',
+              'ludo',
+              'snakes_ladders',
+              'dots_boxes',
+              'connect_four',
+              'tic_tac_toe',
+              'memory',
+              'guess_who',
+              'air_hockey',
+              'ping_pong',
+              'basketball_hoops',
+              'paint_fight',
+              'reaction_tap',
+              'math_duel',
+              'truth_dare',
+              'hand_cricket',
+              'quiz_battle',
+              'find_spy',
+              'mafia',
+              'undercover',
+              'charades',
+              'heads_up',
+              'draw_guess',
+              ...
+            ]
+    Actual: Set:[
+              'colour_clash',
+              'raja_mantri',
+              'ludo',
+              'ludo_teams',
+              'bingo',
+              'battleship',
+              'checkers',
+              'snakes_ladders',
+              'dots_boxes',
+              'connect_four',
+              'tic_tac_toe',
+              'memory',
+              'guess_who',
+              'chess',
+              'nitro_knockout',
+              'air_hockey',
+              'ping_pong',
+              'basketball_hoops',
+              'paint_fight',
+              'reaction_tap',
+              'math_duel',
+              'hand_cricket',
+              'quiz_battle',
+              'fruit_merge_battle',
+              ...
+            ]
+     Which: larger than expected
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\online_game_screens_test.dart 79:7             main.<fn>.<fn>
+  
+00:26 +271 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +272 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +273 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +274 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +275 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +276 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +277 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +278 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +279 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +280 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +281 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +282 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +283 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +284 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +285 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +286 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +287 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +288 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +289 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: unsupported platforms need no WebView fake (variant: TargetPlatform.linux)
+00:26 +290 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +291 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +292 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +293 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +294 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +295 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +296 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +297 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +298 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +299 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +300 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +301 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +302 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +303 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +304 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +305 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +306 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +307 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Crush It screen shows taps and sends a tap action
+00:27 +308 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:27 +309 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:27 +310 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:28 +311 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:28 +312 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:28 +313 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:28 +314 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:28 +315 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:28 +316 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:28 +317 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:28 +318 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:29 +319 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/nitro_knockout_test.dart: room size reaches ten online but stops at six on LAN
+00:29 +320 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Memory screen your turn: hidden cards flip, matched cards do nothing
+00:29 +321 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Slingshot plays through on small phone
+00:29 +322 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:29 +323 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:29 +324 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:29 +325 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:29 +326 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:29 +327 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:29 +328 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:29 +329 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:29 +330 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:29 +331 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:29 +332 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:30 +333 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:30 +334 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:30 +335 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:30 +336 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +337 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +338 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +339 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +340 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +341 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +342 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +343 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +344 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +345 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +346 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/quick_play_test.dart: Quick Play: any game by default
+00:31 +347 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Knife Hit plays through on small phone
+00:31 +348 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Guess Who (2 phones) screen final guess: crossed-out people cannot be picked; confirm sends the guess
+00:31 +349 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Guess Who (2 phones) screen final guess: crossed-out people cannot be picked; confirm sends the guess
+00:32 +350 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Guess Who (2 phones) screen final guess: crossed-out people cannot be picked; confirm sends the guess
+00:32 +351 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/online_game_screens_test.dart: Guess Who (2 phones) screen final guess: crossed-out people cannot be picked; confirm sends the guess
+00:32 +352 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:32 +353 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:32 +354 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:32 +355 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:33 +356 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:33 +357 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:33 +358 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:33 +359 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:33 +360 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:33 +361 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:33 +362 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:33 +363 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:34 +364 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:34 +365 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:34 +366 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:35 +367 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:35 +368 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:35 +369 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:35 +370 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +371 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +372 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +373 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +374 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +375 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +376 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +377 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +378 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +379 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +380 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 320x568
+00:36 +381 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:36 +382 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:36 +383 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:36 +384 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:36 +385 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:37 +386 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:37 +387 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:37 +388 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:37 +389 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:37 +390 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:37 +391 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:37 +392 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:38 +393 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:38 +394 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:38 +395 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:38 +396 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:38 +397 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/records_test.dart: My Records lists games with best score, wins and totals
+00:38 +398 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/reaction_tap_ui_test.dart: 4 lanes fit Size(568.0, 320.0) with large text in every phase
+00:38 +399 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:38 +400 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:38 +401 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:39 +402 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:39 +403 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:39 +404 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:39 +405 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:39 +406 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:39 +407 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:39 +408 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:39 +409 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:39 +410 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:40 +411 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:40 +412 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device a full round from the hub on 800x1280
+00:40 +413 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Space Shooter plays through on small phone
+00:40 +414 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device players choose how many rounds
+00:40 +415 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device players choose how many rounds
+00:40 +416 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device players choose how many rounds
+00:40 +417 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: the relay games all have an online version, matching the server list
+00:40 +418 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy plays through on phone
+00:40 +419 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy plays through on phone
+00:40 +420 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy plays through on phone
+00:40 +421 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy plays through on phone
+00:40 +422 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy plays through on phone
+00:40 +423 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy plays through on phone
+00:40 +424 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy plays through on phone
+00:40 +425 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy plays through on phone
+00:40 +426 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy plays through on phone
+00:40 +427 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:40 +428 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:40 +429 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:40 +430 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:40 +431 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:40 +432 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +433 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +434 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +435 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +436 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +437 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +438 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +439 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +440 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +441 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +442 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri on one device Mantri too slow: chor escapes; last round shows final results
+00:41 +443 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: state survives the trip host -> JSON -> guest rock_paper_scissors
+00:41 +444 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +445 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +446 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +447 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +448 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +449 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +450 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +451 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +452 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +453 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +454 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia plays through on phone
+00:41 +455 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online dealing: only I can turn my card over
+00:41 +456 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online dealing: only I can turn my card over
+00:41 +457 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online dealing: only I can turn my card over
+00:41 +458 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +459 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +460 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +461 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +462 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +463 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +464 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +465 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +466 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +467 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +468 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +469 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +470 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover plays through on phone
+00:41 +471 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: state survives the trip host -> JSON -> guest carrom
+00:41 +472 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online guessing as someone else just watches
+00:41 +473 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online guessing as someone else just watches
+00:41 +474 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online guessing as someone else just watches
+00:41 +475 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online guessing as someone else just watches
+00:41 +476 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online guessing as someone else just watches
+00:41 +477 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online guessing as someone else just watches
+00:41 +478 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online guessing as someone else just watches
+00:41 +479 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/raja_mantri_test.dart: Raja Mantri online guessing as someone else just watches
+00:41 +480 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades plays through on phone
+00:41 +481 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades plays through on phone
+00:41 +482 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades plays through on phone
+00:41 +483 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades plays through on phone
+00:41 +484 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:41 +485 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:41 +486 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:41 +487 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:41 +488 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:41 +489 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:41 +490 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:41 +491 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:41 +492 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:42 +493 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:42 +494 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:42 +495 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:42 +496 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +497 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +498 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +499 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +500 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +501 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +502 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +503 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +504 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +505 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +506 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +507 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +508 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +509 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +510 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +511 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: RelayPlay screen host runs the game, applies guest inputs and publishes state
+00:43 +512 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:43 +513 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +514 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +515 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +516 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +517 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +518 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +519 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +520 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +521 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +522 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +523 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +524 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +525 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +526 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +527 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +528 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +529 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +530 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +531 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:44 +532 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:45 +533 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:45 +534 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:45 +535 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:45 +536 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:45 +537 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:45 +538 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+00:45 +539 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host lobby: code, next game card, change game, start and party mode
+
+Warning: A call to tap() with finder "Found 1 widget with text "Connect Four": [
+  Text("Connect Four", inherit: true, color: Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), family: Fredoka, size: 13.0, height: 1.1x, overflow: ellipsis, maxLines: 1, dependencies: [DefaultSelectionStyle, DefaultTextStyle, MediaQuery]),
+]" derived an Offset (Offset(302.0, 984.5)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(302.0, 984.5) is outside the bounds of the root of the render tree, Size(411.0, 914.0).
+The finder corresponds to this RenderBox: RenderParagraph#dc722 relayoutBoundary=up4
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#5117e(_ReusableRenderView#83f62), HitTestEntry<HitTestTarget>#f3d87(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart:115:18)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+00:46 +540 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Rock Paper Scissors plays through on phone
+00:46 +541 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count dots_boxes
+00:46 +542 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: host cannot start until everyone is ready, or if the game does not fit
+00:46 +543 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Fruit Merge Battle plays through on phone
+00:46 +544 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Fruit Merge Battle plays through on phone
+00:46 +545 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Fruit Merge Battle plays through on phone
+00:46 +546 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: guest lobby: no game controls, just READY
+00:46 +547 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: guest lobby: no game controls, just READY
+00:46 +548 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: guest lobby: no game controls, just READY
+00:46 +549 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: guest lobby: no game controls, just READY
+00:46 +550 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: guest lobby: no game controls, just READY
+00:46 +551 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: guest lobby: no game controls, just READY
+00:46 +552 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: guest lobby: no game controls, just READY
+00:46 +553 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count connect_four
+00:46 +554 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo plays through on phone
+00:46 +555 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo plays through on phone
+00:46 +556 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo plays through on phone
+00:46 +557 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo plays through on phone
+00:46 +558 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo plays through on phone
+00:46 +559 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo plays through on phone
+00:46 +560 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo plays through on phone
+00:46 +561 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo plays through on phone
+00:46 +562 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/session_ui_test.dart: results (no party): host plays again or chooses another game
+00:46 +563 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count truth_dare
+00:46 +564 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count truth_dare
+00:47 +565 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count truth_dare
+00:47 +566 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count truth_dare
+00:47 +567 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mini Golf plays through on phone
+00:47 +568 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count math_duel
+00:47 +569 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count math_duel
+00:48 +570 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count math_duel
+00:48 +571 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Shooting Gallery plays through on phone
+00:48 +572 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count reaction_tap
+00:48 +573 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count reaction_tap
+00:48 +574 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count reaction_tap
+00:48 +575 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count reaction_tap
+00:48 +576 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:48 +577 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:48 +578 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:48 +579 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:48 +580 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:48 +581 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:48 +582 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:48 +583 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:49 +584 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:49 +585 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:49 +586 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:49 +587 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:49 +588 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:49 +589 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:49 +590 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:50 +591 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:50 +592 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:50 +593 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:50 +594 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:50 +595 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:50 +596 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:50 +597 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:50 +598 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:51 +599 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:51 +600 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:51 +601 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:51 +602 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:51 +603 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:51 +604 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: first launch: splash -> login -> home with your name
+00:51 +605 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/take_turns_test.dart: take turns: full screen for each person, bots instantly, then results
+00:51 +606 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/take_turns_test.dart: take turns: full screen for each person, bots instantly, then results
+00:52 +607 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/take_turns_test.dart: take turns: full screen for each person, bots instantly, then results
+00:52 +608 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/take_turns_test.dart: take turns: full screen for each person, bots instantly, then results
+00:52 +609 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/take_turns_test.dart: take turns: full screen for each person, bots instantly, then results
+00:52 +610 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/take_turns_test.dart: take turns: full screen for each person, bots instantly, then results
+00:52 +611 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Carrom plays through on phone
+00:52 +612 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: stalled saved-player restore falls through to guest setup
+[startup] Saved player restore timed out; opening guest setup: TimeoutException after 0:00:00.020000: Future not completed
+<asynchronous suspension>
+#1      _SplashScreenState._restorePlayer (package:multiplayer_game/features/splash/splash_screen.dart:79:14)
+<asynchronous suspension>
+#2      _SplashScreenState._boot (package:multiplayer_game/features/splash/splash_screen.dart:58:22)
+<asynchronous suspension>
+(elided one frame from dart:async)
+00:52 +613 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count would_rather
+00:52 +614 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count would_rather
+00:52 +615 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/take_turns_test.dart: choosing a time changes every turn's clock
+00:52 +616 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/take_turns_test.dart: choosing a time changes every turn's clock
+00:52 +617 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (320)
+00:52 +618 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (320)
+00:52 +619 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (320)
+00:52 +620 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (320)
+00:53 +621 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (320)
+00:53 +622 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (320)
+00:53 +623 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (320)
+00:53 +624 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (320)
+00:53 +625 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (320)
+00:53 +626 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count rock_paper_scissors
+00:53 +627 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hangman plays through on phone
+00:53 +628 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (411)
+00:53 +629 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (411)
+00:54 +630 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (411)
+00:54 +631 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (411)
+00:54 +632 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (411)
+00:54 +633 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (411)
+00:54 +634 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (411)
+00:54 +635 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: create room: pick a game, filter, players follow the game limits (411)
+00:54 +636 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count bingo
+00:54 +637 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count bingo
+00:54 +638 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count bingo
+00:55 +639 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count bingo
+00:55 +640 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:55 +641 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:55 +642 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:55 +643 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:55 +644 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:55 +645 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:56 +646 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:56 +647 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:56 +648 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:56 +649 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:56 +650 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:56 +651 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:56 +652 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:56 +653 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:56 +654 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:56 +655 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:57 +656 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:57 +657 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Colour Clash: intro and play at 1.3x text
+00:57 +658 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 320x568
+00:57 +659 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 320x568
+00:57 +660 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 320x568
+00:57 +661 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 320x568
+00:57 +662 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 320x568
+00:57 +663 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 320x568
+00:57 +664 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Paint Fight plays through on tablet
+00:57 +665 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Ludo: intro and play at 1.3x text
+00:57 +666 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Ludo: intro and play at 1.3x text
+00:58 +667 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/relay_test.dart: every online view fits a small phone, for every player count hot_potato
+00:58 +668 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +669 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +670 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +671 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +672 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +673 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +674 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +675 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +676 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +677 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +678 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:58 +679 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +680 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +681 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +682 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +683 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +684 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +685 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +686 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +687 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +688 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +689 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +690 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +691 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +692 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +693 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +694 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +695 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+00:59 +696 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+01:00 +697 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+01:00 +698 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+01:00 +699 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+01:00 +700 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 411x914
+01:00 +701 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Battleship plays through on tablet
+01:00 +702 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Basketball Hoops: intro and play at 1.3x text
+01:00 +703 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Basketball Hoops: intro and play at 1.3x text
+01:00 +704 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Basketball Hoops: intro and play at 1.3x text
+01:00 +705 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:01 +706 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:01 +707 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:01 +708 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:01 +709 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:01 +710 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:01 +711 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:01 +712 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:01 +713 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:02 +714 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:02 +715 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:02 +716 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:02 +717 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:02 +718 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:02 +719 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:02 +720 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:02 +721 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:02 +722 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:02 +723 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/start_pages_test.dart: home lays out and every section opens on 800x1280
+01:03 +724 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Penguin Push plays through on tablet
+01:03 +725 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Connect Four: intro and play at 1.3x text
+01:03 +726 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ring Sort Race plays through on tablet
+01:03 +727 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Dots & Boxes: intro and play at 1.3x text
+01:03 +728 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Fruit Merge plays through on tablet
+01:03 +729 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Most Likely To: intro and play at 1.3x text
+01:03 +730 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: 2048 plays through on tablet
+01:03 +731 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Would You Rather: intro and play at 1.3x text
+01:03 +732 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Would You Rather: intro and play at 1.3x text
+01:03 +733 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Minesweeper plays through on tablet
+01:03 +734 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Truth or Dare: intro and play at 1.3x text
+01:03 +735 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Truth or Dare: intro and play at 1.3x text
+01:03 +736 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Whack-a-Mole plays through on tablet
+01:03 +737 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Rock Paper Scissors: intro and play at 1.3x text
+01:03 +738 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Piano Tiles plays through on tablet
+01:03 +739 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Fruit Merge Battle: intro and play at 1.3x text
+01:03 +740 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Fruit Merge Battle: intro and play at 1.3x text
+01:04 +741 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Fruit Merge Battle: intro and play at 1.3x text
+01:04 +742 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Simon Says plays through on tablet
+01:04 +743 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Bingo: intro and play at 1.3x text
+01:04 +744 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Bingo: intro and play at 1.3x text
+01:04 +745 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Chicken Jump plays through on tablet
+01:04 +746 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Battleship: intro and play at 1.3x text
+01:04 +747 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Battleship: intro and play at 1.3x text
+01:04 +748 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Battleship: intro and play at 1.3x text
+01:04 +749 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Candy Crush plays through on tablet
+01:04 +750 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Checkers: intro and play at 1.3x text
+01:04 +751 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Checkers: intro and play at 1.3x text
+01:04 +752 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Checkers: intro and play at 1.3x text
+01:04 +753 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ball Sort plays through on tablet
+01:04 +754 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Mini Golf: intro and play at 1.3x text
+01:04 +755 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Sliding Puzzle plays through on tablet
+01:04 +756 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Slingshot: intro and play at 1.3x text
+01:05 +757 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Sudoku plays through on tablet
+01:05 +758 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Sudoku plays through on tablet
+01:05 +759 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Shooting Gallery: intro and play at 1.3x text
+01:05 +760 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Shooting Gallery: intro and play at 1.3x text
+01:05 +761 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dino Run plays through on tablet
+01:05 +762 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Bottle Smash: intro and play at 1.3x text
+01:05 +763 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Bottle Smash: intro and play at 1.3x text
+01:05 +764 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bubble Shooter plays through on tablet
+01:05 +765 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Chess: intro and play at 1.3x text
+01:05 +766 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Chess: intro and play at 1.3x text
+01:05 +767 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Space Shooter plays through on tablet
+01:05 +768 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Tug of War: intro and play at 1.3x text
+01:06 +769 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Tug of War: intro and play at 1.3x text
+01:06 +770 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy with 3 players on 320x568
+01:06 +771 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Darts: intro and play at 1.3x text
+01:06 +772 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Darts: intro and play at 1.3x text
+01:06 +773 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy with 4 players on 320x568
+01:06 +774 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Hot Potato: intro and play at 1.3x text
+01:06 +775 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy with 4 players on 411x914
+01:06 +776 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Knife Hit: intro and play at 1.3x text
+01:06 +777 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy with 5 players on 320x568
+01:06 +778 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Cup Pong: intro and play at 1.3x text
+01:06 +779 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy with 5 players on 411x914
+01:06 +780 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Hungry Hippos: intro and play at 1.3x text
+01:06 +781 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy with 6 players on 320x568
+01:06 +782 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy with 6 players on 320x568
+01:06 +783 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Ring Sort Race: intro and play at 1.3x text
+01:07 +784 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Find the Spy with 6 players on 411x914
+01:07 +785 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Fruit Merge: intro and play at 1.3x text
+01:07 +786 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ludo with 3 players on 320x568
+01:07 +787 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: 2048: intro and play at 1.3x text
+01:07 +788 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ludo with 3 players on 411x914
+01:07 +789 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Flappy Jump: intro and play at 1.3x text
+01:07 +790 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ludo with 4 players on 320x568
+01:07 +791 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Minesweeper: intro and play at 1.3x text
+01:07 +792 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ludo with 4 players on 411x914
+01:07 +793 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ludo with 4 players on 411x914
+01:07 +794 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Whack-a-Mole: intro and play at 1.3x text
+01:07 +795 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia with 4 players on 320x568
+01:07 +796 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Piano Tiles: intro and play at 1.3x text
+01:07 +797 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia with 4 players on 411x914
+01:07 +798 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Word Scramble: intro and play at 1.3x text
+01:07 +799 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia with 5 players on 320x568
+01:08 +800 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Stack Tower: intro and play at 1.3x text
+01:08 +801 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia with 5 players on 411x914
+01:08 +802 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Simon Says: intro and play at 1.3x text
+01:08 +803 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia with 6 players on 320x568
+01:08 +804 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia with 6 players on 320x568
+01:08 +805 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Chicken Jump: intro and play at 1.3x text
+01:08 +806 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mafia with 6 players on 411x914
+01:08 +807 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Carrom: intro and play at 1.3x text
+01:08 +808 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover with 3 players on 320x568
+01:08 +809 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Eight Ball: intro and play at 1.3x text
+01:08 +810 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover with 3 players on 411x914
+01:08 +811 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover with 3 players on 411x914
+01:08 +812 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Bike Racing: intro and play at 1.3x text
+01:08 +813 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Bike Racing: intro and play at 1.3x text
+01:08 +814 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover with 4 players on 411x914
+01:08 +815 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover with 4 players on 411x914
+01:08 +816 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Ball Sort: intro and play at 1.3x text
+01:09 +817 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Ball Sort: intro and play at 1.3x text
+01:09 +818 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover with 5 players on 411x914
+01:09 +819 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Sliding Puzzle: intro and play at 1.3x text
+01:09 +820 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover with 6 players on 320x568
+01:09 +821 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Sudoku: intro and play at 1.3x text
+01:09 +822 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Undercover with 6 players on 411x914
+01:09 +823 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Hangman: intro and play at 1.3x text
+01:09 +824 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades with 3 players on 320x568
+01:09 +825 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades with 3 players on 320x568
+01:09 +826 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Block Drop: intro and play at 1.3x text
+01:09 +827 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades with 3 players on 411x914
+01:09 +828 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Bubble Shooter: intro and play at 1.3x text
+01:09 +829 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades with 4 players on 320x568
+01:10 +830 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Sky Jumper: intro and play at 1.3x text
+01:10 +831 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades with 4 players on 411x914
+01:10 +832 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Space Shooter: intro and play at 1.3x text
+01:10 +833 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades with 5 players on 320x568
+01:10 +834 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: Color Switch: intro and play at 1.3x text
+01:10 +835 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades with 5 players on 411x914
+01:10 +836 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: pause menu at 1.3x text
+01:10 +837 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades with 6 players on 320x568
+01:10 +838 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/text_scale_test.dart: games list at 1.3x text
+01:11 +839 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dumb Charades with 6 players on 411x914
+01:11 +840 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Snakes & Ladders with 3 players on 320x568
+01:11 +841 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Snakes & Ladders with 3 players on 411x914
+01:11 +842 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Snakes & Ladders with 4 players on 320x568
+01:11 +843 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Snakes & Ladders with 4 players on 411x914
+01:11 +844 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Snakes & Ladders with 5 players on 320x568
+01:11 +845 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Snakes & Ladders with 5 players on 411x914
+01:12 +846 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Snakes & Ladders with 6 players on 320x568
+01:12 +847 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Snakes & Ladders with 6 players on 411x914
+01:12 +848 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Draw & Guess with 3 players on 320x568
+01:12 +849 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Draw & Guess with 3 players on 411x914
+01:12 +850 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Draw & Guess with 4 players on 320x568
+01:12 +851 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Draw & Guess with 4 players on 411x914
+01:12 +852 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Draw & Guess with 5 players on 320x568
+01:12 +853 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Draw & Guess with 5 players on 411x914
+01:12 +854 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Draw & Guess with 6 players on 320x568
+01:13 +855 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Draw & Guess with 6 players on 411x914
+01:13 +856 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Heads Up with 3 players on 320x568
+01:13 +857 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Heads Up with 3 players on 411x914
+01:13 +858 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Heads Up with 4 players on 320x568
+01:13 +859 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Heads Up with 4 players on 411x914
+01:13 +860 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Heads Up with 5 players on 320x568
+01:13 +861 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Heads Up with 5 players on 411x914
+01:13 +862 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Heads Up with 6 players on 320x568
+01:13 +863 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Heads Up with 6 players on 411x914
+01:14 +864 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Quiz Battle with 3 players on 320x568
+01:14 +865 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Quiz Battle with 3 players on 411x914
+01:14 +866 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Quiz Battle with 4 players on 320x568
+01:14 +867 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Quiz Battle with 4 players on 411x914
+01:14 +868 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Basketball Hoops with 3 players on 320x568
+01:14 +869 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Basketball Hoops with 3 players on 411x914
+01:14 +870 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Basketball Hoops with 4 players on 320x568
+01:15 +871 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Basketball Hoops with 4 players on 411x914
+01:15 +872 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Memory with 3 players on 320x568
+01:15 +873 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Memory with 3 players on 411x914
+01:15 +874 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Memory with 4 players on 320x568
+01:15 +875 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Memory with 4 players on 411x914
+01:15 +876 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Memory with 5 players on 320x568
+01:16 +877 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Memory with 5 players on 411x914
+01:16 +878 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Memory with 6 players on 320x568
+01:16 +879 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Memory with 6 players on 411x914
+01:16 +880 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Reaction Tap with 3 players on 320x568
+01:16 +881 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Reaction Tap with 3 players on 411x914
+01:17 +882 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Reaction Tap with 4 players on 320x568
+01:17 +883 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Reaction Tap with 4 players on 411x914
+01:17 +884 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Reaction Tap with 5 players on 320x568
+01:17 +885 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Reaction Tap with 5 players on 411x914
+01:17 +886 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Reaction Tap with 6 players on 320x568
+01:17 +887 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Reaction Tap with 6 players on 411x914
+01:18 +888 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Math Duel with 3 players on 320x568
+01:18 +889 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Math Duel with 3 players on 411x914
+01:18 +890 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Math Duel with 4 players on 320x568
+01:18 +891 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Math Duel with 4 players on 411x914
+01:18 +892 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dots & Boxes with 3 players on 320x568
+01:18 +893 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dots & Boxes with 3 players on 411x914
+01:18 +894 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dots & Boxes with 4 players on 320x568
+01:18 +895 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Dots & Boxes with 4 players on 411x914
+01:18 +896 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Most Likely To with 3 players on 320x568
+01:18 +897 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Most Likely To with 3 players on 411x914
+01:18 +898 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Most Likely To with 4 players on 320x568
+01:19 +899 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Most Likely To with 4 players on 411x914
+01:19 +900 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Most Likely To with 5 players on 320x568
+01:19 +901 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Most Likely To with 5 players on 411x914
+01:19 +902 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Most Likely To with 6 players on 320x568
+01:19 +903 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Most Likely To with 6 players on 411x914
+01:19 +904 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Would You Rather with 3 players on 320x568
+01:19 +905 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Would You Rather with 3 players on 411x914
+01:19 +906 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Would You Rather with 4 players on 320x568
+01:19 +907 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Would You Rather with 4 players on 411x914
+01:19 +908 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Would You Rather with 5 players on 320x568
+01:19 +909 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Would You Rather with 5 players on 411x914
+01:20 +910 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Would You Rather with 6 players on 320x568
+01:20 +911 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Would You Rather with 6 players on 411x914
+01:20 +912 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Truth or Dare with 3 players on 320x568
+01:20 +913 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Truth or Dare with 3 players on 411x914
+01:20 +914 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Truth or Dare with 4 players on 320x568
+01:20 +915 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Truth or Dare with 4 players on 411x914
+01:20 +916 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Truth or Dare with 5 players on 320x568
+01:20 +917 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Truth or Dare with 5 players on 411x914
+01:21 +918 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Truth or Dare with 6 players on 320x568
+01:21 +919 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Truth or Dare with 6 players on 411x914
+01:21 +920 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Rock Paper Scissors with 3 players on 320x568
+01:21 +921 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Rock Paper Scissors with 3 players on 411x914
+01:21 +922 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Rock Paper Scissors with 4 players on 320x568
+01:21 +923 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Rock Paper Scissors with 4 players on 411x914
+01:21 +924 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Rock Paper Scissors with 5 players on 320x568
+01:21 +925 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Rock Paper Scissors with 5 players on 411x914
+01:22 +926 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Rock Paper Scissors with 6 players on 320x568
+01:22 +927 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Rock Paper Scissors with 6 players on 411x914
+01:22 +928 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Fruit Merge Battle with 3 players on 320x568
+01:22 +929 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Fruit Merge Battle with 3 players on 411x914
+01:22 +930 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Fruit Merge Battle with 4 players on 320x568
+01:23 +931 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Fruit Merge Battle with 4 players on 411x914
+01:23 +932 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo with 3 players on 320x568
+01:23 +933 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo with 3 players on 411x914
+01:23 +934 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo with 4 players on 320x568
+01:23 +935 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo with 4 players on 411x914
+01:23 +936 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo with 5 players on 320x568
+01:23 +937 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo with 5 players on 411x914
+01:23 +938 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo with 6 players on 320x568
+01:23 +939 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bingo with 6 players on 411x914
+01:24 +940 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mini Golf with 3 players on 320x568
+01:24 +941 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mini Golf with 3 players on 411x914
+01:24 +942 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mini Golf with 4 players on 320x568
+01:24 +943 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Mini Golf with 4 players on 411x914
+01:24 +944 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Slingshot with 3 players on 320x568
+01:24 +945 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Slingshot with 3 players on 411x914
+01:24 +946 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Slingshot with 4 players on 320x568
+01:24 +947 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Slingshot with 4 players on 411x914
+01:25 +948 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Archery with 3 players on 320x568
+01:25 +949 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Archery with 3 players on 411x914
+01:25 +950 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Archery with 4 players on 320x568
+01:25 +951 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Archery with 4 players on 411x914
+01:25 +952 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Shooting Gallery with 3 players on 320x568
+01:25 +953 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Shooting Gallery with 3 players on 411x914
+01:25 +954 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Shooting Gallery with 4 players on 320x568
+01:25 +955 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Shooting Gallery with 4 players on 411x914
+01:26 +956 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bottle Smash with 3 players on 320x568
+01:26 +957 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bottle Smash with 3 players on 411x914
+01:26 +958 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bottle Smash with 4 players on 320x568
+01:26 +959 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Bottle Smash with 4 players on 411x914
+01:26 +960 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Darts with 3 players on 320x568
+01:26 +961 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Darts with 3 players on 411x914
+01:26 +962 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Darts with 4 players on 320x568
+01:26 +963 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Darts with 4 players on 411x914
+01:27 +964 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hot Potato with 3 players on 320x568
+01:27 +965 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hot Potato with 3 players on 411x914
+01:27 +966 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hot Potato with 4 players on 320x568
+01:27 +967 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hot Potato with 4 players on 411x914
+01:27 +968 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hot Potato with 5 players on 320x568
+01:27 +969 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hot Potato with 5 players on 411x914
+01:28 +970 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hot Potato with 6 players on 320x568
+01:28 +971 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hot Potato with 6 players on 411x914
+01:28 +972 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Knife Hit with 3 players on 320x568
+01:28 +973 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Knife Hit with 3 players on 411x914
+01:28 +974 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Knife Hit with 4 players on 320x568
+01:28 +975 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Knife Hit with 4 players on 411x914
+01:28 +976 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hungry Hippos with 3 players on 320x568
+01:28 +977 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hungry Hippos with 3 players on 411x914
+01:28 +978 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hungry Hippos with 4 players on 320x568
+01:28 +979 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Hungry Hippos with 4 players on 411x914
+01:29 +980 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Penguin Push with 3 players on 320x568
+01:29 +981 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Penguin Push with 3 players on 411x914
+01:29 +982 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Penguin Push with 4 players on 320x568
+01:29 +983 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Penguin Push with 4 players on 411x914
+01:29 +984 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ring Sort Race with 3 players on 320x568
+01:29 +985 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ring Sort Race with 3 players on 411x914
+01:29 +986 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ring Sort Race with 4 players on 320x568
+01:29 +987 -14: C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/local_games_widget_test.dart: Ring Sort Race with 4 players on 411x914
+01:30 +988 -14: Some tests failed.
+
+Failing tests:
+  C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: a late native reply cannot restore stopped playback
+  C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume -0.5 is safe for the slider
+  C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume -Infinity is safe for the slider
+  C:/Users/sg857/Desktop/RivalRoom/RivalRoom-Clay/mobile/test/game_audio_test.dart: loaded volume 0.35 is safe for the slider
+  ... and 10 more

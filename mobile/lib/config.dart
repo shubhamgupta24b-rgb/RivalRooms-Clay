@@ -6,7 +6,8 @@ enum ServerMode { online, wifi }
 class AppConfig {
   // The internet server built into the app. Emulator default -> the computer it runs on;
   // release builds pass --dart-define=SERVER_URL=https://<name>.onrender.com
-  static const defaultServerUrl = String.fromEnvironment('SERVER_URL', defaultValue: 'http://10.0.2.2:3000');
+  static const defaultServerUrl = String.fromEnvironment('SERVER_URL',
+      defaultValue: 'http://10.0.2.2:3000');
 
   static ServerMode mode = ServerMode.online;
 
@@ -21,7 +22,9 @@ class AppConfig {
       final p = await SharedPreferences.getInstance();
       final wifiUrl = p.getString('wifi_server_url');
       // Online always uses the server this app was built with (older saved addresses are ignored).
-      mode = p.getString('server_mode') == 'wifi' && wifiUrl != null ? ServerMode.wifi : ServerMode.online;
+      mode = p.getString('server_mode') == 'wifi' && wifiUrl != null
+          ? ServerMode.wifi
+          : ServerMode.online;
       serverUrl = mode == ServerMode.wifi ? wifiUrl! : defaultServerUrl;
       hosting = mode == ServerMode.wifi && p.getBool('hosting') == true;
     } catch (_) {

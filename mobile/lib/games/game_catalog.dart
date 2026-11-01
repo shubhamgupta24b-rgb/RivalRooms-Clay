@@ -31,7 +31,8 @@ class GameInfo {
       this.tagline = '',
       this.category = GameCategory.party});
 
-  String get playersLabel => minPlayers == maxPlayers ? '$maxPlayers' : '$minPlayers–$maxPlayers';
+  String get playersLabel =>
+      minPlayers == maxPlayers ? '$maxPlayers' : '$minPlayers–$maxPlayers';
 }
 
 /// Online version of a one-device game, using its look. [max] caps the room size where
@@ -39,13 +40,25 @@ class GameInfo {
 GameInfo _local(String id, GameCategory category, {int? max}) {
   final g = allLocalGames.firstWhere((x) => x.id == id);
   return GameInfo(id, g.title,
-      playable: true, emoji: g.emoji, color: g.color, tagline: g.tagline, minPlayers: g.minPlayers, maxPlayers: max ?? g.maxPlayers, category: category);
+      playable: true,
+      emoji: g.emoji,
+      color: g.color,
+      tagline: g.tagline,
+      minPlayers: g.minPlayers,
+      maxPlayers: max ?? g.maxPlayers,
+      category: category);
 }
 
 final List<GameInfo> gameCatalog = [
   _local('colour_clash', GameCategory.cards),
   const GameInfo('raja_mantri', 'Raja Mantri Chor Sipahi',
-      playable: true, minPlayers: 4, maxPlayers: 4, emoji: '👑', color: Color(0xFF8A1C3A), tagline: 'Can the Mantri catch the Chor?', category: GameCategory.cards),
+      playable: true,
+      minPlayers: 4,
+      maxPlayers: 4,
+      emoji: '👑',
+      color: Color(0xFF8A1C3A),
+      tagline: 'Can the Mantri catch the Chor?',
+      category: GameCategory.cards),
   _local('ludo', GameCategory.board),
   _local('ludo_teams', GameCategory.board),
   _local('bingo', GameCategory.board),
@@ -57,26 +70,42 @@ final List<GameInfo> gameCatalog = [
   _local('tic_tac_toe', GameCategory.board),
   _local('memory', GameCategory.board, max: 4),
   const GameInfo('guess_who', 'Guess Who',
-      playable: true, maxPlayers: 2, emoji: '🕵️', color: Color(0xFFE0A800), tagline: 'Ask yes/no questions, find their person', category: GameCategory.board),
+      playable: true,
+      maxPlayers: 2,
+      emoji: '🕵️',
+      color: Color(0xFFE0A800),
+      tagline: 'Ask yes/no questions, find their person',
+      category: GameCategory.board),
+  _local('chess', GameCategory.board),
+  const GameInfo('nitro_knockout', 'Nitro Knockout',
+      playable: true,
+      minPlayers: 2,
+      maxPlayers: 10,
+      emoji: '🏎️',
+      color: Color(0xFFFF5722),
+      tagline: '3D arena kart combat · most knockouts wins',
+      category: GameCategory.action),
   _local('air_hockey', GameCategory.action),
   _local('ping_pong', GameCategory.action),
-  _local('snake_duel', GameCategory.action),
-  _local('penalty', GameCategory.action),
   _local('basketball_hoops', GameCategory.action, max: 4),
-  _local('crush_it', GameCategory.action, max: 4),
-  _local('fruit_duel', GameCategory.action, max: 4),
   _local('paint_fight', GameCategory.action, max: 4),
   _local('reaction_tap', GameCategory.action),
   _local('math_duel', GameCategory.action),
   _local('hand_cricket', GameCategory.action),
   _local('quiz_battle', GameCategory.action),
   _local('fruit_merge_battle', GameCategory.action),
-  _local('smash_karts', GameCategory.action),
+  _local('ring_sort', GameCategory.action),
   _local('mini_golf', GameCategory.action),
   _local('slingshot', GameCategory.action),
   _local('archery', GameCategory.action),
   _local('shooting_gallery', GameCategory.action),
   _local('bottle_smash', GameCategory.action),
+  _local('tug_of_war', GameCategory.action),
+  _local('darts', GameCategory.action),
+  _local('knife_hit', GameCategory.action),
+  _local('cup_pong', GameCategory.action),
+  _local('hungry_hippos', GameCategory.action),
+  _local('penguin_push', GameCategory.action),
   _local('find_spy', GameCategory.party),
   _local('mafia', GameCategory.party),
   _local('undercover', GameCategory.party),
@@ -87,6 +116,16 @@ final List<GameInfo> gameCatalog = [
   _local('would_rather', GameCategory.party),
   _local('truth_dare', GameCategory.party),
   _local('rock_paper_scissors', GameCategory.party),
+  _local('hot_potato', GameCategory.party),
+  _local('minesweeper', GameCategory.action),
+  _local('color_switch', GameCategory.action),
+  _local('fruit_cut', GameCategory.action),
+  _local('chicken_jump', GameCategory.action),
+  _local('carrom', GameCategory.board),
+  _local('eight_ball', GameCategory.board),
+  _local('bike_race', GameCategory.action),
 ];
 
-String gameName(String id) => gameCatalog.firstWhere((g) => g.id == id, orElse: () => GameInfo(id, id)).name;
+String gameName(String id) => gameCatalog
+    .firstWhere((g) => g.id == id, orElse: () => GameInfo(id, id))
+    .name;

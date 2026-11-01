@@ -80,12 +80,16 @@ final stackInfo = LocalGameInfo(
     create: () => StackLogic(),
     onFinished: onFinished,
     builder: (context, g) => SoloFrame(
-      title: g.lastPerfectAt != null && g.now - g.lastPerfectAt! < 900 ? 'Perfect!' : 'Stack Tower',
+      title: g.lastPerfectAt != null && g.now - g.lastPerfectAt! < 900
+          ? 'Perfect!'
+          : 'Stack Tower',
       score: g.score,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTapDown: (_) => g.drop(),
-        child: ClipRRect(borderRadius: BorderRadius.circular(16), child: CustomPaint(size: Size.infinite, painter: _StackPainter(g))),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: CustomPaint(size: Size.infinite, painter: _StackPainter(g))),
       ),
     ),
   ),
@@ -97,19 +101,29 @@ class _StackPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final w = size.width, bh = min(size.height / 14, 40.0);
-    canvas.drawRect(Offset.zero & size, Paint()..shader = const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF311B92), Color(0xFF7E57C2)]).createShader(Offset.zero & size));
+    canvas.drawRect(
+        Offset.zero & size,
+        Paint()
+          ..shader = const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFF311B92), Color(0xFF7E57C2)])
+              .createShader(Offset.zero & size));
     // Keep the top of the tower in view.
     final visible = (size.height / bh).floor() - 4;
     final first = max(0, g.tower.length - visible);
-    Color colorOf(int i) => HSVColor.fromAHSV(1, (i * 13) % 360, 0.55, 0.95).toColor();
+    Color colorOf(int i) =>
+        HSVColor.fromAHSV(1, (i * 13) % 360, 0.55, 0.95).toColor();
     for (var i = first; i < g.tower.length; i++) {
       final b = g.tower[i];
       final y = size.height - (i - first + 1) * bh;
-      canvas.drawRect(Rect.fromLTWH(b.left * w, y, b.width * w, bh - 1), Paint()..color = colorOf(i));
+      canvas.drawRect(Rect.fromLTWH(b.left * w, y, b.width * w, bh - 1),
+          Paint()..color = colorOf(i));
     }
     if (!g.over) {
       final y = size.height - (g.tower.length - first + 1) * bh - bh * 0.6;
-      canvas.drawRect(Rect.fromLTWH(g.movingLeft * w, y, g.width * w, bh - 1), Paint()..color = colorOf(g.tower.length));
+      canvas.drawRect(Rect.fromLTWH(g.movingLeft * w, y, g.width * w, bh - 1),
+          Paint()..color = colorOf(g.tower.length));
     }
   }
 

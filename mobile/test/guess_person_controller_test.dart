@@ -6,7 +6,9 @@ import 'package:multiplayer_game/features/guess_person/logic/gp_settings.dart';
 import 'package:multiplayer_game/features/guess_person/logic/guess_person_controller.dart';
 import 'package:multiplayer_game/features/guess_person/models/person.dart';
 
-GuessPersonController newGame({GpSettings settings = const GpSettings(rounds: 3, timerSeconds: 30)}) =>
+GuessPersonController newGame(
+        {GpSettings settings =
+            const GpSettings(rounds: 3, timerSeconds: 30)}) =>
     GuessPersonController(settings: settings, random: Random(1))..startGame();
 
 /// Plays up to the guessing phase with [secret] as the chosen person.
@@ -32,14 +34,19 @@ void main() {
     test('the main yes/no traits are reasonably balanced (25%-75%)', () {
       final n = allPeople.length;
       const balanced = {'male', 'female', 'glasses', 'hat', 'long_hair'};
-      final qs = buildQuestions(allPeople).where((q) => balanced.contains(q.id)).toList();
+      final qs = buildQuestions(allPeople)
+          .where((q) => balanced.contains(q.id))
+          .toList();
       expect(qs, hasLength(balanced.length));
       for (final q in qs) {
-        expect(allPeople.where(q.test).length / n, inInclusiveRange(0.25, 0.75), reason: q.id);
+        expect(allPeople.where(q.test).length / n, inInclusiveRange(0.25, 0.75),
+            reason: q.id);
       }
     });
 
-    test('every question belongs to a category, and every category has questions', () {
+    test(
+        'every question belongs to a category, and every category has questions',
+        () {
       final qs = buildQuestions(allPeople);
       final ids = gpCategories.map((c) => c.id).toSet();
       for (final q in qs) {
@@ -50,11 +57,14 @@ void main() {
       }
     });
 
-    test('bearded people also answer YES to mustache, bald people have no hair colour', () {
+    test(
+        'bearded people also answer YES to mustache, bald people have no hair colour',
+        () {
       for (final p in allPeople.where((p) => p.hasBeard)) {
         expect(p.hasMustache, isTrue, reason: p.name);
       }
-      final hairQs = buildQuestions(allPeople).where((q) => q.category == 'hair_color');
+      final hairQs =
+          buildQuestions(allPeople).where((q) => q.category == 'hair_color');
       for (final p in allPeople.where((p) => p.isBald)) {
         expect(hairQs.any((q) => q.test(p)), isFalse, reason: p.name);
       }
@@ -64,14 +74,16 @@ void main() {
       final qs = buildQuestions(allPeople);
       for (final a in allPeople) {
         for (final b in allPeople.where((b) => b.id > a.id)) {
-          expect(qs.any((q) => q.test(a) != q.test(b)), isTrue, reason: '${a.name} vs ${b.name}');
+          expect(qs.any((q) => q.test(a) != q.test(b)), isTrue,
+              reason: '${a.name} vs ${b.name}');
         }
       }
     });
   });
 
   group('flow', () {
-    test('selection is hidden after confirm and the guesser gets the device', () {
+    test('selection is hidden after confirm and the guesser gets the device',
+        () {
       final c = newGame();
       expect(c.phase, GpPhase.roundSetup);
       c.beginSelection();
@@ -92,7 +104,9 @@ void main() {
       c.dispose();
     });
 
-    test('answers come from the secret person, and repeated questions are refused', () {
+    test(
+        'answers come from the secret person, and repeated questions are refused',
+        () {
       final c = newGame();
       final secret = setupGuessing(c);
       for (final q in c.questions) {
@@ -144,7 +158,8 @@ void main() {
     });
 
     test('timer reaching zero ends the round with 0 points', () {
-      final c = newGame(settings: const GpSettings(rounds: 3, timerSeconds: 15));
+      final c =
+          newGame(settings: const GpSettings(rounds: 3, timerSeconds: 15));
       setupGuessing(c);
       for (var i = 0; i < 14; i++) {
         c.tick();
@@ -159,7 +174,9 @@ void main() {
       c.dispose();
     });
 
-    test('roles alternate, final score and winner come from real scores, play again resets', () {
+    test(
+        'roles alternate, final score and winner come from real scores, play again resets',
+        () {
       final c = newGame();
       final choosers = <int>[];
       for (var r = 1; r <= 3; r++) {
@@ -167,7 +184,8 @@ void main() {
         final secret = setupGuessing(c);
         c.startFinalGuess();
         // Only the guesser in round 2 (player 1) gets it right.
-        final pick = r == 2 ? secret : c.people.firstWhere((p) => p.id != secret.id);
+        final pick =
+            r == 2 ? secret : c.people.firstWhere((p) => p.id != secret.id);
         c.chooseGuess(pick.id);
         c.makeFinalGuess();
         c.nextRound();

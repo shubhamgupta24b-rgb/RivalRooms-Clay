@@ -52,7 +52,9 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
       });
       return;
     }
-    nav.pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LobbyScreen()), (r) => r.isFirst);
+    nav.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const LobbyScreen()),
+        (r) => r.isFirst);
   }
 
   @override
@@ -61,50 +63,79 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
     return Scaffold(
       body: AppBackground(
         child: SafeArea(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            const Padding(padding: EdgeInsets.fromLTRB(16, 14, 16, 10), child: PageHeader(label: 'Join a room', title: 'Enter the code')),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            const Padding(
+                padding: EdgeInsets.fromLTRB(16, 14, 16, 10),
+                child:
+                    PageHeader(label: 'Join a room', title: 'Enter the code')),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 22),
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 480),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                      Center(child: GameIcon(GameIcons.lock, size: 52, color: t.flat ? FlatPalette.ink : Brand.gold)),
-                      const SizedBox(height: 10),
-                      Text('Ask the host for the 6-letter code on their screen', textAlign: TextAlign.center, style: t.styles.body.copyWith(color: t.onBgMuted)),
-                      const SizedBox(height: 20),
-                      Shake(
-                        trigger: _fails == 0 ? null : _fails,
-                        child: _CodeBoxes(
-                          ctrl: ctrl,
-                          focus: focus,
-                          error: _error != null,
-                          onChanged: () => setState(() => _error = null),
-                          onSubmit: _join,
-                        ),
-                      ),
-                      AnimatedSize(
-                        duration: Motion.of(context, Motion.normal),
-                        child: _error == null
-                            ? const SizedBox(width: double.infinity)
-                            : Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Semantics(
-                                  liveRegion: true,
-                                  child: Text(_error!,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontFamily: Fonts.body, fontSize: 14, fontWeight: FontWeight.w900, color: t.flat ? FlatPalette.close : const Color(0xFFFF8E8B))),
-                                ),
-                              ),
-                      ),
-                      const SizedBox(height: 24),
-                      GoldButton(busy ? 'Joining…' : 'Join room', icon: GameIcons.forward, height: 58, onPressed: _complete && !busy ? _join : null),
-                      const SizedBox(height: 24),
-                      const _Tip(icon: GameIcons.wifi, text: 'Everyone plays on the same server: online, or the same Wi-Fi host.'),
-                      const SizedBox(height: 8),
-                      const _Tip(icon: GameIcons.restart, text: 'The host picks the games: you stay in the room between rounds.'),
-                    ]),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Center(
+                              child: GameIcon(GameIcons.lock,
+                                  size: 52,
+                                  color:
+                                      t.flat ? FlatPalette.ink : Brand.gold)),
+                          const SizedBox(height: 10),
+                          Text(
+                              'Ask the host for the 6-letter code on their screen',
+                              textAlign: TextAlign.center,
+                              style:
+                                  t.styles.body.copyWith(color: t.onBgMuted)),
+                          const SizedBox(height: 20),
+                          Shake(
+                            trigger: _fails == 0 ? null : _fails,
+                            child: _CodeBoxes(
+                              ctrl: ctrl,
+                              focus: focus,
+                              error: _error != null,
+                              onChanged: () => setState(() => _error = null),
+                              onSubmit: _join,
+                            ),
+                          ),
+                          AnimatedSize(
+                            duration: Motion.of(context, Motion.normal),
+                            child: _error == null
+                                ? const SizedBox(width: double.infinity)
+                                : Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Semantics(
+                                      liveRegion: true,
+                                      child: Text(_error!,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontFamily: Fonts.body,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w900,
+                                              color: t.flat
+                                                  ? FlatPalette.close
+                                                  : const Color(0xFFFF8E8B))),
+                                    ),
+                                  ),
+                          ),
+                          const SizedBox(height: 24),
+                          GoldButton(busy ? 'Joining…' : 'Join room',
+                              icon: GameIcons.forward,
+                              height: 58,
+                              onPressed: _complete && !busy ? _join : null),
+                          const SizedBox(height: 24),
+                          const _Tip(
+                              icon: GameIcons.wifi,
+                              text:
+                                  'Everyone plays on the same server: online, or the same Wi-Fi host.'),
+                          const SizedBox(height: 8),
+                          const _Tip(
+                              icon: GameIcons.restart,
+                              text:
+                                  'The host picks the games: you stay in the room between rounds.'),
+                        ]),
                   ),
                 ),
               ),
@@ -123,7 +154,12 @@ class _CodeBoxes extends StatelessWidget {
   final VoidCallback onChanged;
   final VoidCallback onSubmit;
   final bool error;
-  const _CodeBoxes({required this.ctrl, required this.focus, required this.onChanged, required this.onSubmit, this.error = false});
+  const _CodeBoxes(
+      {required this.ctrl,
+      required this.focus,
+      required this.onChanged,
+      required this.onSubmit,
+      this.error = false});
 
   @override
   Widget build(BuildContext context) {
@@ -150,10 +186,16 @@ class _CodeBoxes extends StatelessWidget {
                     radius: Radii.card,
                     sunken: i >= text.length,
                     tint: i < text.length ? gold : null,
-                    ring: error ? red : (i == text.length && focus.hasFocus ? gold : null),
+                    ring: error
+                        ? red
+                        : (i == text.length && focus.hasFocus ? gold : null),
                     depth: 0.6,
                   ),
-                  child: Text(i < text.length ? text[i] : '', style: TextStyle(fontFamily: Fonts.display, color: ink, fontSize: (box * 0.55).clamp(20.0, 30.0))),
+                  child: Text(i < text.length ? text[i] : '',
+                      style: TextStyle(
+                          fontFamily: Fonts.display,
+                          color: ink,
+                          fontSize: (box * 0.55).clamp(20.0, 30.0))),
                 ),
               ],
             ]),
@@ -173,9 +215,11 @@ class _CodeBoxes extends StatelessWidget {
                 textCapitalization: TextCapitalization.characters,
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
-                  TextInputFormatter.withFunction((_, v) => v.copyWith(text: v.text.toUpperCase())),
+                  TextInputFormatter.withFunction(
+                      (_, v) => v.copyWith(text: v.text.toUpperCase())),
                 ],
-                decoration: const InputDecoration(counterText: '', border: InputBorder.none),
+                decoration: const InputDecoration(
+                    counterText: '', border: InputBorder.none),
                 onChanged: (_) => onChanged(),
                 onSubmitted: (_) => onSubmit(),
               ),
@@ -201,7 +245,13 @@ class _Tip extends StatelessWidget {
       child: Row(children: [
         GameIcon(icon, size: 18, color: muted),
         const SizedBox(width: 10),
-        Expanded(child: Text(text, style: TextStyle(fontFamily: Fonts.body, color: muted, fontSize: 13, fontWeight: FontWeight.w700))),
+        Expanded(
+            child: Text(text,
+                style: TextStyle(
+                    fontFamily: Fonts.body,
+                    color: muted,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700))),
       ]),
     );
   }

@@ -17,7 +17,8 @@ void main() {
     box.drop(0.5);
     run(box, 0, 3000);
     final f = box.fruits.single;
-    expect(f.y, closeTo(FruitBox.height - f.r, 0.01), reason: 'resting on the floor');
+    expect(f.y, closeTo(FruitBox.height - f.r, 0.01),
+        reason: 'resting on the floor');
     expect(f.vy.abs(), lessThan(0.05));
     expect(f.x, inInclusiveRange(f.r, 1 - f.r));
   });
@@ -50,7 +51,9 @@ void main() {
     expect(box.biggest, 3);
   });
 
-  test('merges chain: three cherries settle into a strawberry + cherry, not lost', () {
+  test(
+      'merges chain: three cherries settle into a strawberry + cherry, not lost',
+      () {
     final box = FruitBox(Random(2));
     var t = 0;
     for (var i = 0; i < 3; i++) {
@@ -65,7 +68,8 @@ void main() {
   test('two watermelons vanish for the bonus', () {
     final box = FruitBox(Random(3));
     final last = fruitEmoji.length - 1;
-    box.fruits.addAll([Fruit(0.3, 1.2, last, -9999), Fruit(0.75, 1.2, last, -9999)]);
+    box.fruits
+        .addAll([Fruit(0.3, 1.2, last, -9999), Fruit(0.75, 1.2, last, -9999)]);
     run(box, 0, 2000);
     expect(box.fruits, isEmpty);
     expect(box.score, watermelonBonus);
@@ -79,7 +83,8 @@ void main() {
     expect(box.drop(0.7), isTrue);
   });
 
-  test('fruit stuck above the red line ends the game, a quick pass does not', () {
+  test('fruit stuck above the red line ends the game, a quick pass does not',
+      () {
     final box = FruitBox(Random(1));
     // A fresh drop passes the line on its way down: no game over.
     box.drop(0.5);
@@ -98,7 +103,8 @@ void main() {
       }
     }
     expect(box.over, isTrue);
-    expect(t - firstDanger!, greaterThanOrEqualTo(FruitBox.dangerMs - 32), reason: 'it must stay over the line for a while first');
+    expect(t - firstDanger!, greaterThanOrEqualTo(FruitBox.dangerMs - 32),
+        reason: 'it must stay over the line for a while first');
   });
 
   test('solo game ends when the box overflows', () {
@@ -115,7 +121,8 @@ void main() {
     expect(g.score, g.box.score);
   });
 
-  test('battle: time limit, scores per player, and only your own drops count', () {
+  test('battle: time limit, scores per player, and only your own drops count',
+      () {
     final g = FruitMergeBattle(players: 3, durationMs: 4000, random: Random(9));
     g.drop(0, 0.4);
     g.drop(2, 0.6);
@@ -130,7 +137,8 @@ void main() {
   });
 
   test('computer players drop fruit and score over a battle', () {
-    final g = FruitMergeBattle(players: 2, durationMs: 60000, random: Random(4));
+    final g =
+        FruitMergeBattle(players: 2, durationMs: 60000, random: Random(4));
     final bots = [BotSeat(0, Random(1)), BotSeat(1, Random(2))];
     final turn = fruitBattleInfo.bot!;
     for (var t = 0; t <= 60000 && !g.finished; t += 16) {
@@ -140,7 +148,8 @@ void main() {
       }
     }
     expect(g.boxes.every((b) => b.fruits.isNotEmpty || b.score > 0), isTrue);
-    expect(g.scores.reduce(max), greaterThan(0), reason: 'bots aim at matching fruit');
+    expect(g.scores.reduce(max), greaterThan(0),
+        reason: 'bots aim at matching fruit');
   });
 
   test('online: the host state loads into a guest copy', () {
@@ -156,7 +165,8 @@ void main() {
     expect(guest.elapsedMs, host.elapsedMs);
     for (var i = 0; i < 2; i++) {
       expect(guest.boxes[i].fruits.length, host.boxes[i].fruits.length);
-      expect(guest.boxes[i].fruits.first.x, closeTo(host.boxes[i].fruits.first.x, 0.001));
+      expect(guest.boxes[i].fruits.first.x,
+          closeTo(host.boxes[i].fruits.first.x, 0.001));
       expect(guest.boxes[i].next, host.boxes[i].next);
       expect(guest.boxes[i].score, host.boxes[i].score);
     }
@@ -168,7 +178,8 @@ void main() {
     expect(guest.boxes[1].fruits.length, host.boxes[1].fruits.length);
     // The host applies it only for the player who sent it.
     spec.apply(host, 0, 'drop', [1, 0.5]);
-    expect(host.boxes[1].fruits.length, 1, reason: 'player 0 cannot drop in player 1\'s box');
+    expect(host.boxes[1].fruits.length, 1,
+        reason: 'player 0 cannot drop in player 1\'s box');
   });
 
   test('the online state stays small', () {
@@ -185,6 +196,7 @@ void main() {
       }
     }
     final json = fruitBattleInfo.online!.save(g).toString();
-    expect(json.length, lessThan(20000), reason: 'the server caps relay state at 64 KB');
+    expect(json.length, lessThan(20000),
+        reason: 'the server caps relay state at 64 KB');
   });
 }

@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'core/ads/ad_mob_service.dart';
 import 'config.dart';
 import 'core/audio/game_audio.dart';
 import 'core/settings/app_settings.dart';
@@ -14,18 +17,54 @@ import 'features/splash/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await AppConfig.load();
-  await GameAudio.init();
-  await AppSettings.init();
+  // Render the first frame before touching preferences, LAN sockets, or ad consent.
+  // These services are useful but must never be prerequisites for opening the app.
+  runApp(const App());
+  unawaited(_initializeBackgroundServices());
+  unawaited(AdMobService.instance.initialize());
+}
+
+Future<void> _initializeBackgroundServices() async {
+  await Future.wait([
+    _startupStep('configuration', AppConfig.load),
+    _startupStep('audio preferences', GameAudio.init),
+    _startupStep('app preferences', AppSettings.init),
+  ]);
+
   // This phone was hosting games for the others (hotspot, no internet): start its server again.
   if (AppConfig.hosting) {
     try {
-      await LanHost.start();
-    } catch (_) {
-      await AppConfig.useOnline(); // the port is busy or the network is gone: fall back to online
+      await LanHost.start().timeout(const Duration(seconds: 3));
+    } catch (error, stack) {
+      debugPrint(
+        '[startup] LAN host unavailable; continuing without hosting: $error',
+      );
+      debugPrintStack(stackTrace: stack);
+      AppConfig.mode = ServerMode.online;
+      AppConfig.serverUrl = AppConfig.defaultServerUrl;
+      AppConfig.hosting = false;
+      unawaited(
+        AppConfig.useOnline().timeout(const Duration(seconds: 3)).catchError((
+          Object error,
+          StackTrace stack,
+        ) {
+          debugPrint('[startup] Could not persist online fallback: $error');
+        }),
+      );
     }
   }
-  runApp(const App());
+}
+
+Future<void> _startupStep(
+  String name,
+  Future<void> Function() initialize,
+) async {
+  try {
+    await initialize().timeout(const Duration(seconds: 3));
+  } catch (error, stack) {
+    debugPrint('[startup] $name unavailable; using defaults: $error');
+    debugPrintStack(stackTrace: stack);
+  }
 }
 
 class App extends StatefulWidget {

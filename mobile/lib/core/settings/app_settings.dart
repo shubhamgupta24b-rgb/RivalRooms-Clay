@@ -19,7 +19,8 @@ abstract final class AppSettings {
       haptics.value = p.getBool('set_haptics') ?? true;
       Motion.reduceSetting.value = p.getBool('set_reduce_motion') ?? false;
       playerName.value = p.getString('set_player_name') ?? '';
-      playerColor.value = (p.getInt('set_player_color') ?? 0).clamp(0, PlayerPalette.colors.length - 1);
+      playerColor.value = (p.getInt('set_player_color') ?? 0)
+          .clamp(0, PlayerPalette.colors.length - 1);
     } catch (_) {}
     _applyHaptics();
   }
@@ -46,7 +47,8 @@ abstract final class AppSettings {
     await _save((p) => p.setInt('set_player_color', seat));
   }
 
-  static Future<void> _save(Future<bool> Function(SharedPreferences p) write) async {
+  static Future<void> _save(
+      Future<bool> Function(SharedPreferences p) write) async {
     try {
       await write(await SharedPreferences.getInstance());
     } catch (_) {}
@@ -55,6 +57,7 @@ abstract final class AppSettings {
   /// Games buzz from many places (HapticFeedback.*); Android's view setting silences them all.
   static void _applyHaptics() {
     if (kIsWeb || !Platform.isAndroid) return;
-    _device.invokeMethod('haptics', {'on': haptics.value}).catchError((_) => null);
+    _device
+        .invokeMethod('haptics', {'on': haptics.value}).catchError((_) => null);
   }
 }

@@ -92,7 +92,8 @@ class SudokuLogic extends SoloLogic {
     cells = List.of(p);
   }
 
-  bool get solved => [for (var i = 0; i < 81; i++) cells[i] == solution[i]].every((x) => x);
+  bool get solved =>
+      [for (var i = 0; i < 81; i++) cells[i] == solution[i]].every((x) => x);
   int remaining(int v) => 9 - cells.where((x) => x == v).length;
 
   void select(int i) {
@@ -154,11 +155,14 @@ final sudokuInfo = LocalGameInfo(
     builder: (context, g) => SoloFrame(
       title: g.over && g.solved ? 'Solved!' : 'Sudoku',
       score: g.score,
-      extra: '${g.now ~/ 60000}:${(g.now ~/ 1000 % 60).toString().padLeft(2, '0')}',
+      extra:
+          '${g.now ~/ 60000}:${(g.now ~/ 1000 % 60).toString().padLeft(2, '0')}',
       lives: SudokuLogic.maxMistakes - g.mistakes,
       maxLives: SudokuLogic.maxMistakes,
       child: Column(children: [
-        Expanded(child: Center(child: AspectRatio(aspectRatio: 1, child: _Grid(g: g)))),
+        Expanded(
+            child:
+                Center(child: AspectRatio(aspectRatio: 1, child: _Grid(g: g)))),
         const SizedBox(height: 10),
         // Number pad in two rows (keys stay at least 48dp on small phones); NOTES is the last key.
         for (final row in const [
@@ -189,10 +193,18 @@ final sudokuInfo = LocalGameInfo(
                                 height: 52,
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
-                                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                                    const GameIcon(GameIcons.pencil, size: 20, color: Brand.ink),
-                                    Text(g.notes ? 'NOTES ON' : 'NOTES', style: const TextStyle(fontFamily: Fonts.body, color: Brand.ink, fontWeight: FontWeight.w900, fontSize: 10.5)),
-                                  ]),
+                                  child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const GameIcon(GameIcons.pencil,
+                                            size: 20, color: Brand.ink),
+                                        Text(g.notes ? 'NOTES ON' : 'NOTES',
+                                            style: const TextStyle(
+                                                fontFamily: Fonts.body,
+                                                color: Brand.ink,
+                                                fontWeight: FontWeight.w900,
+                                                fontSize: 10.5)),
+                                      ]),
                                 ),
                               ),
                             ),
@@ -218,10 +230,22 @@ final sudokuInfo = LocalGameInfo(
                                 height: 52,
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
-                                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                                    Text('$v', style: TextStyle(color: g.remaining(v) == 0 ? Colors.white24 : Colors.white, fontWeight: FontWeight.w900, fontSize: 22)),
-                                    Text('${g.remaining(v)}', style: const TextStyle(color: Colors.white70, fontSize: 10.5, fontWeight: FontWeight.w700)),
-                                  ]),
+                                  child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('$v',
+                                            style: TextStyle(
+                                                color: g.remaining(v) == 0
+                                                    ? Colors.white24
+                                                    : Colors.white,
+                                                fontWeight: FontWeight.w900,
+                                                fontSize: 22)),
+                                        Text('${g.remaining(v)}',
+                                            style: const TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 10.5,
+                                                fontWeight: FontWeight.w700)),
+                                      ]),
                                 ),
                               ),
                             ),
@@ -230,7 +254,8 @@ final sudokuInfo = LocalGameInfo(
                 ),
               ),
           ]),
-        ],      ]),
+        ],
+      ]),
     ),
   ),
 );
@@ -247,7 +272,9 @@ class _Grid extends StatelessWidget {
     final selVal = sel == null ? 0 : g.cells[sel];
     return Container(
       padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(color: const Color(0xFF1A237E), borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(
+          color: const Color(0xFF1A237E),
+          borderRadius: BorderRadius.circular(12)),
       child: LayoutBuilder(builder: (context, c) {
         final cell = c.maxWidth / 9;
         return Stack(children: [
@@ -261,9 +288,14 @@ class _Grid extends StatelessWidget {
                 onTap: () => g.select(i),
                 child: Builder(builder: (context) {
                   final r = i ~/ 9, col = i % 9;
-                  final related = sel != null && (sel ~/ 9 == r || sel % 9 == col || (sel ~/ 27 == i ~/ 27 && sel % 9 ~/ 3 == col ~/ 3));
+                  final related = sel != null &&
+                      (sel ~/ 9 == r ||
+                          sel % 9 == col ||
+                          (sel ~/ 27 == i ~/ 27 && sel % 9 ~/ 3 == col ~/ 3));
                   final same = selVal != 0 && g.cells[i] == selVal;
-                  final wrong = g.wrongCell == i && g.wrongAt != null && g.now - g.wrongAt! < 700;
+                  final wrong = g.wrongCell == i &&
+                      g.wrongAt != null &&
+                      g.now - g.wrongAt! < 700;
                   final bg = i == sel
                       ? const Color(0xFFFFE082)
                       : wrong
@@ -282,7 +314,14 @@ class _Grid extends StatelessWidget {
                     alignment: Alignment.center,
                     child: g.cells[i] != 0
                         ? Text('${g.cells[i]}',
-                            style: TextStyle(fontSize: cell * 0.55, fontWeight: g.puzzle[i] != 0 ? FontWeight.w900 : FontWeight.w700, color: g.puzzle[i] != 0 ? const Color(0xFF1E1B3A) : const Color(0xFF3949AB)))
+                            style: TextStyle(
+                                fontSize: cell * 0.55,
+                                fontWeight: g.puzzle[i] != 0
+                                    ? FontWeight.w900
+                                    : FontWeight.w700,
+                                color: g.puzzle[i] != 0
+                                    ? const Color(0xFF1E1B3A)
+                                    : const Color(0xFF3949AB)))
                         : g.marks[i].isEmpty
                             ? null
                             : Padding(
@@ -292,7 +331,16 @@ class _Grid extends StatelessWidget {
                                   physics: const NeverScrollableScrollPhysics(),
                                   children: [
                                     for (var v = 1; v <= 9; v++)
-                                      Center(child: Text(g.marks[i].contains(v) ? '$v' : '', style: TextStyle(fontSize: cell * 0.2, color: Colors.black54, fontWeight: FontWeight.w700))),
+                                      Center(
+                                          child: Text(
+                                              g.marks[i].contains(v)
+                                                  ? '$v'
+                                                  : '',
+                                              style: TextStyle(
+                                                  fontSize: cell * 0.2,
+                                                  color: Colors.black54,
+                                                  fontWeight:
+                                                      FontWeight.w700))),
                                   ],
                                 ),
                               ),

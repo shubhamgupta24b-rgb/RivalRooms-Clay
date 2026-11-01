@@ -28,7 +28,8 @@ void main() {
       g.hardDrop();
       expect(g.lines, 1);
       expect(g.score, greaterThanOrEqualTo(100));
-      expect(g.board[BlockDropLogic.rows - 1][0], 5, reason: 'the block above dropped');
+      expect(g.board[BlockDropLogic.rows - 1][0], 5,
+          reason: 'the block above dropped');
     });
 
     test('pieces never leave the board; stacking to the top ends the game', () {
@@ -72,7 +73,9 @@ void main() {
       expect(g.score, greaterThan(0));
     });
 
-    test('shots that don\'t pop bring new rows; reaching the line ends the game', () {
+    test(
+        'shots that don\'t pop bring new rows; reaching the line ends the game',
+        () {
       final g = BubbleLogic(random: Random(4));
       var t = 0;
       for (var i = 0; i < 200 && !g.over; i++) {
@@ -88,7 +91,9 @@ void main() {
   });
 
   group('Sky Jumper', () {
-    test('bouncing on the start pad keeps you alive; steering away makes you fall', () {
+    test(
+        'bouncing on the start pad keeps you alive; steering away makes you fall',
+        () {
       final g = SkyLogic(random: Random(5));
       var t = 0;
       for (; t < 3000; t += 16) {
@@ -109,9 +114,13 @@ void main() {
       for (; t < 60000 && !g.over; t += 16) {
         g.update(t);
         // Head for the nearest pad above (or below while falling).
-        final candidates = g.pads.where((p) => !p.broken && p.kind != PadKind.breaking && (g.vy > 0 ? p.y > g.y : p.y < g.y));
+        final candidates = g.pads.where((p) =>
+            !p.broken &&
+            p.kind != PadKind.breaking &&
+            (g.vy > 0 ? p.y > g.y : p.y < g.y));
         if (candidates.isNotEmpty) {
-          final p = candidates.reduce((a, b) => (a.y - g.y).abs() < (b.y - g.y).abs() ? a : b);
+          final p = candidates
+              .reduce((a, b) => (a.y - g.y).abs() < (b.y - g.y).abs() ? a : b);
           g.steer(p.x);
         }
       }
@@ -120,7 +129,8 @@ void main() {
   });
 
   group('Space Shooter', () {
-    test('the ship shoots aliens down; getting hit costs lives until the end', () {
+    test('the ship shoots aliens down; getting hit costs lives until the end',
+        () {
       final g = SpaceLogic(random: Random(7));
       var t = 0;
       for (; t < 20000; t += 16) {
@@ -161,7 +171,9 @@ void main() {
       expect(g.over, isTrue, reason: 'wrong colour');
     });
 
-    test('your own colour lets you through the ring, and the star in the middle is a point', () {
+    test(
+        'your own colour lets you through the ring, and the star in the middle is a point',
+        () {
       final g = SwitchLogic(random: Random(10));
       final ring = g.rings.first;
       g.tap();
@@ -171,7 +183,8 @@ void main() {
       g.colour = g.colourAt(ring, above: false);
       g.vy = 1.4;
       for (var t = 16; t <= 600 && !g.over && g.score == 0; t += 16) {
-        g.colour = g.colourAt(ring, above: false); // stay matched while crossing the band
+        g.colour = g.colourAt(ring,
+            above: false); // stay matched while crossing the band
         g.update(t);
       }
       expect(g.over, isFalse, reason: 'matching colour passes');

@@ -26,7 +26,9 @@ class Records {
   /// Games played most recently on this phone, newest first.
   static Future<List<String>> recent() async {
     try {
-      return (await SharedPreferences.getInstance()).getStringList(_recentKey) ?? const [];
+      return (await SharedPreferences.getInstance())
+              .getStringList(_recentKey) ??
+          const [];
     } catch (_) {
       return const [];
     }
@@ -35,7 +37,10 @@ class Records {
   /// Games starred in the games list.
   static Future<Set<String>> favourites() async {
     try {
-      return {...(await SharedPreferences.getInstance()).getStringList(_favKey) ?? const <String>[]};
+      return {
+        ...(await SharedPreferences.getInstance()).getStringList(_favKey) ??
+            const <String>[]
+      };
     } catch (_) {
       return {};
     }
@@ -46,7 +51,8 @@ class Records {
     final favs = await favourites();
     if (!favs.remove(id)) favs.add(id);
     try {
-      await (await SharedPreferences.getInstance()).setStringList(_favKey, favs.toList());
+      await (await SharedPreferences.getInstance())
+          .setStringList(_favKey, favs.toList());
     } catch (_) {}
     return favs;
   }
@@ -55,14 +61,19 @@ class Records {
     try {
       final p = await SharedPreferences.getInstance();
       final raw = p.getString(_key);
-      final map = raw == null ? <String, dynamic>{} : (jsonDecode(raw) as Map).cast<String, dynamic>();
-      final out = {for (final e in map.entries) e.key: GameRecord.fromJson(e.value)};
+      final map = raw == null
+          ? <String, dynamic>{}
+          : (jsonDecode(raw) as Map).cast<String, dynamic>();
+      final out = {
+        for (final e in map.entries) e.key: GameRecord.fromJson(e.value)
+      };
       // Solo bests saved before records existed.
       for (final k in p.getKeys().where((k) => k.startsWith('best_'))) {
         final id = k.substring(5);
         final old = p.getInt(k) ?? 0;
         final r = out[id] ?? const GameRecord();
-        if (old > r.best) out[id] = GameRecord(played: r.played, wins: r.wins, best: old);
+        if (old > r.best)
+          out[id] = GameRecord(played: r.played, wins: r.wins, best: old);
       }
       return out;
     } catch (_) {
@@ -71,13 +82,19 @@ class Records {
   }
 
   /// Adds one finished game. [score] counts towards the best score; [won] towards wins.
-  static Future<GameRecord?> add(String gameId, {required int score, bool won = false}) async {
+  static Future<GameRecord?> add(String gameId,
+      {required int score, bool won = false}) async {
     try {
       final p = await SharedPreferences.getInstance();
       final raw = p.getString(_key);
-      final map = raw == null ? <String, dynamic>{} : (jsonDecode(raw) as Map).cast<String, dynamic>();
+      final map = raw == null
+          ? <String, dynamic>{}
+          : (jsonDecode(raw) as Map).cast<String, dynamic>();
       final r = GameRecord.fromJson(map[gameId]);
-      final next = GameRecord(played: r.played + 1, wins: r.wins + (won ? 1 : 0), best: score > r.best ? score : r.best);
+      final next = GameRecord(
+          played: r.played + 1,
+          wins: r.wins + (won ? 1 : 0),
+          best: score > r.best ? score : r.best);
       map[gameId] = next.toJson();
       await p.setString(_key, jsonEncode(map));
       // Recently played, newest first.

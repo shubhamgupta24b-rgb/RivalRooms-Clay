@@ -6,7 +6,8 @@ class RoomPlayer {
   final String userId, username;
   final bool ready, connected;
   RoomPlayer(this.userId, this.username, this.ready, this.connected);
-  factory RoomPlayer.fromJson(Map j) => RoomPlayer(j['userId'], j['username'] ?? '?', j['ready'] == true, j['connected'] == true);
+  factory RoomPlayer.fromJson(Map j) => RoomPlayer(j['userId'],
+      j['username'] ?? '?', j['ready'] == true, j['connected'] == true);
 }
 
 /// Party mode: a run of random games with a running points table.
@@ -20,8 +21,16 @@ class Party {
   factory Party.fromJson(Map j) => Party(
         (j['games'] as List).cast<String>(),
         (j['index'] as num).toInt(),
-        {for (final e in (j['totals'] as Map).entries) '${e.key}': (e.value as num).toInt()},
-        j['lastPoints'] == null ? null : {for (final e in (j['lastPoints'] as Map).entries) '${e.key}': (e.value as num).toInt()},
+        {
+          for (final e in (j['totals'] as Map).entries)
+            '${e.key}': (e.value as num).toInt()
+        },
+        j['lastPoints'] == null
+            ? null
+            : {
+                for (final e in (j['lastPoints'] as Map).entries)
+                  '${e.key}': (e.value as num).toInt()
+              },
         j['done'] == true,
       );
   String? get nextGame => index + 1 < games.length ? games[index + 1] : null;
@@ -32,17 +41,27 @@ class Room {
   final int maxPlayers;
   final List<RoomPlayer> players;
   final Party? party;
-  final Set<String> playable; // games that fit the players in the room right now
+  final Set<String>
+      playable; // games that fit the players in the room right now
   final bool isPublic; // a Quick Play room: strangers can be matched into it
-  Room(this.code, this.gameType, this.hostId, this.status, this.maxPlayers, this.players, {this.party, this.playable = const {}, this.isPublic = false});
+  Room(this.code, this.gameType, this.hostId, this.status, this.maxPlayers,
+      this.players,
+      {this.party, this.playable = const {}, this.isPublic = false});
   factory Room.fromJson(Map j) => Room(
-        j['code'], j['gameType'], j['hostId'], j['status'], j['maxPlayers'],
-        (j['players'] as List).map((p) => RoomPlayer.fromJson(p as Map)).toList(),
+        j['code'],
+        j['gameType'],
+        j['hostId'],
+        j['status'],
+        j['maxPlayers'],
+        (j['players'] as List)
+            .map((p) => RoomPlayer.fromJson(p as Map))
+            .toList(),
         party: j['party'] == null ? null : Party.fromJson(j['party'] as Map),
         playable: {...((j['playable'] as List?) ?? const []).cast<String>()},
         isPublic: j['isPublic'] == true,
       );
-  bool get allReady => players.length >= 2 && players.every((p) => p.ready && p.connected);
+  bool get allReady =>
+      players.length >= 2 && players.every((p) => p.ready && p.connected);
 }
 
 const _errorText = {
@@ -55,14 +74,17 @@ const _errorText = {
   'TOO_MANY_PLAYERS': 'Too many players for this game. Pick another one.',
   'PLAYERS_NOT_READY': 'Everyone must be ready.',
   'GAME_NOT_AVAILABLE': 'This game is not implemented yet.',
-  'NEEDS_INTERNET': 'This game needs 🌐 Online mode (internet). Pick another game for hotspot play.',
+  'NEEDS_INTERNET':
+      'This game needs 🌐 Online mode (internet). Pick another game for hotspot play.',
   'INVALID_PAYLOAD': 'Invalid input.',
-  'OFFLINE': 'Not connected yet. The server may be waking up (up to a minute): try again shortly.',
+  'OFFLINE':
+      'Not connected yet. The server may be waking up (up to a minute): try again shortly.',
   'TIMEOUT': 'Server did not respond. Check your internet and try again.',
   'BAD_PHASE': 'Not possible right now.',
   'RATE_LIMITED': 'Too many requests, slow down.',
 };
-String errorMessage(String? code) => _errorText[code] ?? 'Something went wrong ($code).';
+String errorMessage(String? code) =>
+    _errorText[code] ?? 'Something went wrong ($code).';
 
 class RoomManager extends ChangeNotifier {
   final SocketManager _socket;
@@ -110,19 +132,26 @@ class RoomManager extends ChangeNotifier {
     return null;
   }
 
-  Future<String?> create(String gameType, int maxPlayers) => _roomCall('create_room', {'gameType': gameType, 'maxPlayers': maxPlayers});
-  Future<String?> join(String code) => _roomCall('join_room', {'code': code.trim().toUpperCase()});
+  Future<String?> create(String gameType, int maxPlayers) => _roomCall(
+      'create_room', {'gameType': gameType, 'maxPlayers': maxPlayers});
+  Future<String?> join(String code) =>
+      _roomCall('join_room', {'code': code.trim().toUpperCase()});
 
   /// Quick Play: matched into a random open room (for [gameType], or any game).
-  Future<String?> quickPlay([String? gameType]) => _roomCall('quick_play', {if (gameType != null) 'gameType': gameType});
-  Future<String?> setReady(bool ready) => _roomCall(ready ? 'player_ready' : 'player_unready');
+  Future<String?> quickPlay([String? gameType]) =>
+      _roomCall('quick_play', {if (gameType != null) 'gameType': gameType});
+  Future<String?> setReady(bool ready) =>
+      _roomCall(ready ? 'player_ready' : 'player_unready');
   Future<String?> start() => _roomCall('start_game');
   Future<String?> returnToLobby() => _roomCall('return_to_lobby');
-  Future<String?> selectGame(String gameType) => _roomCall('select_game', {'gameType': gameType});
-  Future<String?> startParty([int count = 5]) => _roomCall('start_party', {'count': count});
+  Future<String?> selectGame(String gameType) =>
+      _roomCall('select_game', {'gameType': gameType});
+  Future<String?> startParty([int count = 5]) =>
+      _roomCall('start_party', {'count': count});
 
   /// After a game: the next party game, [gameType], or the same game again.
-  Future<String?> nextGame([String? gameType]) => _roomCall('next_game', {if (gameType != null) 'gameType': gameType});
+  Future<String?> nextGame([String? gameType]) =>
+      _roomCall('next_game', {if (gameType != null) 'gameType': gameType});
 
   Future<void> leave() async {
     await _socket.request('leave_room');

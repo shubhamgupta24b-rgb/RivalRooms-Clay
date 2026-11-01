@@ -9,7 +9,10 @@ import 'package:multiplayer_game/features/local_games/shell/local_game_shell.dar
 /// Any RenderFlex overflow is reported as a test failure by the framework.
 Widget scaled(Widget home) => MaterialApp(
       theme: buildAppTheme(),
-      builder: (context, child) => MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.3)), child: child!),
+      builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: const TextScaler.linear(1.3)),
+          child: child!),
       home: home,
     );
 
@@ -43,12 +46,14 @@ Future<void> openAndPlay(WidgetTester tester, LocalGameInfo game) async {
 
 void main() {
   for (final game in localGames) {
-    testWidgets('${game.title}: intro and play at 1.3x text', (tester) => openAndPlay(tester, game));
+    testWidgets('${game.title}: intro and play at 1.3x text',
+        (tester) => openAndPlay(tester, game));
   }
 
   testWidgets('pause menu at 1.3x text', (tester) async {
     phone(tester);
-    await tester.pumpWidget(scaled(LocalGameShell(game: localGames.firstWhere((g) => g.id == 'tic_tac_toe'))));
+    await tester.pumpWidget(scaled(LocalGameShell(
+        game: localGames.firstWhere((g) => g.id == 'tic_tac_toe'))));
     await tester.ensureVisible(find.text('Start'));
     await tester.pump();
     await tester.tap(find.text('Start'));
@@ -58,7 +63,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Resume'), findsOneWidget);
     await tester.tap(find.text('Resume'));
-    await tester.pump(const Duration(milliseconds: 600)); // the game runs again: never settles
+    await tester.pump(const Duration(
+        milliseconds: 600)); // the game runs again: never settles
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 3));
   });

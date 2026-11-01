@@ -26,7 +26,8 @@ class RpsLogic extends LocalGameLogic {
   int _now = 0;
   int? _nextAt;
 
-  RpsLogic({this.players = 2, int? target, this.revealMs = 1800}) : target = target ?? (players == 2 ? 5 : 7);
+  RpsLogic({this.players = 2, int? target, this.revealMs = 1800})
+      : target = target ?? (players == 2 ? 5 : 7);
 
   /// Rock (0) beats scissors (2), paper (1) beats rock, scissors beats paper.
   static bool beats(int a, int b) => (a - b + 3) % 3 == 1;
@@ -55,11 +56,22 @@ class RpsLogic extends LocalGameLogic {
 
   void pick(int player, int choice) {
     if (forward('pick', [player, choice])) return;
-    if (phase != RpsPhase.pick || player < 0 || player >= players || choice < 0 || choice > 2 || picks[player] != null) return;
+    if (phase != RpsPhase.pick ||
+        player < 0 ||
+        player >= players ||
+        choice < 0 ||
+        choice > 2 ||
+        picks[player] != null) return;
     picks[player] = choice;
     if (picks.every((p) => p != null)) {
       lastPicks = [for (final p in picks) p!];
-      lastPoints = [for (var i = 0; i < players; i++) [for (var j = 0; j < players; j++) if (beats(lastPicks[i], lastPicks[j])) j].length];
+      lastPoints = [
+        for (var i = 0; i < players; i++)
+          [
+            for (var j = 0; j < players; j++)
+              if (beats(lastPicks[i], lastPicks[j])) j
+          ].length
+      ];
       for (var i = 0; i < players; i++) {
         score[i] += lastPoints[i];
       }
@@ -89,13 +101,17 @@ final rpsInfo = LocalGameInfo(
     if (!b.thinkFirst(g.round, now, 500, 1300)) return;
     // Mostly random, sometimes plays what beats your last move.
     final yours = g.lastPicks.isEmpty ? -1 : g.lastPicks[0];
-    g.pick(b.seat, yours >= 0 && b.chance(0.3) ? (yours + 1) % 3 : b.rng.nextInt(3));
+    g.pick(b.seat,
+        yours >= 0 && b.chance(0.3) ? (yours + 1) % 3 : b.rng.nextInt(3));
   }),
   online: RelaySpec<RpsLogic>(
     create: (n) => RpsLogic(players: n),
     save: (g) => {
-      'locked': [for (final p in g.picks) p != null], // picks stay secret until everyone has picked
-      'score': g.score, 'last': g.lastPicks, 'points': g.lastPoints, 'phase': g.phase.index, 'round': g.round,
+      'locked': [
+        for (final p in g.picks) p != null
+      ], // picks stay secret until everyone has picked
+      'score': g.score, 'last': g.lastPicks, 'points': g.lastPoints,
+      'phase': g.phase.index, 'round': g.round,
     },
     load: (g, s, me) {
       final locked = (s['locked'] as List).cast<bool>();
@@ -112,8 +128,13 @@ final rpsInfo = LocalGameInfo(
       if (name == 'pick' && asInt(a[0]) == from) g.pick(from, asInt(a[1]));
     },
     view: (context, g, players, me) => Column(children: [
-      ScoreMiddleBar(players: players, scores: g.scores, label: 'ROUND ${g.round} · FIRST TO ${g.target}'),
-      Expanded(child: _RpsZone(player: players[me], index: me, g: g, players: players)),
+      ScoreMiddleBar(
+          players: players,
+          scores: g.scores,
+          label: 'ROUND ${g.round} · FIRST TO ${g.target}'),
+      Expanded(
+          child:
+              _RpsZone(player: players[me], index: me, g: g, players: players)),
     ]),
   ),
   play: (players, onFinished) => TickingPlay<RpsLogic>(
@@ -123,20 +144,30 @@ final rpsInfo = LocalGameInfo(
       value: g.phase,
       onChange: (fx, _, now) {
         if (now == RpsPhase.reveal) {
-          final winners = [for (var i = 0; i < players.length; i++) if (g.lastPoints[i] > 0) players[i].name];
+          final winners = [
+            for (var i = 0; i < players.length; i++)
+              if (g.lastPoints[i] > 0) players[i].name
+          ];
           if (winners.isEmpty) {
             fx?.pop('DRAW!', color: Colors.white);
           } else {
-            keyMoment(fx, 'SHOOT!', sub: '${winners.join(' & ')} ${winners.length == 1 ? 'scores' : 'score'}', sound: 'pop');
+            keyMoment(fx, 'SHOOT!',
+                sub:
+                    '${winners.join(' & ')} ${winners.length == 1 ? 'scores' : 'score'}',
+                sound: 'pop');
           }
         }
       },
       child: PlayerZones(
         count: players.length,
         colors: [for (final p in players) p.color],
-        middle: ScoreMiddleBar(players: players, scores: g.scores, label: 'Round ${g.round} · first to ${g.target}'),
+        middle: ScoreMiddleBar(
+            players: players,
+            scores: g.scores,
+            label: 'Round ${g.round} · first to ${g.target}'),
         center: ZoneCenterChip('Round ${g.round}'),
-        zone: (i) => _RpsZone(player: players[i], index: i, g: g, players: players),
+        zone: (i) =>
+            _RpsZone(player: players[i], index: i, g: g, players: players),
       ),
     ),
   ),
@@ -150,7 +181,11 @@ class _RpsZone extends StatelessWidget {
   final int index;
   final RpsLogic g;
   final List<GpPlayer> players;
-  const _RpsZone({required this.player, required this.index, required this.g, required this.players});
+  const _RpsZone(
+      {required this.player,
+      required this.index,
+      required this.g,
+      required this.players});
 
   @override
   Widget build(BuildContext context) {
@@ -166,11 +201,24 @@ class _RpsZone extends StatelessWidget {
           fit: BoxFit.scaleDown,
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Row(mainAxisSize: MainAxisSize.min, children: [
-              PlayerBadge(index: seat, size: 22, color: player.color, initial: player.name),
+              PlayerBadge(
+                  index: seat,
+                  size: 22,
+                  color: player.color,
+                  initial: player.name),
               const SizedBox(width: 6),
-              Text(player.name, style: TextStyle(fontFamily: Fonts.body, color: nameColor(player.color), fontWeight: FontWeight.w900, fontSize: 15)),
+              Text(player.name,
+                  style: TextStyle(
+                      fontFamily: Fonts.body,
+                      color: nameColor(player.color),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15)),
               const SizedBox(width: 8),
-              Text('${g.score[index]}', style: const TextStyle(fontFamily: Fonts.display, color: Colors.white, fontSize: 22)),
+              Text('${g.score[index]}',
+                  style: const TextStyle(
+                      fontFamily: Fonts.display,
+                      color: Colors.white,
+                      fontSize: 22)),
             ]),
             const SizedBox(height: 8),
             if (reveal) ...[
@@ -179,21 +227,35 @@ class _RpsZone extends StatelessWidget {
                 tween: Tween(begin: Motion.reduced(context) ? 1 : 0.3, end: 1),
                 duration: const Duration(milliseconds: 450),
                 curve: Curves.elasticOut,
-                builder: (_, s, child) => Transform.scale(scale: s, child: child),
+                builder: (_, s, child) =>
+                    Transform.scale(scale: s, child: child),
                 child: Container(
                   width: 112,
                   height: 112,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: won ? Brand.gold.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.06),
-                    border: Border.all(color: won ? Brand.gold : Colors.white.withValues(alpha: 0.18), width: won ? 3 : 1.5),
+                    color: won
+                        ? Brand.gold.withValues(alpha: 0.2)
+                        : Colors.white.withValues(alpha: 0.06),
+                    border: Border.all(
+                        color: won
+                            ? Brand.gold
+                            : Colors.white.withValues(alpha: 0.18),
+                        width: won ? 3 : 1.5),
                   ),
-                  child: Semantics(label: RpsLogic.names[g.lastPicks[index]], child: GameIcon(_hands[g.lastPicks[index]], size: 72, color: nameColor(player.color))),
+                  child: Semantics(
+                      label: RpsLogic.names[g.lastPicks[index]],
+                      child: GameIcon(_hands[g.lastPicks[index]],
+                          size: 72, color: nameColor(player.color))),
                 ),
               ),
               const SizedBox(height: 6),
-              Text(won ? '+${g.lastPoints[index]}' : 'no points', style: TextStyle(fontFamily: Fonts.display, color: won ? Brand.gold : NeonPalette.textMuted, fontSize: 22)),
+              Text(won ? '+${g.lastPoints[index]}' : 'no points',
+                  style: TextStyle(
+                      fontFamily: Fonts.display,
+                      color: won ? Brand.gold : NeonPalette.textMuted,
+                      fontSize: 22)),
               if (players.length > 2)
                 Padding(
                   padding: const EdgeInsets.only(top: 6),
@@ -201,16 +263,28 @@ class _RpsZone extends StatelessWidget {
                     for (var j = 0; j < players.length; j++)
                       if (j != index)
                         Row(mainAxisSize: MainAxisSize.min, children: [
-                          PlayerBadge(index: PlayerPalette.indexOf(players[j].color) ?? j, size: 14, color: players[j].color),
+                          PlayerBadge(
+                              index:
+                                  PlayerPalette.indexOf(players[j].color) ?? j,
+                              size: 14,
+                              color: players[j].color),
                           const SizedBox(width: 3),
-                          GameIcon(_hands[g.lastPicks[j]], size: 22, color: nameColor(players[j].color)),
+                          GameIcon(_hands[g.lastPicks[j]],
+                              size: 22, color: nameColor(players[j].color)),
                         ]),
                   ]),
                 ),
             ] else ...[
               Row(mainAxisSize: MainAxisSize.min, children: [
-                if (picked) ...[const GameIcon(GameIcons.lock, size: 18), const SizedBox(width: 6)],
-                Text(picked ? 'Locked in' : 'Pick one!', style: const TextStyle(fontFamily: Fonts.display, color: Colors.white, fontSize: 22)),
+                if (picked) ...[
+                  const GameIcon(GameIcons.lock, size: 18),
+                  const SizedBox(width: 6)
+                ],
+                Text(picked ? 'Locked in' : 'Pick one!',
+                    style: const TextStyle(
+                        fontFamily: Fonts.display,
+                        color: Colors.white,
+                        fontSize: 22)),
               ]),
               const SizedBox(height: 10),
               Row(children: [
@@ -236,9 +310,20 @@ class _RpsZone extends StatelessWidget {
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              gradient: RadialGradient(center: const Alignment(-0.3, -0.35), colors: [Color.lerp(player.color, Colors.white, 0.25)!, fillFor(player.color)]),
+                              gradient: RadialGradient(
+                                  center: const Alignment(-0.3, -0.35),
+                                  colors: [
+                                    Color.lerp(
+                                        player.color, Colors.white, 0.25)!,
+                                    fillFor(player.color)
+                                  ]),
                               border: Border.all(color: Colors.white, width: 3),
-                              boxShadow: picked ? null : Shadows.edge(Color.lerp(player.color, Colors.black, 0.5)!, depth: 4),
+                              boxShadow: picked
+                                  ? null
+                                  : Shadows.edge(
+                                      Color.lerp(
+                                          player.color, Colors.black, 0.5)!,
+                                      depth: 4),
                             ),
                             child: GameIcon(_hands[c], size: 52),
                           ),

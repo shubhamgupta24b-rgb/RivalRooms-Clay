@@ -27,22 +27,30 @@ class _QuickPlayScreenState extends State<QuickPlayScreen> {
     if (!mounted) return;
     if (err != null) {
       setState(() => busy = false);
-      showToast(context, friendlyError(err), tone: Tone.danger, duration: const Duration(seconds: 3));
+      showToast(context, friendlyError(err),
+          tone: Tone.danger, duration: const Duration(seconds: 3));
       return;
     }
-    nav.pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LobbyScreen()), (r) => r.isFirst);
+    nav.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const LobbyScreen()),
+        (r) => r.isFirst);
   }
 
   @override
   Widget build(BuildContext context) {
     final t = context.tk;
-    final game = gameId == null ? null : gameCatalog.firstWhere((g) => g.id == gameId);
+    final game =
+        gameId == null ? null : gameCatalog.firstWhere((g) => g.id == gameId);
     final any = gameId == null;
     return Scaffold(
       body: AppBackground(
         child: SafeArea(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            const Padding(padding: EdgeInsets.fromLTRB(16, 14, 16, 10), child: PageHeader(label: 'Quick play', title: 'Play with anyone')),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            const Padding(
+                padding: EdgeInsets.fromLTRB(16, 14, 16, 10),
+                child:
+                    PageHeader(label: 'Quick play', title: 'Play with anyone')),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Semantics(
@@ -58,37 +66,81 @@ class _QuickPlayScreenState extends State<QuickPlayScreen> {
                   child: AnimatedContainer(
                     duration: Motion.of(context, Motion.fast),
                     padding: const EdgeInsets.all(16),
-                    decoration: any ? Skin.primary(radius: Radii.button) : Skin.surface(radius: Radii.button),
+                    decoration: any
+                        ? Skin.primary(radius: Radii.button)
+                        : Skin.surface(radius: Radii.button),
                     child: Row(children: [
-                      GameIcon(GameIcons.dice5, size: 36, color: any ? Brand.onGold : (t.flat ? FlatPalette.ink : Colors.white)),
+                      GameIcon(GameIcons.dice5,
+                          size: 36,
+                          color: any
+                              ? Brand.onGold
+                              : (t.flat ? FlatPalette.ink : Colors.white)),
                       const SizedBox(width: 14),
                       Expanded(
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text('Any game', style: TextStyle(fontFamily: Fonts.display, fontSize: 22, color: any ? Brand.onGold : (t.flat ? FlatPalette.ink : Colors.white))),
-                          Text("Fastest match: the room's host picks the games",
-                              style: TextStyle(fontFamily: Fonts.body, fontSize: 12.5, fontWeight: FontWeight.w800, color: any ? Brand.onGold.withValues(alpha: 0.8) : (t.flat ? FlatPalette.inkMuted : NeonPalette.textMuted))),
-                        ]),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Any game',
+                                  style: TextStyle(
+                                      fontFamily: Fonts.display,
+                                      fontSize: 22,
+                                      color: any
+                                          ? Brand.onGold
+                                          : (t.flat
+                                              ? FlatPalette.ink
+                                              : Colors.white))),
+                              Text(
+                                  "Fastest match: the room's host picks the games",
+                                  style: TextStyle(
+                                      fontFamily: Fonts.body,
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w800,
+                                      color: any
+                                          ? Brand.onGold.withValues(alpha: 0.8)
+                                          : (t.flat
+                                              ? FlatPalette.inkMuted
+                                              : NeonPalette.textMuted))),
+                            ]),
                       ),
-                      if (any) const GameIcon(GameIcons.check, size: 22, color: Brand.onGold),
+                      if (any)
+                        const GameIcon(GameIcons.check,
+                            size: 22, color: Brand.onGold),
                     ]),
                   ),
                 ),
               ),
             ),
-            const Padding(padding: EdgeInsets.fromLTRB(16, 6, 16, 2), child: SectionHeader('Or pick a game')),
-            Expanded(child: GameGrid(selectedId: gameId, onSelect: (g) => setState(() => gameId = g.id))),
+            const Padding(
+                padding: EdgeInsets.fromLTRB(16, 6, 16, 2),
+                child: SectionHeader('Or pick a game')),
+            Expanded(
+                child: GameGrid(
+                    selectedId: gameId,
+                    onSelect: (g) => setState(() => gameId = g.id))),
             Container(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 22),
               decoration: Skin.sheet(),
-              child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                if (busy)
-                  const _Finding()
-                else
-                  Text(game == null ? 'Any game · rooms of up to 6' : '${game.name} · ${game.playersLabel} players',
-                      textAlign: TextAlign.center, style: TextStyle(fontFamily: Fonts.body, fontWeight: FontWeight.w900, fontSize: 15, color: t.flat ? FlatPalette.ink : Colors.white)),
-                const SizedBox(height: 10),
-                GoldButton(busy ? 'Finding players…' : 'Find a room', icon: GameIcons.bolt, onPressed: busy ? null : _go),
-              ]),
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (busy)
+                      const _Finding()
+                    else
+                      Text(
+                          game == null
+                              ? 'Any game · rooms of up to 6'
+                              : '${game.name} · ${game.playersLabel} players',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: Fonts.body,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 15,
+                              color: t.flat ? FlatPalette.ink : Colors.white)),
+                    const SizedBox(height: 10),
+                    GoldButton(busy ? 'Finding players…' : 'Find a room',
+                        icon: GameIcons.bolt, onPressed: busy ? null : _go),
+                  ]),
             ),
           ]),
         ),
@@ -104,8 +156,11 @@ class _Finding extends StatefulWidget {
   State<_Finding> createState() => _FindingState();
 }
 
-class _FindingState extends State<_Finding> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat();
+class _FindingState extends State<_Finding>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 900))
+    ..repeat();
 
   @override
   void dispose() {
@@ -121,15 +176,28 @@ class _FindingState extends State<_Finding> with SingleTickerProviderStateMixin 
       label: 'Finding a room',
       excludeSemantics: true,
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text('Finding a room', style: TextStyle(fontFamily: Fonts.display, fontSize: 18, color: ink)),
+        Text('Finding a room',
+            style:
+                TextStyle(fontFamily: Fonts.display, fontSize: 18, color: ink)),
         const SizedBox(width: 6),
         AnimatedBuilder(
           animation: _c,
           builder: (_, __) => Row(children: [
             for (var i = 0; i < 3; i++)
               Transform.translate(
-                offset: Offset(0, Motion.reduced(context) ? 0 : -4 * (1 - ((_c.value * 3 - i) % 3 - 0.5).abs() * 2).clamp(0.0, 1.0)),
-                child: Container(width: 6, height: 6, margin: const EdgeInsets.symmetric(horizontal: 2), decoration: const BoxDecoration(color: Brand.gold, shape: BoxShape.circle)),
+                offset: Offset(
+                    0,
+                    Motion.reduced(context)
+                        ? 0
+                        : -4 *
+                            (1 - ((_c.value * 3 - i) % 3 - 0.5).abs() * 2)
+                                .clamp(0.0, 1.0)),
+                child: Container(
+                    width: 6,
+                    height: 6,
+                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    decoration: const BoxDecoration(
+                        color: Brand.gold, shape: BoxShape.circle)),
               ),
           ]),
         ),

@@ -21,32 +21,43 @@ void main() {
     expect(r['fruit_merge']!.played, 2);
   });
 
-  test('older solo best scores show up, and clear() wipes everything', () async {
-    SharedPreferences.setMockInitialValues({'best_flappy_jump': 17, 'name': 'Asha'});
+  test('older solo best scores show up, and clear() wipes everything',
+      () async {
+    SharedPreferences.setMockInitialValues(
+        {'best_flappy_jump': 17, 'name': 'Asha'});
     expect((await Records.all())['flappy_jump']!.best, 17);
     await Records.add('flappy_jump', score: 9);
-    expect((await Records.all())['flappy_jump']!.best, 17, reason: 'the old best still counts');
+    expect((await Records.all())['flappy_jump']!.best, 17,
+        reason: 'the old best still counts');
     await Records.clear();
     expect(await Records.all(), isEmpty);
-    expect((await SharedPreferences.getInstance()).getString('name'), 'Asha', reason: 'clear() only touches records');
+    expect((await SharedPreferences.getInstance()).getString('name'), 'Asha',
+        reason: 'clear() only touches records');
   });
 
-  testWidgets('My Records lists games with best score, wins and totals', (tester) async {
+  testWidgets('My Records lists games with best score, wins and totals',
+      (tester) async {
     SharedPreferences.setMockInitialValues({
-      'records': '{"bingo":{"p":3,"w":2,"b":1},"fruit_merge":{"p":5,"w":0,"b":340}}',
+      'records':
+          '{"bingo":{"p":3,"w":2,"b":1},"fruit_merge":{"p":5,"w":0,"b":340}}',
     });
-    await tester.pumpWidget(ChangeNotifierProvider(create: (_) => AuthenticationManager(), child: const MaterialApp(home: RecordsScreen())));
+    await tester.pumpWidget(ChangeNotifierProvider(
+        create: (_) => AuthenticationManager(),
+        child: const MaterialApp(home: RecordsScreen())));
     await tester.pumpAndSettle();
     expect(find.text('Fruit Merge'), findsOneWidget);
     expect(find.text('340'), findsOneWidget);
     expect(find.text('Bingo'), findsOneWidget);
     expect(find.text('played 3 · wins 2'), findsOneWidget);
-    expect(find.bySemanticsLabel('8 games'), findsOneWidget, reason: 'games played in total');
+    expect(find.bySemanticsLabel('8 games'), findsOneWidget,
+        reason: 'games played in total');
     expect(find.bySemanticsLabel('2 wins'), findsOneWidget);
   });
 
   testWidgets('no games yet: a friendly empty screen', (tester) async {
-    await tester.pumpWidget(ChangeNotifierProvider(create: (_) => AuthenticationManager(), child: const MaterialApp(home: RecordsScreen())));
+    await tester.pumpWidget(ChangeNotifierProvider(
+        create: (_) => AuthenticationManager(),
+        child: const MaterialApp(home: RecordsScreen())));
     await tester.pumpAndSettle();
     expect(find.textContaining('No games yet'), findsOneWidget);
   });

@@ -13,7 +13,12 @@ import '../shell/ticking_play.dart';
 /// the top; each slides theirs left and right. Where the ball hits the paddle sets its
 /// angle, and every hit speeds it up. First to [target] points.
 class PingPongLogic extends LocalGameLogic {
-  static const length = 1.6, ballR = 0.03, paddleHalf = 0.13, paddleY = 0.09, startSpeed = 0.95, maxSpeed = 2.4;
+  static const length = 1.6,
+      ballR = 0.03,
+      paddleHalf = 0.13,
+      paddleY = 0.09,
+      startSpeed = 0.95,
+      maxSpeed = 2.4;
   final int target;
   final Random _rng;
   final List<int> points = [0, 0];
@@ -37,7 +42,8 @@ class PingPongLogic extends LocalGameLogic {
   bool get waitingToServe => _serveAt != null;
 
   void movePaddle(int p, double x) {
-    paddleX[p] = x.clamp(paddleHalf, 1 - paddleHalf); // online: shown straight away, host has the final say
+    paddleX[p] = x.clamp(paddleHalf,
+        1 - paddleHalf); // online: shown straight away, host has the final say
     if (forward('paddle', [p, x])) changed();
   }
 
@@ -68,13 +74,17 @@ class PingPongLogic extends LocalGameLogic {
 
   void _step(double dt) {
     ball = ball + vel * dt;
-    if (ball.x < ballR && vel.x < 0 || ball.x > 1 - ballR && vel.x > 0) vel = V(-vel.x, vel.y);
+    if (ball.x < ballR && vel.x < 0 || ball.x > 1 - ballR && vel.x > 0)
+      vel = V(-vel.x, vel.y);
     for (var p = 0; p < 2; p++) {
       final y = paddleLine(p);
       final towards = p == 0 ? vel.y > 0 : vel.y < 0;
       final reached = p == 0 ? ball.y + ballR >= y : ball.y - ballR <= y;
       final notPast = p == 0 ? ball.y < y + 0.03 : ball.y > y - 0.03;
-      if (towards && reached && notPast && (ball.x - paddleX[p]).abs() <= paddleHalf + ballR) {
+      if (towards &&
+          reached &&
+          notPast &&
+          (ball.x - paddleX[p]).abs() <= paddleHalf + ballR) {
         // Hit: the further from the centre, the sharper the angle.
         final offset = ((ball.x - paddleX[p]) / paddleHalf).clamp(-1.0, 1.0);
         speed = min(maxSpeed, speed * 1.07);
@@ -144,14 +154,19 @@ final pingPongInfo = LocalGameInfo(
       g._serveAt = s['serving'] == true ? 1 << 40 : null;
     },
     apply: (g, from, name, a) {
-      if (name == 'paddle' && asInt(a[0]) == from) g.movePaddle(from, asDouble(a[1]));
+      if (name == 'paddle' && asInt(a[0]) == from)
+        g.movePaddle(from, asDouble(a[1]));
     },
     continuous: const {'paddle'},
     view: (context, g, players, me) => RotatedBox(
       quarterTurns: me == 1 ? 2 : 0,
       child: Column(children: [
-        Expanded(child: Padding(padding: const EdgeInsets.all(8), child: _PongTable(players: players, g: g))),
-        ScoreMiddleBar(players: players, scores: g.scores, label: 'FIRST TO ${g.target}'),
+        Expanded(
+            child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: _PongTable(players: players, g: g))),
+        ScoreMiddleBar(
+            players: players, scores: g.scores, label: 'FIRST TO ${g.target}'),
       ]),
     ),
   ),
@@ -159,8 +174,12 @@ final pingPongInfo = LocalGameInfo(
     create: () => PingPongLogic(),
     onFinished: onFinished,
     builder: (context, g) => Column(children: [
-      Expanded(child: Padding(padding: const EdgeInsets.all(8), child: _PongTable(players: players, g: g))),
-      ScoreMiddleBar(players: players, scores: g.scores, label: 'FIRST TO ${g.target}'),
+      Expanded(
+          child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: _PongTable(players: players, g: g))),
+      ScoreMiddleBar(
+          players: players, scores: g.scores, label: 'FIRST TO ${g.target}'),
     ]),
   ),
 );
@@ -185,7 +204,9 @@ class _PongTableState extends State<_PongTable> {
       _table = Rect.fromLTWH((c.maxWidth - w) / 2, (c.maxHeight - h) / 2, w, h);
       void move(PointerEvent e) {
         final p = _fingers[e.pointer];
-        if (p != null) widget.g.movePaddle(p, (e.localPosition.dx - _table.left) / _table.width);
+        if (p != null)
+          widget.g
+              .movePaddle(p, (e.localPosition.dx - _table.left) / _table.width);
       }
 
       return Listener(
@@ -197,7 +218,10 @@ class _PongTableState extends State<_PongTable> {
         onPointerMove: move,
         onPointerUp: (e) => _fingers.remove(e.pointer),
         onPointerCancel: (e) => _fingers.remove(e.pointer),
-        child: CustomPaint(size: c.biggest, painter: _PongPainter(widget.g, _table, widget.players.map((p) => p.color).toList())),
+        child: CustomPaint(
+            size: c.biggest,
+            painter: _PongPainter(
+                widget.g, _table, widget.players.map((p) => p.color).toList())),
       );
     });
   }
@@ -220,28 +244,46 @@ class _PongPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final s = table.width;
-    Offset at(double x, double y) => Offset(table.left + x * s, table.top + y * s);
+    Offset at(double x, double y) =>
+        Offset(table.left + x * s, table.top + y * s);
     final top = RRect.fromRectAndRadius(table, Radius.circular(s * 0.03));
     // Table edge and shadow give it thickness.
     canvas.drawRRect(top.shift(Offset(0, s * 0.025)), Paint()..color = _edge);
-    canvas.drawRRect(top.shift(Offset(0, s * 0.05)), Paint()..color = Colors.black38);
-    canvas.drawRRect(top, Paint()..shader = const LinearGradient(colors: _top, begin: Alignment.topCenter, end: Alignment.bottomCenter).createShader(table));
+    canvas.drawRRect(
+        top.shift(Offset(0, s * 0.05)), Paint()..color = Colors.black38);
+    canvas.drawRRect(
+        top,
+        Paint()
+          ..shader = const LinearGradient(
+                  colors: _top,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter)
+              .createShader(table));
     final white = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3;
     canvas.drawRRect(top.deflate(4), white);
-    canvas.drawLine(at(0.5, 0), at(0.5, PingPongLogic.length), Paint()
-      ..color = Colors.white60
-      ..strokeWidth = 2);
+    canvas.drawLine(
+        at(0.5, 0),
+        at(0.5, PingPongLogic.length),
+        Paint()
+          ..color = Colors.white60
+          ..strokeWidth = 2);
     // The net across the middle, with its posts.
     final ny = PingPongLogic.length / 2;
-    canvas.drawLine(at(0, ny) + const Offset(0, 5), at(1, ny) + const Offset(0, 5), Paint()
-      ..color = Colors.black26
-      ..strokeWidth = 6);
-    canvas.drawLine(at(-0.02, ny), at(1.02, ny), Paint()
-      ..color = const Color(0xFFF2F2F2)
-      ..strokeWidth = 5);
+    canvas.drawLine(
+        at(0, ny) + const Offset(0, 5),
+        at(1, ny) + const Offset(0, 5),
+        Paint()
+          ..color = Colors.black26
+          ..strokeWidth = 6);
+    canvas.drawLine(
+        at(-0.02, ny),
+        at(1.02, ny),
+        Paint()
+          ..color = const Color(0xFFF2F2F2)
+          ..strokeWidth = 5);
     for (final x in [-0.03, 1.03]) {
       canvas.drawCircle(at(x, ny), 6, Paint()..color = const Color(0xFF222630));
     }
@@ -250,26 +292,61 @@ class _PongPainter extends CustomPainter {
       final y = PingPongLogic.paddleLine(p);
       final c = at(paddles[p], y + (p == 0 ? 0.0125 : -0.0125));
       final w = PingPongLogic.paddleHalf * 2 * s, h = 0.03 * s;
-      final handle = Rect.fromCenter(center: c + Offset(0, (p == 0 ? 1 : -1) * h * 1.3), width: w * 0.22, height: h * 1.6);
-      canvas.drawRRect(RRect.fromRectAndRadius(handle, Radius.circular(h * 0.3)), Paint()..color = const Color(0xFFB07A45));
-      final face = RRect.fromRectAndRadius(Rect.fromCenter(center: c, width: w, height: h), Radius.circular(h / 2));
-      canvas.drawRRect(face.shift(const Offset(0, 3)), Paint()..color = Colors.black38);
-      canvas.drawRRect(face, Paint()..shader = LinearGradient(colors: [Color.lerp(colors[p], Colors.white, 0.3)!, colors[p]], begin: Alignment.topCenter, end: Alignment.bottomCenter).createShader(face.outerRect));
+      final handle = Rect.fromCenter(
+          center: c + Offset(0, (p == 0 ? 1 : -1) * h * 1.3),
+          width: w * 0.22,
+          height: h * 1.6);
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(handle, Radius.circular(h * 0.3)),
+          Paint()..color = const Color(0xFFB07A45));
+      final face = RRect.fromRectAndRadius(
+          Rect.fromCenter(center: c, width: w, height: h),
+          Radius.circular(h / 2));
+      canvas.drawRRect(
+          face.shift(const Offset(0, 3)), Paint()..color = Colors.black38);
+      canvas.drawRRect(
+          face,
+          Paint()
+            ..shader = LinearGradient(colors: [
+              Color.lerp(colors[p], Colors.white, 0.3)!,
+              colors[p]
+            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)
+                .createShader(face.outerRect));
     }
     if (!g.waitingToServe || g.lastPointTo == null) {
       final b = at(ball.x, ball.y), br = PingPongLogic.ballR * s;
-      canvas.drawCircle(b + const Offset(3, 5), br, Paint()..color = Colors.black38);
-      canvas.drawCircle(b, br, Paint()..shader = RadialGradient(center: const Alignment(-0.35, -0.4), colors: const [Colors.white, Color(0xFFFFE0B2)]).createShader(Rect.fromCircle(center: b, radius: br)));
+      canvas.drawCircle(
+          b + const Offset(3, 5), br, Paint()..color = Colors.black38);
+      canvas.drawCircle(
+          b,
+          br,
+          Paint()
+            ..shader = RadialGradient(
+                    center: const Alignment(-0.35, -0.4),
+                    colors: const [Colors.white, Color(0xFFFFE0B2)])
+                .createShader(Rect.fromCircle(center: b, radius: br)));
     }
     if (g.waitingToServe) {
       final text = g.lastPointTo == null ? 'GET READY' : 'POINT!';
       final tp = TextPainter(
-        text: TextSpan(text: text, style: const TextStyle(fontFamily: Fonts.display, color: Brand.gold, fontSize: 44, shadows: [Shadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 3))])),
+        text: TextSpan(
+            text: text,
+            style: const TextStyle(
+                fontFamily: Fonts.display,
+                color: Brand.gold,
+                fontSize: 44,
+                shadows: [
+                  Shadow(
+                      color: Colors.black54,
+                      blurRadius: 8,
+                      offset: Offset(0, 3))
+                ])),
         textDirection: TextDirection.ltr,
       )..layout();
       tp.paint(canvas, table.center - Offset(tp.width / 2, tp.height / 2));
     }
   }
+
   @override
   bool shouldRepaint(_PongPainter old) => true;
 }

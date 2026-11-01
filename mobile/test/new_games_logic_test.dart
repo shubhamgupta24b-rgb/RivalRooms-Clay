@@ -18,31 +18,49 @@ import 'package:multiplayer_game/features/local_games/shell/split_screen.dart';
 import 'package:multiplayer_game/features/local_games/snake_duel/snake_duel_game.dart';
 
 void main() {
-  test('55 shell games in the hub (+ Guess the Person + Raja Mantri = 57), unique ids, 1-6 players', () {
-    expect(localGames, hasLength(60));
-    expect(localGames.map((g) => g.id).toSet(), hasLength(60));
-    expect(localGames.where((g) => g.solo), hasLength(21));
-    expect(totalGameCount, 62);
+  test(
+      '70 shell entries, 71 visible hub games, unique ids, 1-6 local seats',
+      () {
+    expect(localGames, hasLength(70));
+    expect(localGames.map((g) => g.id).toSet(), hasLength(70));
+    expect(localGames.where((g) => g.solo), hasLength(20));
+    expect(localGames.where((g) => !g.remoteOnly), hasLength(69));
+    expect(totalGameCount, 71);
     for (final g in localGames) {
       expect(g.maxPlayers, inInclusiveRange(1, 6), reason: g.id);
     }
-    expect({for (final g in localGames) g.id: g.maxPlayers}, containsPair('crush_it', 6));
-    expect(defaultPlayers(6).map((p) => p.color).toSet(), hasLength(6), reason: 'six distinct colours');
+    expect(
+        localGames.map((g) => g.id),
+        isNot(containsAll([
+          'crush_it',
+          'fruit_duel',
+          'snake_duel',
+          'penalty',
+          'classic_snake'
+        ])));
+    expect({for (final g in localGames) g.id: g.maxPlayers},
+        containsPair('colour_clash', 2));
+    expect(defaultPlayers(6).map((p) => p.color).toSet(), hasLength(6),
+        reason: 'six distinct colours');
   });
 
   test('3-6 player layouts put half the players on each long side', () {
-    expect([for (var n = 3; n <= 6; n++) PlayerZones.leftCount(n)], [2, 2, 3, 3]);
+    expect(
+        [for (var n = 3; n <= 6; n++) PlayerZones.leftCount(n)], [2, 2, 3, 3]);
   });
 
   group('Reaction Tap', () {
-    test('green-light tap scores; early tap costs a point (not below 0); works for 3 players', () {
+    test(
+        'green-light tap scores; early tap costs a point (not below 0); works for 3 players',
+        () {
       final g = ReactionTapLogic(players: 3, random: Random(1));
       g.update(100);
       expect(g.phase, ReactionPhase.wait);
       expect(g.tap(0), isTrue);
       expect(g.falseStart, isTrue);
       expect(g.scores, [0, 0, 0], reason: 'never below zero');
-      expect(g.tap(1), isFalse, reason: 'taps ignored while showing the result');
+      expect(g.tap(1), isFalse,
+          reason: 'taps ignored while showing the result');
       g.update(100 + g.resultMs);
       expect(g.phase, ReactionPhase.wait);
       final go = g.goAt;
@@ -73,7 +91,8 @@ void main() {
   });
 
   group('Math Duel', () {
-    test('questions always offer 4 different answers including the right one', () {
+    test('questions always offer 4 different answers including the right one',
+        () {
       final r = Random(3);
       for (var level = 0; level < 6; level++) {
         for (var i = 0; i < 50; i++) {
@@ -85,9 +104,12 @@ void main() {
       }
     });
 
-    test('first right answer scores; wrong locks you out; all wrong moves on (4 players)', () {
+    test(
+        'first right answer scores; wrong locks you out; all wrong moves on (4 players)',
+        () {
       final g = MathDuelLogic(players: 4, random: Random(4), pauseMs: 500);
-      final wrong = g.question.options.firstWhere((o) => o != g.question.answer);
+      final wrong =
+          g.question.options.firstWhere((o) => o != g.question.answer);
       for (var p = 0; p < 3; p++) {
         expect(g.answer(p, wrong), isFalse);
         expect(g.answer(p, g.question.answer), isNull, reason: 'locked out');
@@ -150,7 +172,9 @@ void main() {
   });
 
   group('Penalty Shootout', () {
-    test('different side = goal, same side = save, roles alternate, picks are one-shot', () {
+    test(
+        'different side = goal, same side = save, roles alternate, picks are one-shot',
+        () {
       final g = PenaltyLogic(showMs: 100);
       expect(g.kicker, 0);
       expect(g.pick(0, 0), isTrue);
@@ -222,7 +246,8 @@ void main() {
 
     test('turning steers relative to the heading; crashing first loses', () {
       final g = SnakeDuelLogic(cols: 10, rows: 10, stepMs: 100);
-      g.turn(0, 1); // player 1 turns right, away from player 2's path, and hits the wall first
+      g.turn(0,
+          1); // player 1 turns right, away from player 2's path, and hits the wall first
       var t = 0;
       while (g.roundWinner == null) {
         g.update(t += 50);
@@ -232,11 +257,15 @@ void main() {
       expect(g.scores, [0, 1]);
     });
 
-    test('crashing into a trail ends the round and the match ends at the target', () {
-      final g = SnakeDuelLogic(cols: 10, rows: 10, stepMs: 100, pauseMs: 100, target: 2);
+    test(
+        'crashing into a trail ends the round and the match ends at the target',
+        () {
+      final g = SnakeDuelLogic(
+          cols: 10, rows: 10, stepMs: 100, pauseMs: 100, target: 2);
       var t = 0;
       for (var round = 0; round < 2; round++) {
-        g.turn(1, 1); // player 2 (heading down) turns right = screen left, hits the wall first
+        g.turn(1,
+            1); // player 2 (heading down) turns right = screen left, hits the wall first
         while (g.roundWinner == null) {
           g.update(t += 50);
         }
@@ -303,7 +332,9 @@ void main() {
   });
 
   group('Ping Pong', () {
-    test('serves after a pause, paddles return the ball faster, misses score for the other side', () {
+    test(
+        'serves after a pause, paddles return the ball faster, misses score for the other side',
+        () {
       final g = PingPongLogic(random: Random(5));
       g.update(500);
       expect(g.waitingToServe, isTrue);
@@ -385,7 +416,9 @@ void main() {
     });
 
     test('Guess the Person with 3 players rotates chooser and guesser', () {
-      final c = GuessPersonController(settings: const GpSettings(rounds: 3, playerCount: 3), players: defaultPlayers(3));
+      final c = GuessPersonController(
+          settings: const GpSettings(rounds: 3, playerCount: 3),
+          players: defaultPlayers(3));
       c.startGame();
       final roles = <(int, int)>[];
       for (var r = 0; r < 3; r++) {
@@ -401,7 +434,8 @@ void main() {
         c.nextRound();
       }
       expect(roles, [(0, 1), (1, 2), (2, 0)]);
-      expect(c.players.map((p) => p.score).toList(), [1, 1, 1], reason: 'each guesser was right once');
+      expect(c.players.map((p) => p.score).toList(), [1, 1, 1],
+          reason: 'each guesser was right once');
       expect(c.phase, GpPhase.gameOver);
       expect(c.isDraw, isTrue);
       c.dispose();

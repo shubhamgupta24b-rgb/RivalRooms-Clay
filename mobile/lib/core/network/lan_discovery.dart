@@ -11,7 +11,8 @@ class LanDiscovery {
   /// The phone's own local IPv4 addresses (Wi-Fi, hotspot, emulator).
   static Future<List<InternetAddress>> localAddresses() async {
     try {
-      final ifaces = await NetworkInterface.list(type: InternetAddressType.IPv4, includeLoopback: false);
+      final ifaces = await NetworkInterface.list(
+          type: InternetAddressType.IPv4, includeLoopback: false);
       return [
         for (final i in ifaces)
           for (final a in i.addresses)
@@ -27,7 +28,9 @@ class LanDiscovery {
     final p = ip.split('.').map(int.tryParse).toList();
     if (p.length != 4 || p.contains(null)) return false;
     final a = p[0]!, b = p[1]!;
-    return a == 10 || (a == 172 && b >= 16 && b <= 31) || (a == 192 && b == 168);
+    return a == 10 ||
+        (a == 172 && b >= 16 && b <= 31) ||
+        (a == 192 && b == 168);
   }
 
   /// Addresses to try for one of our own addresses: the rest of its /24 network, nearest first,
@@ -36,7 +39,10 @@ class LanDiscovery {
     final p = own.split('.');
     final base = '${p[0]}.${p[1]}.${p[2]}.';
     final me = int.parse(p[3]);
-    final hosts = [for (var i = 1; i <= 254; i++) if (i != me) i]..sort((x, y) => (x - me).abs().compareTo((y - me).abs()));
+    final hosts = [
+      for (var i = 1; i <= 254; i++)
+        if (i != me) i
+    ]..sort((x, y) => (x - me).abs().compareTo((y - me).abs()));
     return [
       if (own.startsWith('10.0.2.')) '10.0.2.2', // emulator -> its computer
       for (final h in hosts) '$base$h',
@@ -44,10 +50,13 @@ class LanDiscovery {
   }
 
   /// True if [host] runs a Party Games server.
-  static Future<bool> probe(String host, {Duration timeout = const Duration(milliseconds: 700)}) async {
+  static Future<bool> probe(String host,
+      {Duration timeout = const Duration(milliseconds: 700)}) async {
     final client = HttpClient()..connectionTimeout = timeout;
     try {
-      final req = await client.getUrl(Uri.parse('http://$host:$port/health')).timeout(timeout);
+      final req = await client
+          .getUrl(Uri.parse('http://$host:$port/health'))
+          .timeout(timeout);
       final res = await req.close().timeout(timeout);
       if (res.statusCode != 200) return false;
       final body = await res.transform(utf8.decoder).join().timeout(timeout);
@@ -62,14 +71,18 @@ class LanDiscovery {
 
   /// Searches the local network(s); returns the server's URL (http://ip:3000) or null.
   /// [onProgress] gets 0..1 as the search goes.
-  static Future<String?> find({void Function(double)? onProgress, Future<bool> Function(String host)? probeHost}) async {
+  static Future<String?> find(
+      {void Function(double)? onProgress,
+      Future<bool> Function(String host)? probeHost}) async {
     final check = probeHost ?? probe;
     final own = await localAddresses();
-    final hosts = <String>{for (final a in own) ...candidates(a.address)}.toList();
+    final hosts =
+        <String>{for (final a in own) ...candidates(a.address)}.toList();
     if (hosts.isEmpty) return null;
     const batch = 48; // parallel checks at a time
     for (var i = 0; i < hosts.length; i += batch) {
-      final part = hosts.sublist(i, i + batch > hosts.length ? hosts.length : i + batch);
+      final part =
+          hosts.sublist(i, i + batch > hosts.length ? hosts.length : i + batch);
       final results = await Future.wait(part.map(check));
       final hit = results.indexWhere((ok) => ok);
       onProgress?.call((i + part.length) / hosts.length);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/ui/components.dart';
 import '../../../core/ui/materials/materials.dart';
+import 'tile_scenes.dart';
 
 /// Each game's drawn icon (no emoji in game UI). Used by the intro header, How to play,
 /// results, the hub tiles, rooms and records.
@@ -8,6 +9,13 @@ const gameIcons = <String, GameIcons>{
   'air_hockey': GameIcons.puck,
   'archery': GameIcons.target,
   'ball_sort': GameIcons.bottle,
+  'bike_race': GameIcons.flag,
+  'nitro_knockout': GameIcons.bomb,
+  'candy_crush': GameIcons.star,
+  'carrom': GameIcons.coin,
+  'chicken_jump': GameIcons.bird,
+  'eight_ball': GameIcons.ball,
+  'fruit_cut': GameIcons.apple,
   'basketball_hoops': GameIcons.ball,
   'battleship': GameIcons.bomb,
   'bingo': GameIcons.star,
@@ -17,6 +25,7 @@ const gameIcons = <String, GameIcons>{
   'bubble_shooter': GameIcons.drop,
   'charades': GameIcons.clapper,
   'checkers': GameIcons.crownKing,
+  'chess': GameIcons.crown,
   'classic_snake': GameIcons.snake,
   'color_switch': GameIcons.paintBrush,
   'colour_clash': GameIcons.mysteryBox,
@@ -50,19 +59,26 @@ const gameIcons = <String, GameIcons>{
   'quiz_battle': GameIcons.lightbulb,
   'raja_mantri': GameIcons.crown,
   'reaction_tap': GameIcons.bolt,
+  'ring_sort': GameIcons.target,
   'rock_paper_scissors': GameIcons.rock,
   'shooting_gallery': GameIcons.duck,
   'simon_says': GameIcons.sound,
   'sky_jumper': GameIcons.arrowUp,
   'sliding_puzzle': GameIcons.woodBlock,
   'slingshot': GameIcons.pig,
-  'smash_karts': GameIcons.rocket,
   'snake_duel': GameIcons.snake,
   'snakes_ladders': GameIcons.ladder,
   'space_shooter': GameIcons.ufo,
   'stack_tower': GameIcons.woodBlock,
   'sudoku': GameIcons.pencil,
   'tic_tac_toe': GameIcons.cross,
+  'tug_of_war': GameIcons.flag,
+  'darts': GameIcons.target,
+  'hot_potato': GameIcons.bomb,
+  'knife_hit': GameIcons.woodBlock,
+  'cup_pong': GameIcons.ball,
+  'hungry_hippos': GameIcons.drop,
+  'penguin_push': GameIcons.bird,
   'truth_dare': GameIcons.bottle,
   'undercover': GameIcons.mask,
   'whack_mole': GameIcons.mole,
@@ -80,7 +96,19 @@ GameIcons gameIconFor(String id) {
 }
 
 /// The surface a game is played on, used as its art background.
-enum ArtGround { felt, wood, paper, day, sunset, night, grass, court, ice, water, track }
+enum ArtGround {
+  felt,
+  wood,
+  paper,
+  day,
+  sunset,
+  night,
+  grass,
+  court,
+  ice,
+  water,
+  track
+}
 
 const _grounds = <String, ArtGround>{
   'colour_clash': ArtGround.felt,
@@ -95,6 +123,14 @@ const _grounds = <String, ArtGround>{
   'ludo': ArtGround.wood,
   'snakes_ladders': ArtGround.wood,
   'checkers': ArtGround.wood,
+  'chess': ArtGround.wood,
+  'tug_of_war': ArtGround.grass,
+  'darts': ArtGround.night,
+  'hot_potato': ArtGround.sunset,
+  'knife_hit': ArtGround.wood,
+  'cup_pong': ArtGround.court,
+  'hungry_hippos': ArtGround.water,
+  'penguin_push': ArtGround.ice,
   'connect_four': ArtGround.wood,
   'dots_boxes': ArtGround.paper,
   'tic_tac_toe': ArtGround.paper,
@@ -104,6 +140,13 @@ const _grounds = <String, ArtGround>{
   'hangman': ArtGround.paper,
   'word_scramble': ArtGround.paper,
   'ball_sort': ArtGround.wood,
+  'bike_race': ArtGround.grass,
+  'candy_crush': ArtGround.felt,
+  'carrom': ArtGround.wood,
+  'chicken_jump': ArtGround.day,
+  'eight_ball': ArtGround.felt,
+  'fruit_cut': ArtGround.sunset,
+  'ring_sort': ArtGround.wood,
   'charades': ArtGround.paper,
   'draw_guess': ArtGround.paper,
   'heads_up': ArtGround.paper,
@@ -124,7 +167,6 @@ const _grounds = <String, ArtGround>{
   'shooting_gallery': ArtGround.sunset,
   'dino_run': ArtGround.day,
   'stack_tower': ArtGround.day,
-  'smash_karts': ArtGround.track,
   'space_shooter': ArtGround.night,
   'simon_says': ArtGround.night,
   'piano_tiles': ArtGround.night,
@@ -184,9 +226,11 @@ class GameArtPainter extends CustomPainter {
       case ArtGround.paper:
         const FeltPainter(rim: false, radius: 0).paint(canvas, size);
       case ArtGround.day:
-        SkyPainter(hills: true, horizon: 0.74, sun: id != 'stack_tower').paint(canvas, size);
+        SkyPainter(hills: true, horizon: 0.74, sun: id != 'stack_tower')
+            .paint(canvas, size);
       case ArtGround.sunset:
-        const SkyPainter(time: SkyTime.sunset, hills: true, horizon: 0.74).paint(canvas, size);
+        const SkyPainter(time: SkyTime.sunset, hills: true, horizon: 0.74)
+            .paint(canvas, size);
       case ArtGround.night:
         _night(canvas, size);
       case ArtGround.grass:
@@ -198,7 +242,8 @@ class GameArtPainter extends CustomPainter {
       case ArtGround.water:
         const WaterPainter(radius: 0).paint(canvas, size);
       case ArtGround.track:
-        const SkyPainter(time: SkyTime.sunset, horizon: 0.55, clouds: false).paint(canvas, size);
+        const SkyPainter(time: SkyTime.sunset, horizon: 0.55, clouds: false)
+            .paint(canvas, size);
         canvas.save();
         canvas.clipPath(Path()
           ..moveTo(size.width * 0.2, size.height * 0.6)
@@ -212,29 +257,50 @@ class GameArtPainter extends CustomPainter {
     // A glow in the game colour behind the icon.
     final c = Offset(size.width / 2, size.height * 0.5);
     final glow = size.shortestSide * 0.62;
-    canvas.drawCircle(c, glow, Paint()..shader = RadialGradient(colors: [color.withValues(alpha: 0.55), color.withValues(alpha: 0)]).createShader(Rect.fromCircle(center: c, radius: glow)));
+    canvas.drawCircle(
+        c,
+        glow,
+        Paint()
+          ..shader = RadialGradient(colors: [
+            color.withValues(alpha: 0.55),
+            color.withValues(alpha: 0)
+          ]).createShader(Rect.fromCircle(center: c, radius: glow)));
 
+    // Most games draw a little scene of their gameplay; the rest show their icon.
+    if (paintTileScene(canvas, size, id, color)) {
+      canvas.restore();
+      return;
+    }
     final s = size.shortestSide * iconScale;
     if (ground == ArtGround.paper) {
       // A paper card, slightly turned, with the icon on it.
       canvas.save();
       canvas.translate(c.dx, c.dy);
       canvas.rotate(-0.12);
-      final card = Rect.fromCenter(center: Offset.zero, width: s * 1.25, height: s * 1.6);
-      canvas.translate(card.left, card.top); // the paper painter draws at the origin
+      final card = Rect.fromCenter(
+          center: Offset.zero, width: s * 1.25, height: s * 1.6);
+      canvas.translate(
+          card.left, card.top); // the paper painter draws at the origin
       PaperCardPainter(radius: s * 0.14, tint: color).paint(canvas, card.size);
       canvas.restore();
-      paintIcon(canvas, gameIconFor(id), Rect.fromCenter(center: c, width: s * 0.85, height: s * 0.85), color: fillFor(color));
+      paintIcon(canvas, gameIconFor(id),
+          Rect.fromCenter(center: c, width: s * 0.85, height: s * 0.85),
+          color: fillFor(color));
     } else if (id.startsWith('colour_clash')) {
       _cardFan(canvas, c, s);
     } else {
       // Soft shadow, then the icon.
       canvas.drawOval(
-          Rect.fromCenter(center: c + Offset(0, s * 0.52), width: s * 0.9, height: s * 0.16),
+          Rect.fromCenter(
+              center: c + Offset(0, s * 0.52),
+              width: s * 0.9,
+              height: s * 0.16),
           Paint()
             ..color = Colors.black.withValues(alpha: 0.28)
             ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
-      paintIcon(canvas, gameIconFor(id), Rect.fromCenter(center: c, width: s, height: s), color: Colors.white);
+      paintIcon(canvas, gameIconFor(id),
+          Rect.fromCenter(center: c, width: s, height: s),
+          color: Colors.white);
     }
     canvas.restore();
   }
@@ -246,14 +312,23 @@ class GameArtPainter extends CustomPainter {
       canvas.save();
       canvas.translate(at.dx, at.dy);
       canvas.rotate(turn);
-      final outer = RRect.fromRectAndRadius(Rect.fromCenter(center: Offset.zero, width: w, height: h), Radius.circular(w * 0.14));
-      canvas.drawRRect(outer.shift(Offset(0, s * 0.04)), Paint()..color = Colors.black.withValues(alpha: 0.3));
+      final outer = RRect.fromRectAndRadius(
+          Rect.fromCenter(center: Offset.zero, width: w, height: h),
+          Radius.circular(w * 0.14));
+      canvas.drawRRect(outer.shift(Offset(0, s * 0.04)),
+          Paint()..color = Colors.black.withValues(alpha: 0.3));
       canvas.drawRRect(outer, Paint()..color = Colors.white);
       canvas.drawRRect(outer.deflate(w * 0.08), Paint()..color = fill);
       canvas.save();
       canvas.rotate(-0.55);
-      canvas.drawOval(Rect.fromCenter(center: Offset.zero, width: w * 0.62, height: h * 0.62), Paint()..color = Colors.white);
-      canvas.drawOval(Rect.fromCenter(center: Offset.zero, width: w * 0.34, height: h * 0.36), Paint()..color = fill);
+      canvas.drawOval(
+          Rect.fromCenter(
+              center: Offset.zero, width: w * 0.62, height: h * 0.62),
+          Paint()..color = Colors.white);
+      canvas.drawOval(
+          Rect.fromCenter(
+              center: Offset.zero, width: w * 0.34, height: h * 0.36),
+          Paint()..color = fill);
       canvas.restore();
       canvas.restore();
     }
@@ -265,17 +340,32 @@ class GameArtPainter extends CustomPainter {
   void _night(Canvas canvas, Size size) {
     final r = Offset.zero & size;
     canvas.drawRect(
-        r, Paint()..shader = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color.lerp(color, NeonPalette.bgBottom, 0.55)!, NeonPalette.bgBottom]).createShader(r));
+        r,
+        Paint()
+          ..shader = LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.lerp(color, NeonPalette.bgBottom, 0.55)!,
+                NeonPalette.bgBottom
+              ]).createShader(r));
     SkyPainter.drawStars(canvas, size);
   }
 
   void _ice(Canvas canvas, Size size) {
     final r = Offset.zero & size;
-    canvas.drawRect(r, Paint()..shader = const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFFE9F4FB), Color(0xFFBFDDEE)]).createShader(r));
+    canvas.drawRect(
+        r,
+        Paint()
+          ..shader = const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFE9F4FB), Color(0xFFBFDDEE)]).createShader(r));
     final line = Paint()
       ..color = const Color(0x66E5383B)
       ..strokeWidth = 3;
-    canvas.drawLine(Offset(0, size.height / 2), Offset(size.width, size.height / 2), line);
+    canvas.drawLine(
+        Offset(0, size.height / 2), Offset(size.width, size.height / 2), line);
     canvas.drawCircle(
         Offset(size.width / 2, size.height / 2),
         size.shortestSide * 0.3,
@@ -286,7 +376,8 @@ class GameArtPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(GameArtPainter old) => old.id != id || old.color != color || old.iconScale != iconScale;
+  bool shouldRepaint(GameArtPainter old) =>
+      old.id != id || old.color != color || old.iconScale != iconScale;
 }
 
 /// A game's art: its registered scene, or [GameArtPainter], fading into the night
@@ -295,18 +386,25 @@ class GameArt extends StatelessWidget {
   final String id;
   final Color color;
   final bool fade;
-  const GameArt({super.key, required this.id, required this.color, this.fade = true});
+  const GameArt(
+      {super.key, required this.id, required this.color, this.fade = true});
 
   @override
   Widget build(BuildContext context) {
     final scene = gameScenes[id];
     return ExcludeSemantics(
       child: Stack(fit: StackFit.expand, children: [
-        CustomPaint(painter: scene?.call(color) ?? GameArtPainter(id, color, iconScale: 0.46)),
+        CustomPaint(
+            painter: scene?.call(color) ??
+                GameArtPainter(id, color, iconScale: 0.46)),
         if (fade)
           const DecoratedBox(
             decoration: BoxDecoration(
-              gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.5, 1], colors: [Color(0x000B0E2E), NeonPalette.bg]),
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.5, 1],
+                  colors: [Color(0x000B0E2E), NeonPalette.bg]),
             ),
           ),
       ]),
@@ -315,7 +413,8 @@ class GameArt extends StatelessWidget {
 }
 
 /// "2–4 players", "2 players" or SOLO.
-String playersLabel(int min, int max) => max <= 1 ? 'SOLO' : (max > min ? '$min–$max players' : '$max players');
+String playersLabel(int min, int max) =>
+    max <= 1 ? 'SOLO' : (max > min ? '$min–$max players' : '$max players');
 
 /// A game in a grid (spec 4.4, Hub mockup): drawn art, name in Lilita, a player-count chip
 /// and an optional star. Pressing sinks it; long-press also stars it.
@@ -354,7 +453,8 @@ class _GameTileState extends State<GameTile> {
     final tile = Semantics(
       button: true,
       selected: w.selected,
-      label: '${w.title}, ${solo ? 'solo' : playersLabel(w.minPlayers, w.maxPlayers)}${w.favourite == true ? ', favourite' : ''}',
+      label:
+          '${w.title}, ${solo ? 'solo' : playersLabel(w.minPlayers, w.maxPlayers)}${w.favourite == true ? ', favourite' : ''}',
       excludeSemantics: true,
       child: GestureDetector(
         onTapDown: (_) => setState(() => _down = true),
@@ -369,28 +469,40 @@ class _GameTileState extends State<GameTile> {
           scale: _down ? Skin.pressScale : 1,
           duration: Motion.of(context, Motion.fast),
           child: AnimatedContainer(
-          duration: Motion.of(context, Motion.fast),
-          decoration: Skin.tile(selected: w.selected, pressed: _down),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(Skin.rTile - 6),
-                  child: CustomPaint(painter: GameArtPainter(w.id, w.color)),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                ShrinkText(w.title, style: TextStyle(fontFamily: Fonts.display, fontSize: 17, height: 1.15, color: flat ? FlatPalette.ink : Colors.white)),
-                const SizedBox(height: 4),
-                PlayersChip(min: w.minPlayers, max: w.maxPlayers),
-              ]),
-            ),
-          ]),
-        ),
+            duration: Motion.of(context, Motion.fast),
+            decoration: Skin.tile(selected: w.selected, pressed: _down),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(Skin.rTile - 6),
+                        child:
+                            CustomPaint(painter: GameArtPainter(w.id, w.color)),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ShrinkText(w.title,
+                              style: TextStyle(
+                                  fontFamily: Fonts.display,
+                                  fontSize: 17,
+                                  height: 1.15,
+                                  color:
+                                      flat ? FlatPalette.ink : Colors.white)),
+                          const SizedBox(height: 4),
+                          PlayersChip(min: w.minPlayers, max: w.maxPlayers),
+                        ]),
+                  ),
+                ]),
+          ),
         ),
       ),
     );
@@ -416,9 +528,14 @@ class _GameTileState extends State<GameTile> {
                   alignment: Alignment.center,
                   decoration: Skin.round(dark: true),
                   child: w.favourite!
-                      ? const GameIcon(GameIcons.star, size: 16, color: Brand.gold)
+                      ? const GameIcon(GameIcons.star,
+                          size: 16, color: Brand.gold)
                       // Not a favourite: the same star, greyed out.
-                      : ColorFiltered(colorFilter: ColorFilter.mode(Colors.white.withValues(alpha: 0.45), BlendMode.srcIn), child: const GameIcon(GameIcons.star, size: 16)),
+                      : ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                              Colors.white.withValues(alpha: 0.45),
+                              BlendMode.srcIn),
+                          child: const GameIcon(GameIcons.star, size: 16)),
                 ),
               ),
             ),
@@ -435,20 +552,29 @@ class ShrinkText extends StatelessWidget {
   final String text;
   final TextStyle style;
   final double minSize;
-  const ShrinkText(this.text, {super.key, required this.style, this.minSize = 13});
+  const ShrinkText(this.text,
+      {super.key, required this.style, this.minSize = 13});
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(builder: (context, box) {
         final scaler = MediaQuery.textScalerOf(context);
         var size = style.fontSize!;
         while (size > minSize) {
-          final tp = TextPainter(text: TextSpan(text: text, style: style.copyWith(fontSize: size)), textDirection: TextDirection.ltr, textScaler: scaler, maxLines: 1)..layout();
+          final tp = TextPainter(
+              text: TextSpan(text: text, style: style.copyWith(fontSize: size)),
+              textDirection: TextDirection.ltr,
+              textScaler: scaler,
+              maxLines: 1)
+            ..layout();
           final fits = tp.width <= box.maxWidth;
           tp.dispose();
           if (fits) break;
           size -= 1;
         }
-        return Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: style.copyWith(fontSize: size));
+        return Text(text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: style.copyWith(fontSize: size));
       });
 }
 
@@ -463,10 +589,21 @@ class PlayersChip extends StatelessWidget {
     final flat = context.tk.flat;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration:
-          BoxDecoration(color: solo ? Brand.gold.withValues(alpha: flat ? 0.45 : 0.22) : (flat ? FlatPalette.option : Colors.white.withValues(alpha: 0.12)), borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(
+          color: solo
+              ? Brand.gold.withValues(alpha: flat ? 0.45 : 0.22)
+              : (flat
+                  ? FlatPalette.option
+                  : Colors.white.withValues(alpha: 0.12)),
+          borderRadius: BorderRadius.circular(8)),
       child: Text(playersLabel(min, max),
-          style: TextStyle(fontFamily: Fonts.body, fontSize: 11, fontWeight: FontWeight.w900, color: flat ? FlatPalette.ink : (solo ? const Color(0xFFFFE08A) : Colors.white))),
+          style: TextStyle(
+              fontFamily: Fonts.body,
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              color: flat
+                  ? FlatPalette.ink
+                  : (solo ? const Color(0xFFFFE08A) : Colors.white))),
     );
   }
 }
@@ -477,13 +614,22 @@ class GameThumb extends StatelessWidget {
   final Color color;
   final double size;
   final double radius;
-  const GameThumb({super.key, required this.id, required this.color, this.size = 52, this.radius = 14});
+  const GameThumb(
+      {super.key,
+      required this.id,
+      required this.color,
+      this.size = 52,
+      this.radius = 14});
 
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(radius),
-          child: SizedBox(width: size, height: size, child: CustomPaint(painter: GameArtPainter(id, color, iconScale: 0.62))),
+          child: SizedBox(
+              width: size,
+              height: size,
+              child: CustomPaint(
+                  painter: GameArtPainter(id, color, iconScale: 0.62))),
         ),
       );
 }

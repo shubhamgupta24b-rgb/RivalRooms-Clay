@@ -19,7 +19,8 @@ class _GuessPersonScreenState extends State<GuessPersonScreen> {
   @override
   void initState() {
     super.initState();
-    _clock = Timer.periodic(const Duration(milliseconds: 250), (_) => setState(() {})); // countdown redraw only
+    _clock = Timer.periodic(const Duration(milliseconds: 250),
+        (_) => setState(() {})); // countdown redraw only
   }
 
   @override
@@ -39,11 +40,14 @@ class _GuessPersonScreenState extends State<GuessPersonScreen> {
     final text = ctrl.text.trim();
     if (text.isEmpty) return;
     ctrl.clear();
-    final r = await context.read<GameSessionManager>().action('guess_person:answer', {'text': text});
+    final r = await context
+        .read<GameSessionManager>()
+        .action('guess_person:answer', {'text': text});
     if (!mounted) return;
     setState(() {
       if (r['ok'] != true) {
-        feedback = _errors[r['error']] ?? 'Could not send answer (${r['error']}).';
+        feedback =
+            _errors[r['error']] ?? 'Could not send answer (${r['error']}).';
         feedbackColor = Colors.orangeAccent;
       } else {
         final resp = Map<String, dynamic>.from(r['response'] as Map);
@@ -76,7 +80,9 @@ class _GuessPersonScreenState extends State<GuessPersonScreen> {
     final you = Map<String, dynamic>.from(st['you'] as Map);
     final solvedBy = (st['solvedBy'] as List).cast<String>();
     final inRound = phase == 'round';
-    final reveal = st['reveal'] == null ? null : Map<String, dynamic>.from(st['reveal'] as Map);
+    final reveal = st['reveal'] == null
+        ? null
+        : Map<String, dynamic>.from(st['reveal'] as Map);
     final theme = Theme.of(context);
 
     if (inRound == false && phase != 'reveal') return const SizedBox.shrink();
@@ -85,16 +91,25 @@ class _GuessPersonScreenState extends State<GuessPersonScreen> {
       padding: const EdgeInsets.all(16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('Round ${st['round']} / ${st['totalRounds']}', style: theme.textTheme.titleMedium),
-          Text(inRound ? '${_secsLeft(session, st['roundEndsAt'] as num?)}s' : 'Next in ${_secsLeft(session, st['revealEndsAt'] as num?)}s',
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text('Round ${st['round']} / ${st['totalRounds']}',
+              style: theme.textTheme.titleMedium),
+          Text(
+              inRound
+                  ? '${_secsLeft(session, st['roundEndsAt'] as num?)}s'
+                  : 'Next in ${_secsLeft(session, st['revealEndsAt'] as num?)}s',
+              style: theme.textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold)),
         ]),
         const SizedBox(height: 8),
         Wrap(spacing: 8, runSpacing: 4, children: [
           for (final p in players)
             Chip(
-              avatar: solvedBy.contains(p['userId']) ? const Icon(Icons.check_circle, color: Colors.greenAccent, size: 18) : null,
-              label: Text('${p['username']}${p['userId'] == myId ? ' (you)' : ''}: ${scores[p['userId']]}'),
+              avatar: solvedBy.contains(p['userId'])
+                  ? const Icon(Icons.check_circle,
+                      color: Colors.greenAccent, size: 18)
+                  : null,
+              label: Text(
+                  '${p['username']}${p['userId'] == myId ? ' (you)' : ''}: ${scores[p['userId']]}'),
             ),
         ]),
         const SizedBox(height: 12),
@@ -102,25 +117,41 @@ class _GuessPersonScreenState extends State<GuessPersonScreen> {
         Expanded(
           child: ListView(children: [
             for (var i = 0; i < clues.length; i++)
-              Card(child: ListTile(leading: CircleAvatar(radius: 14, child: Text('${i + 1}')), title: Text(clues[i]))),
+              Card(
+                  child: ListTile(
+                      leading:
+                          CircleAvatar(radius: 14, child: Text('${i + 1}')),
+                      title: Text(clues[i]))),
             if (inRound && st['nextClueAt'] != null)
               Padding(
                 padding: const EdgeInsets.all(8),
-                child: Text('Next clue in ${_secsLeft(session, st['nextClueAt'] as num?)}s (fewer clues = more points)',
+                child: Text(
+                    'Next clue in ${_secsLeft(session, st['nextClueAt'] as num?)}s (fewer clues = more points)',
                     style: theme.textTheme.bodySmall),
               ),
           ]),
         ),
         if (!inRound && reveal != null) ...[
-          Text('The answer: ${reveal['answer']}', textAlign: TextAlign.center, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text('The answer: ${reveal['answer']}',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
-          Text((reveal['gained'] as Map).containsKey(myId) ? 'You earned ${(reveal['gained'] as Map)[myId]} points' : 'You did not get it this time',
+          Text(
+              (reveal['gained'] as Map).containsKey(myId)
+                  ? 'You earned ${(reveal['gained'] as Map)[myId]} points'
+                  : 'You did not get it this time',
               textAlign: TextAlign.center),
         ] else if (you['solved'] == true)
-          const Text('You got it! Waiting for the others...', textAlign: TextAlign.center)
+          const Text('You got it! Waiting for the others...',
+              textAlign: TextAlign.center)
         else ...[
-          if (feedback != null) Text(feedback!, textAlign: TextAlign.center, style: TextStyle(color: feedbackColor)),
-          Text('Attempts left: ${you['attemptsLeft']}', textAlign: TextAlign.center),
+          if (feedback != null)
+            Text(feedback!,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: feedbackColor)),
+          Text('Attempts left: ${you['attemptsLeft']}',
+              textAlign: TextAlign.center),
           const SizedBox(height: 8),
           Row(children: [
             Expanded(
@@ -128,12 +159,15 @@ class _GuessPersonScreenState extends State<GuessPersonScreen> {
                 controller: ctrl,
                 enabled: (you['attemptsLeft'] as int) > 0,
                 textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(hintText: 'Type your guess', border: OutlineInputBorder()),
+                decoration: const InputDecoration(
+                    hintText: 'Type your guess', border: OutlineInputBorder()),
                 onSubmitted: (_) => _send(),
               ),
             ),
             const SizedBox(width: 8),
-            FilledButton(onPressed: (you['attemptsLeft'] as int) > 0 ? _send : null, child: const Text('GUESS')),
+            FilledButton(
+                onPressed: (you['attemptsLeft'] as int) > 0 ? _send : null,
+                child: const Text('GUESS')),
           ]),
         ],
       ]),

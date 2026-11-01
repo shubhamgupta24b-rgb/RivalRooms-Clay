@@ -5,7 +5,13 @@ import '../shell/local_game_info.dart';
 import '../shell/ticking_play.dart';
 import 'solo_common.dart';
 
-const _bubbleColors = [Color(0xFFE53935), Color(0xFF1E88E5), Color(0xFF43A047), Color(0xFFFDD835), Color(0xFF8E24AA)];
+const _bubbleColors = [
+  Color(0xFFE53935),
+  Color(0xFF1E88E5),
+  Color(0xFF43A047),
+  Color(0xFFFDD835),
+  Color(0xFF8E24AA)
+];
 
 /// Bubble Shooter. The board is 1 unit wide; bubbles sit on a staggered grid of [cols]
 /// across (odd rows shifted half a bubble). Aim and fire; 3 or more of a colour pop, and
@@ -23,7 +29,8 @@ class BubbleLogic extends SoloLogic {
   (double, double, double)? flying; // x, y, angle
   int _flyColor = 0;
   int shotsSincePop = 0;
-  final List<(double, double, int, int, bool)> effects = []; // x, y, colour, start ms, fell (vs popped)
+  final List<(double, double, int, int, bool)> effects =
+      []; // x, y, colour, start ms, fell (vs popped)
   int _last = 0;
 
   BubbleLogic({Random? random}) : rng = random ?? Random() {
@@ -37,14 +44,17 @@ class BubbleLogic extends SoloLogic {
   }
 
   static int colsIn(int row) => row.isOdd ? cols - 1 : cols;
-  static (double, double) pos(int row, int col) => (r + col * 2 * r + (row.isOdd ? r : 0), r + row * rowH);
+  static (double, double) pos(int row, int col) =>
+      (r + col * 2 * r + (row.isOdd ? r : 0), r + row * rowH);
   double get shooterY => r + deadRow * rowH + r * 2.6;
   double get height => shooterY + r * 2;
 
   /// A colour still on the board (so every shot can be useful).
   int _pick() {
     final left = grid.values.toSet().toList();
-    return left.isEmpty ? rng.nextInt(_bubbleColors.length) : left[rng.nextInt(left.length)];
+    return left.isEmpty
+        ? rng.nextInt(_bubbleColors.length)
+        : left[rng.nextInt(left.length)];
   }
 
   void setAim(double x, double y) {
@@ -93,10 +103,12 @@ class BubbleLogic extends SoloLogic {
         x = 1 - r;
         a = pi - a;
       }
-      final touching = y <= r || grid.keys.any((k) {
-        final (bx, by) = pos(k.$1, k.$2);
-        return (bx - x) * (bx - x) + (by - y) * (by - y) < (2 * r * 0.9) * (2 * r * 0.9);
-      });
+      final touching = y <= r ||
+          grid.keys.any((k) {
+            final (bx, by) = pos(k.$1, k.$2);
+            return (bx - x) * (bx - x) + (by - y) * (by - y) <
+                (2 * r * 0.9) * (2 * r * 0.9);
+          });
       if (touching) {
         flying = null;
         _stick(x, y);
@@ -181,9 +193,12 @@ class BubbleLogic extends SoloLogic {
     final (row, c) = k;
     final odd = row.isOdd;
     return [
-      (row, c - 1), (row, c + 1),
-      (row - 1, odd ? c : c - 1), (row - 1, odd ? c + 1 : c),
-      (row + 1, odd ? c : c - 1), (row + 1, odd ? c + 1 : c),
+      (row, c - 1),
+      (row, c + 1),
+      (row - 1, odd ? c : c - 1),
+      (row - 1, odd ? c + 1 : c),
+      (row + 1, odd ? c : c - 1),
+      (row + 1, odd ? c + 1 : c),
     ];
   }
 
@@ -234,20 +249,25 @@ final bubbleInfo = LocalGameInfo(
             height: w * g.height,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onPanStart: (d) => g.setAim(toUnits(d.localPosition).dx, toUnits(d.localPosition).dy),
-              onPanUpdate: (d) => g.setAim(toUnits(d.localPosition).dx, toUnits(d.localPosition).dy),
+              onPanStart: (d) => g.setAim(
+                  toUnits(d.localPosition).dx, toUnits(d.localPosition).dy),
+              onPanUpdate: (d) => g.setAim(
+                  toUnits(d.localPosition).dx, toUnits(d.localPosition).dy),
               onPanEnd: (_) => g.fire(),
               onTapUp: (d) {
                 final u = toUnits(d.localPosition);
                 // The spare bubble (bottom right) swaps; anywhere else aims and fires.
-                if ((u - Offset(0.85, g.shooterY)).distance < BubbleLogic.r * 2) {
+                if ((u - Offset(0.85, g.shooterY)).distance <
+                    BubbleLogic.r * 2) {
                   g.swap();
                 } else {
                   g.setAim(u.dx, u.dy);
                   g.fire();
                 }
               },
-              child: ClipRRect(borderRadius: BorderRadius.circular(16), child: CustomPaint(painter: _BubblePainter(g, w))),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: CustomPaint(painter: _BubblePainter(g, w))),
             ),
           ),
         );
@@ -256,9 +276,24 @@ final bubbleInfo = LocalGameInfo(
   ),
 );
 
-void _bubble(Canvas canvas, Offset c, double radius, Color col, {double alpha = 1}) {
-  canvas.drawCircle(c, radius, Paint()..shader = RadialGradient(center: const Alignment(-0.35, -0.4), colors: [Color.lerp(col, Colors.white, 0.55)!.withValues(alpha: alpha), col.withValues(alpha: alpha), Color.lerp(col, Colors.black, 0.3)!.withValues(alpha: alpha)], stops: const [0, 0.6, 1]).createShader(Rect.fromCircle(center: c, radius: radius)));
-  canvas.drawCircle(c - Offset(radius * 0.35, radius * 0.4), radius * 0.2, Paint()..color = Colors.white.withValues(alpha: 0.7 * alpha));
+void _bubble(Canvas canvas, Offset c, double radius, Color col,
+    {double alpha = 1}) {
+  canvas.drawCircle(
+      c,
+      radius,
+      Paint()
+        ..shader =
+            RadialGradient(center: const Alignment(-0.35, -0.4), colors: [
+          Color.lerp(col, Colors.white, 0.55)!.withValues(alpha: alpha),
+          col.withValues(alpha: alpha),
+          Color.lerp(col, Colors.black, 0.3)!.withValues(alpha: alpha)
+        ], stops: const [
+          0,
+          0.6,
+          1
+        ]).createShader(Rect.fromCircle(center: c, radius: radius)));
+  canvas.drawCircle(c - Offset(radius * 0.35, radius * 0.4), radius * 0.2,
+      Paint()..color = Colors.white.withValues(alpha: 0.7 * alpha));
 }
 
 class _BubblePainter extends CustomPainter {
@@ -268,14 +303,27 @@ class _BubblePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Offset.zero & size, Paint()..shader = const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF0D47A1), Color(0xFF4FC3F7)]).createShader(Offset.zero & size));
+    canvas.drawRect(
+        Offset.zero & size,
+        Paint()
+          ..shader = const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFF0D47A1), Color(0xFF4FC3F7)])
+              .createShader(Offset.zero & size));
     final rad = BubbleLogic.r * s;
     // The danger line.
-    final dy = (BubbleLogic.r + BubbleLogic.deadRow * BubbleLogic.rowH - BubbleLogic.r) * s;
+    final dy = (BubbleLogic.r +
+            BubbleLogic.deadRow * BubbleLogic.rowH -
+            BubbleLogic.r) *
+        s;
     for (var x = 0.0; x < size.width; x += 12) {
-      canvas.drawLine(Offset(x, dy), Offset(x + 6, dy), Paint()
-        ..color = const Color(0x99FF5252)
-        ..strokeWidth = 2);
+      canvas.drawLine(
+          Offset(x, dy),
+          Offset(x + 6, dy),
+          Paint()
+            ..color = const Color(0x99FF5252)
+            ..strokeWidth = 2);
     }
     for (final e in g.grid.entries) {
       final (x, y) = BubbleLogic.pos(e.key.$1, e.key.$2);
@@ -285,12 +333,17 @@ class _BubblePainter extends CustomPainter {
     for (final (x, y, col, ms, fell) in g.effects) {
       final u = (g.now - ms) / 700;
       if (fell) {
-        _bubble(canvas, Offset(x * s, (y + u * u * 0.8) * s), rad * 0.96, _bubbleColors[col], alpha: 1 - u);
+        _bubble(canvas, Offset(x * s, (y + u * u * 0.8) * s), rad * 0.96,
+            _bubbleColors[col],
+            alpha: 1 - u);
       } else {
-        canvas.drawCircle(Offset(x * s, y * s), rad * (1 + u), Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 3 * (1 - u)
-          ..color = _bubbleColors[col].withValues(alpha: 1 - u));
+        canvas.drawCircle(
+            Offset(x * s, y * s),
+            rad * (1 + u),
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 3 * (1 - u)
+              ..color = _bubbleColors[col].withValues(alpha: 1 - u));
       }
     }
     // Aim guide: dotted, bouncing off the walls.
@@ -306,12 +359,16 @@ class _BubblePainter extends CustomPainter {
       }
     }
     final f = g.flying;
-    if (f != null) _bubble(canvas, Offset(f.$1 * s, f.$2 * s), rad, _bubbleColors[g._flyColor]);
+    if (f != null)
+      _bubble(
+          canvas, Offset(f.$1 * s, f.$2 * s), rad, _bubbleColors[g._flyColor]);
     // Shooter and the spare.
     final base = Offset(0.5 * s, g.shooterY * s);
-    canvas.drawCircle(base, rad * 1.45, Paint()..color = Colors.white.withValues(alpha: 0.2));
+    canvas.drawCircle(
+        base, rad * 1.45, Paint()..color = Colors.white.withValues(alpha: 0.2));
     if (g.flying == null) _bubble(canvas, base, rad, _bubbleColors[g.current]);
-    _bubble(canvas, Offset(0.85 * s, g.shooterY * s), rad * 0.75, _bubbleColors[g.next]);
+    _bubble(canvas, Offset(0.85 * s, g.shooterY * s), rad * 0.75,
+        _bubbleColors[g.next]);
   }
 
   @override

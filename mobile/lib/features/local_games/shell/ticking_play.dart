@@ -12,19 +12,26 @@ class TickingPlay<T extends LocalGameLogic> extends StatefulWidget {
   final T Function() create;
   final Widget Function(BuildContext context, T logic) builder;
   final void Function(List<int> scores) onFinished;
-  const TickingPlay({super.key, required this.create, required this.builder, required this.onFinished});
+  const TickingPlay(
+      {super.key,
+      required this.create,
+      required this.builder,
+      required this.onFinished});
 
   @override
   State<TickingPlay<T>> createState() => _TickingPlayState<T>();
 }
 
-class _TickingPlayState<T extends LocalGameLogic> extends State<TickingPlay<T>> with SingleTickerProviderStateMixin {
+class _TickingPlayState<T extends LocalGameLogic> extends State<TickingPlay<T>>
+    with SingleTickerProviderStateMixin {
   late final T logic = widget.create();
   late final Ticker _ticker;
   bool _reported = false;
   BotScope? _bots; // computer players, when playing against the computer
   ValueNotifier<bool>? _pause;
-  int _base = 0, _last = 0; // game time before the current run of the ticker, and the latest time
+  int _base = 0,
+      _last =
+          0; // game time before the current run of the ticker, and the latest time
 
   @override
   void didChangeDependencies() {
@@ -81,5 +88,8 @@ class _TickingPlayState<T extends LocalGameLogic> extends State<TickingPlay<T>> 
   }
 
   @override
-  Widget build(BuildContext context) => RepaintBoundary(child: ListenableBuilder(listenable: logic, builder: (context, _) => widget.builder(context, logic)));
+  Widget build(BuildContext context) => RepaintBoundary(
+      child: ListenableBuilder(
+          listenable: logic,
+          builder: (context, _) => widget.builder(context, logic)));
 }

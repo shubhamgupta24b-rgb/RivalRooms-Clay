@@ -11,7 +11,11 @@ class CategoryPanel extends StatefulWidget {
   final List<GpQuestion> questions;
   final bool? Function(GpQuestion) answerFor; // null = not asked yet
   final void Function(GpQuestion)? onAsk;
-  const CategoryPanel({super.key, required this.questions, required this.answerFor, this.onAsk});
+  const CategoryPanel(
+      {super.key,
+      required this.questions,
+      required this.answerFor,
+      this.onAsk});
 
   @override
   State<CategoryPanel> createState() => _CategoryPanelState();
@@ -22,7 +26,9 @@ class _CategoryPanelState extends State<CategoryPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final cats = gpCategories.where((c) => widget.questions.any((q) => q.category == c.id)).toList();
+    final cats = gpCategories
+        .where((c) => widget.questions.any((q) => q.category == c.id))
+        .toList();
     final current = cats.where((c) => c.id == open).firstOrNull;
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
@@ -36,16 +42,24 @@ class _CategoryPanelState extends State<CategoryPanel> {
       builder: (context, c) {
         const gap = 10.0;
         final w = (c.maxWidth - gap * 3) / 4;
-        return Wrap(alignment: WrapAlignment.center, spacing: gap, runSpacing: gap, children: [
-          for (final cat in cats)
-            _Tile(
-              width: w,
-              emoji: cat.emoji,
-              label: cat.label,
-              asked: widget.questions.where((q) => q.category == cat.id && widget.answerFor(q) != null).length,
-              onTap: () => flatStyle ? _popup(cat) : setState(() => open = cat.id),
-            ),
-        ]);
+        return Wrap(
+            alignment: WrapAlignment.center,
+            spacing: gap,
+            runSpacing: gap,
+            children: [
+              for (final cat in cats)
+                _Tile(
+                  width: w,
+                  emoji: cat.emoji,
+                  label: cat.label,
+                  asked: widget.questions
+                      .where((q) =>
+                          q.category == cat.id && widget.answerFor(q) != null)
+                      .length,
+                  onTap: () =>
+                      flatStyle ? _popup(cat) : setState(() => open = cat.id),
+                ),
+            ]);
       },
     );
   }
@@ -62,27 +76,39 @@ class _CategoryPanelState extends State<CategoryPanel> {
         child: Stack(clipBehavior: Clip.none, children: [
           Container(
             padding: const EdgeInsets.fromLTRB(18, 20, 18, 22),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30)),
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(30)),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              FittedBox(child: Text(cat.label, style: const TextStyle(color: FlatColors.ink, fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: 1))),
+              FittedBox(
+                  child: Text(cat.label,
+                      style: const TextStyle(
+                          color: FlatColors.ink,
+                          fontSize: 40,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1))),
               const SizedBox(height: 16),
               LayoutBuilder(builder: (context, c) {
                 const gap = 14.0;
                 final w = (c.maxWidth - gap) / 2;
-                return Wrap(alignment: WrapAlignment.center, spacing: gap, runSpacing: gap, children: [
-                  for (final q in qs)
-                    _FlatOption(
-                      width: w,
-                      question: q,
-                      answer: widget.answerFor(q),
-                      onTap: widget.answerFor(q) != null || widget.onAsk == null
-                          ? null
-                          : () {
-                              Navigator.pop(ctx);
-                              widget.onAsk!(q);
-                            },
-                    ),
-                ]);
+                return Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: gap,
+                    runSpacing: gap,
+                    children: [
+                      for (final q in qs)
+                        _FlatOption(
+                          width: w,
+                          question: q,
+                          answer: widget.answerFor(q),
+                          onTap: widget.answerFor(q) != null ||
+                                  widget.onAsk == null
+                              ? null
+                              : () {
+                                  Navigator.pop(ctx);
+                                  widget.onAsk!(q);
+                                },
+                        ),
+                    ]);
               }),
             ]),
           ),
@@ -97,8 +123,12 @@ class _CategoryPanelState extends State<CategoryPanel> {
                 child: Container(
                   width: 50,
                   height: 50,
-                  decoration: BoxDecoration(color: FlatColors.close, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 3)),
-                  child: const Icon(Icons.close_rounded, color: Colors.white, size: 32),
+                  decoration: BoxDecoration(
+                      color: FlatColors.close,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 3)),
+                  child: const Icon(Icons.close_rounded,
+                      color: Colors.white, size: 32),
                 ),
               ),
             ),
@@ -113,22 +143,31 @@ class _CategoryPanelState extends State<CategoryPanel> {
     return Container(
       key: ValueKey(cat.id),
       padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
-      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Row(children: [
-          IconButton(
-            tooltip: 'Back to categories',
-            onPressed: () => setState(() => open = null),
-            icon: const Icon(Icons.arrow_back_rounded, color: GpCoral.tileInk),
-            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-          ),
-          Text('${cat.emoji}  ${cat.label}', style: const TextStyle(color: GpCoral.tileInk, fontWeight: FontWeight.w900, fontSize: 16)),
-        ]),
-        const SizedBox(height: 6),
-        Wrap(spacing: 8, runSpacing: 8, children: [
-          for (final q in qs) _option(q),
-        ]),
-      ]),
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(20)),
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(children: [
+              IconButton(
+                tooltip: 'Back to categories',
+                onPressed: () => setState(() => open = null),
+                icon: const Icon(Icons.arrow_back_rounded,
+                    color: GpCoral.tileInk),
+                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+              ),
+              Text('${cat.emoji}  ${cat.label}',
+                  style: const TextStyle(
+                      color: GpCoral.tileInk,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 16)),
+            ]),
+            const SizedBox(height: 6),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              for (final q in qs) _option(q),
+            ]),
+          ]),
     );
   }
 
@@ -157,7 +196,12 @@ class _CategoryPanelState extends State<CategoryPanel> {
             child: Text(
               asked ? '${q.label} · ${ans ? 'YES' : 'NO'}' : q.label,
               textAlign: TextAlign.center,
-              style: TextStyle(color: asked ? Color.lerp(color, Colors.black, 0.35) : Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
+              style: TextStyle(
+                  color: asked
+                      ? Color.lerp(color, Colors.black, 0.35)
+                      : Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 14),
             ),
           ),
         ),
@@ -172,12 +216,18 @@ class _FlatOption extends StatelessWidget {
   final GpQuestion question;
   final bool? answer;
   final VoidCallback? onTap;
-  const _FlatOption({required this.width, required this.question, required this.answer, required this.onTap});
+  const _FlatOption(
+      {required this.width,
+      required this.question,
+      required this.answer,
+      required this.onTap});
 
   static const _emoji = {
     'male': '👨', 'female': '👩', //
-    'long_hair': '💇‍♀️', 'short_hair': '💇‍♂️', 'curly': '👩‍🦱', 'bun': '🎀', 'spiky': '⚡', 'bald': '👨‍🦲',
-    'glasses': '👓', 'hat': '🎩', 'acc_earrings': '💎', 'acc_necklace': '📿', 'acc_bowtie': '🎀',
+    'long_hair': '💇‍♀️', 'short_hair': '💇‍♂️', 'curly': '👩‍🦱', 'bun': '🎀',
+    'spiky': '⚡', 'bald': '👨‍🦲',
+    'glasses': '👓', 'hat': '🎩', 'acc_earrings': '💎', 'acc_necklace': '📿',
+    'acc_bowtie': '🎀',
     'beard': '🧔', 'mustache': '🥸',
   };
 
@@ -190,9 +240,20 @@ class _FlatOption extends StatelessWidget {
       return Container(
         width: 38,
         height: 38,
-        decoration: BoxDecoration(color: kind == 'eyes' ? Colors.white : swatch, shape: BoxShape.circle, border: Border.all(color: const Color(0x33000000), width: 2)),
+        decoration: BoxDecoration(
+            color: kind == 'eyes' ? Colors.white : swatch,
+            shape: BoxShape.circle,
+            border: Border.all(color: const Color(0x33000000), width: 2)),
         alignment: Alignment.center,
-        child: kind == 'eyes' ? Container(width: 20, height: 20, decoration: BoxDecoration(color: swatch, shape: BoxShape.circle, border: Border.all(color: FlatColors.ink, width: 5))) : null,
+        child: kind == 'eyes'
+            ? Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                    color: swatch,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: FlatColors.ink, width: 5)))
+            : null,
       );
     }
     return Text(_emoji[id] ?? '❓', style: const TextStyle(fontSize: 32));
@@ -201,10 +262,14 @@ class _FlatOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final a = answer;
-    final color = a == null ? FlatColors.option : (a ? const Color(0xFFCFF3DD) : const Color(0xFFFAD4D3));
+    final color = a == null
+        ? FlatColors.option
+        : (a ? const Color(0xFFCFF3DD) : const Color(0xFFFAD4D3));
     return Semantics(
       button: a == null,
-      label: a == null ? question.prompt : '${question.prompt} ${a ? 'Yes' : 'No'}',
+      label: a == null
+          ? question.prompt
+          : '${question.prompt} ${a ? 'Yes' : 'No'}',
       child: GestureDetector(
         onTap: onTap,
         child: Container(
@@ -215,8 +280,18 @@ class _FlatOption extends StatelessWidget {
             _icon(),
             const SizedBox(height: 6),
             FittedBox(
-              child: Text(a == null ? question.label : '${question.label} · ${a ? 'YES' : 'NO'}',
-                  style: TextStyle(color: a == null ? FlatColors.ink : (a ? const Color(0xFF15803D) : const Color(0xFFB91C1C)), fontWeight: FontWeight.w900, fontSize: 17)),
+              child: Text(
+                  a == null
+                      ? question.label
+                      : '${question.label} · ${a ? 'YES' : 'NO'}',
+                  style: TextStyle(
+                      color: a == null
+                          ? FlatColors.ink
+                          : (a
+                              ? const Color(0xFF15803D)
+                              : const Color(0xFFB91C1C)),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 17)),
             ),
           ]),
         ),
@@ -231,7 +306,12 @@ class _Tile extends StatelessWidget {
   final String label;
   final int asked;
   final VoidCallback onTap;
-  const _Tile({required this.width, required this.emoji, required this.label, required this.asked, required this.onTap});
+  const _Tile(
+      {required this.width,
+      required this.emoji,
+      required this.label,
+      required this.asked,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +335,11 @@ class _Tile extends StatelessWidget {
                   const SizedBox(height: 2),
                   FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: Text(label, style: const TextStyle(color: GpCoral.tileInk, fontWeight: FontWeight.w900, fontSize: 13)),
+                    child: Text(label,
+                        style: const TextStyle(
+                            color: GpCoral.tileInk,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 13)),
                   ),
                 ]),
               ),
@@ -264,9 +348,16 @@ class _Tile extends StatelessWidget {
                   top: 4,
                   right: 4,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                    decoration: BoxDecoration(color: GpCoral.bg, borderRadius: BorderRadius.circular(8)),
-                    child: Text('$asked', style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w900)),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                    decoration: BoxDecoration(
+                        color: GpCoral.bg,
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Text('$asked',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900)),
                   ),
                 ),
             ]),
@@ -281,7 +372,8 @@ class _Tile extends StatelessWidget {
 class AnswerBanner extends StatelessWidget {
   final AskedQuestion? answer;
   final String emptyHint;
-  const AnswerBanner({super.key, required this.answer, required this.emptyHint});
+  const AnswerBanner(
+      {super.key, required this.answer, required this.emptyHint});
 
   @override
   Widget build(BuildContext context) {
@@ -290,15 +382,25 @@ class AnswerBanner extends StatelessWidget {
       duration: const Duration(milliseconds: 250),
       transitionBuilder: (child, anim) => FadeTransition(
         opacity: anim,
-        child: SlideTransition(position: Tween(begin: const Offset(0, 0.3), end: Offset.zero).animate(anim), child: child),
+        child: SlideTransition(
+            position: Tween(begin: const Offset(0, 0.3), end: Offset.zero)
+                .animate(anim),
+            child: child),
       ),
       child: a == null
           ? Container(
               key: const ValueKey('hint'),
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-              decoration: BoxDecoration(color: GpCoral.panel, borderRadius: BorderRadius.circular(16)),
-              child: Text(emptyHint, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
+              decoration: BoxDecoration(
+                  color: GpCoral.panel,
+                  borderRadius: BorderRadius.circular(16)),
+              child: Text(emptyHint,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600)),
             )
           : Container(
               key: ValueKey(a.question.id),
@@ -307,13 +409,24 @@ class AnswerBanner extends StatelessWidget {
               decoration: BoxDecoration(
                 color: GpCoral.panel,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: a.answer ? GpColors.yes : GpColors.no, width: 3),
+                border: Border.all(
+                    color: a.answer ? GpColors.yes : GpColors.no, width: 3),
               ),
               child: Row(children: [
-                Expanded(child: Text(a.question.prompt, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14))),
-                Icon(a.answer ? Icons.check_circle : Icons.cancel, color: a.answer ? GpColors.yes : GpColors.no),
+                Expanded(
+                    child: Text(a.question.prompt,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14))),
+                Icon(a.answer ? Icons.check_circle : Icons.cancel,
+                    color: a.answer ? GpColors.yes : GpColors.no),
                 const SizedBox(width: 4),
-                Text(a.answer ? 'YES' : 'NO', style: TextStyle(color: a.answer ? GpColors.yes : GpColors.no, fontWeight: FontWeight.w900, fontSize: 22)),
+                Text(a.answer ? 'YES' : 'NO',
+                    style: TextStyle(
+                        color: a.answer ? GpColors.yes : GpColors.no,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 22)),
               ]),
             ),
     );

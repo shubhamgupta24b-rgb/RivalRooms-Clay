@@ -24,7 +24,8 @@ class AuthenticationManager extends ChangeNotifier {
   Future<void> signInAsGuest(String name) async {
     final p = await SharedPreferences.getInstance();
     final rnd = Random.secure();
-    _id = p.getString('uid') ?? List.generate(12, (_) => rnd.nextInt(36).toRadixString(36)).join();
+    _id = p.getString('uid') ??
+        List.generate(12, (_) => rnd.nextInt(36).toRadixString(36)).join();
     final clean = name.trim().replaceAll(':', '');
     _name = clean.length > 20 ? clean.substring(0, 20) : clean;
     await p.setString('uid', _id!);

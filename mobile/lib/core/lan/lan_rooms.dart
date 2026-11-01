@@ -24,7 +24,8 @@ class LanGame {
 class LanPlayer {
   final String userId, username;
   bool ready, connected;
-  LanPlayer(this.userId, this.username, {this.ready = false, this.connected = true});
+  LanPlayer(this.userId, this.username,
+      {this.ready = false, this.connected = true});
 }
 
 /// One relay game in progress: the host phone's latest state and everyone's moves for it.
@@ -50,7 +51,8 @@ class LanRelay {
         if (uid != host) throw const LanError('NOT_HOST');
         final s = p['state'];
         if (s is! Map) throw const LanError('INVALID_PAYLOAD');
-        if (jsonEncode(s).length > maxStateBytes) throw const LanError('INVALID_PAYLOAD', 'state too large');
+        if (jsonEncode(s).length > maxStateBytes)
+          throw const LanError('INVALID_PAYLOAD', 'state too large');
         state = s;
         version++;
         final ack = p['ack'];
@@ -58,16 +60,27 @@ class LanRelay {
         return {'version': version};
       case 'relay:input':
         final name = p['name'], args = p['args'];
-        if (name is! String || !nameRe.hasMatch(name) || args is! List || args.length > 8) throw const LanError('INVALID_PAYLOAD');
-        if (!args.every((a) => a == null || a is num || a is String || a is bool)) throw const LanError('INVALID_PAYLOAD');
-        inputs.add({'seq': ++inputSeq, 'from': uid, 'name': name, 'args': args});
-        if (inputs.length > maxQueue) inputs.removeRange(0, inputs.length - maxQueue);
+        if (name is! String ||
+            !nameRe.hasMatch(name) ||
+            args is! List ||
+            args.length > 8) throw const LanError('INVALID_PAYLOAD');
+        if (!args
+            .every((a) => a == null || a is num || a is String || a is bool))
+          throw const LanError('INVALID_PAYLOAD');
+        inputs
+            .add({'seq': ++inputSeq, 'from': uid, 'name': name, 'args': args});
+        if (inputs.length > maxQueue)
+          inputs.removeRange(0, inputs.length - maxQueue);
         return {'seq': inputSeq};
       case 'relay:finish':
         if (uid != host) throw const LanError('NOT_HOST');
         final sc = p['scores'];
-        if (sc is! List || sc.length != players.length || !sc.every((x) => x is int)) throw const LanError('INVALID_PAYLOAD');
-        scores = {for (var i = 0; i < players.length; i++) players[i]: sc[i] as int};
+        if (sc is! List ||
+            sc.length != players.length ||
+            !sc.every((x) => x is int)) throw const LanError('INVALID_PAYLOAD');
+        scores = {
+          for (var i = 0; i < players.length; i++) players[i]: sc[i] as int
+        };
         finished = true;
         return {};
     }
@@ -78,26 +91,40 @@ class LanRelay {
         'gameType': gameType,
         'relay': true,
         'host': host,
-        'players': [for (final u in players) {'userId': u, 'username': names[u]}],
+        'players': [
+          for (final u in players) {'userId': u, 'username': names[u]}
+        ],
         'state': state,
         'version': version,
-        'inputs': uid == host ? inputs : const [], // only the host needs the moves
+        'inputs':
+            uid == host ? inputs : const [], // only the host needs the moves
         'finished': finished,
       };
 
   Map<String, Object?> result() {
-    final ranking = [for (final u in players) <String, Object?>{'userId': u, 'username': names[u], 'score': scores![u]}]
-      ..sort((a, b) => (b['score'] as int) - (a['score'] as int));
+    final ranking = [
+      for (final u in players)
+        <String, Object?>{
+          'userId': u,
+          'username': names[u],
+          'score': scores![u]
+        }
+    ]..sort((a, b) => (b['score'] as int) - (a['score'] as int));
     var rank = 0;
     for (var i = 0; i < ranking.length; i++) {
-      if (i == 0 || (ranking[i]['score'] as int) < (ranking[i - 1]['score'] as int)) rank = i + 1;
+      if (i == 0 ||
+          (ranking[i]['score'] as int) < (ranking[i - 1]['score'] as int))
+        rank = i + 1;
       ranking[i]['rank'] = rank;
     }
     return {
       'gameType': gameType,
       'scores': scores,
       'ranking': ranking,
-      'winners': [for (final r in ranking) if (r['rank'] == 1) r['userId']],
+      'winners': [
+        for (final r in ranking)
+          if (r['rank'] == 1) r['userId']
+      ],
     };
   }
 }
@@ -133,13 +160,15 @@ class LanRooms {
   void Function(String code, Map<String, Object?>? result)? onGameUpdated;
   void Function(String code)? onGameAborted;
 
-  LanRooms(List<LanGame> games, {this.grace = const Duration(seconds: 60), Random? random})
+  LanRooms(List<LanGame> games,
+      {this.grace = const Duration(seconds: 60), Random? random})
       : games = {for (final g in games) g.id: g},
         _rng = random ?? Random.secure();
 
   String _code() {
     for (var i = 0; i < 50; i++) {
-      final c = List.generate(6, (_) => _chars[_rng.nextInt(_chars.length)]).join();
+      final c =
+          List.generate(6, (_) => _chars[_rng.nextInt(_chars.length)]).join();
       if (!rooms.containsKey(c)) return c;
     }
     throw const LanError('INTERNAL');
@@ -147,20 +176,24 @@ class LanRooms {
 
   LanRoom? get(String code) => rooms[code];
   LanRoom? roomOf(String userId) => rooms[_userRoom[userId]];
-  LanRoom _mustRoom(String userId) => roomOf(userId) ?? (throw const LanError('NOT_IN_ROOM'));
+  LanRoom _mustRoom(String userId) =>
+      roomOf(userId) ?? (throw const LanError('NOT_IN_ROOM'));
   void _changed(LanRoom r) => onRoomChanged?.call(r.code);
 
   LanGame _game(String id) {
     final g = games[id];
     // Guess Who and Raja Mantri keep their rules on the internet server.
-    if (g == null) throw const LanError('NEEDS_INTERNET', 'This game needs Online mode');
+    if (g == null)
+      throw const LanError('NEEDS_INTERNET', 'This game needs Online mode');
     return g;
   }
 
-  LanRoom createRoom(String userId, String username, {required String gameType, required Object? maxPlayers}) {
+  LanRoom createRoom(String userId, String username,
+      {required String gameType, required Object? maxPlayers}) {
     if (_userRoom.containsKey(userId)) throw const LanError('ALREADY_IN_ROOM');
     _game(gameType);
-    if (maxPlayers is! int || maxPlayers < 2 || maxPlayers > 6) throw const LanError('INVALID_PAYLOAD', 'maxPlayers must be 2 to 6');
+    if (maxPlayers is! int || maxPlayers < 2 || maxPlayers > 6)
+      throw const LanError('INVALID_PAYLOAD', 'maxPlayers must be 2 to 6');
     final room = LanRoom(_code(), gameType, maxPlayers, userId);
     room.players.add(LanPlayer(userId, username, ready: true));
     rooms[room.code] = room;
@@ -172,15 +205,22 @@ class LanRooms {
     if (_userRoom.containsKey(userId)) throw const LanError('ALREADY_IN_ROOM');
     if (gameType != null) _game(gameType);
     final open = rooms.values
-        .where((r) => r.isPublic && r.status == 'lobby' && r.players.length < r.maxPlayers && r.players.any((p) => p.connected) && (gameType == null || r.gameType == gameType))
+        .where((r) =>
+            r.isPublic &&
+            r.status == 'lobby' &&
+            r.players.length < r.maxPlayers &&
+            r.players.any((p) => p.connected) &&
+            (gameType == null || r.gameType == gameType))
         .toList();
     if (open.isNotEmpty) {
       final most = open.map((r) => r.players.length).reduce(max);
       final best = open.where((r) => r.players.length == most).toList();
       return joinRoom(userId, username, best[_rng.nextInt(best.length)].code);
     }
-    final pool = games.values.where((g) => g.minPlayers <= 2).map((g) => g.id).toList();
-    final room = createRoom(userId, username, gameType: gameType ?? pool[_rng.nextInt(pool.length)], maxPlayers: 6);
+    final pool =
+        games.values.where((g) => g.minPlayers <= 2).map((g) => g.id).toList();
+    final room = createRoom(userId, username,
+        gameType: gameType ?? pool[_rng.nextInt(pool.length)], maxPlayers: 6);
     room.isPublic = true;
     return room;
   }
@@ -189,7 +229,8 @@ class LanRooms {
     if (_userRoom.containsKey(userId)) throw const LanError('ALREADY_IN_ROOM');
     final room = rooms[code] ?? (throw const LanError('ROOM_NOT_FOUND'));
     if (room.status != 'lobby') throw const LanError('GAME_IN_PROGRESS');
-    if (room.players.length >= room.maxPlayers) throw const LanError('ROOM_FULL');
+    if (room.players.length >= room.maxPlayers)
+      throw const LanError('ROOM_FULL');
     room.players.add(LanPlayer(userId, username));
     _userRoom[userId] = code;
     _changed(room);
@@ -214,7 +255,8 @@ class LanRooms {
       return;
     }
     if (room.hostId == userId) {
-      final next = room.players.firstWhere((p) => p.connected, orElse: () => room.players.first);
+      final next = room.players
+          .firstWhere((p) => p.connected, orElse: () => room.players.first);
       room.hostId = next.userId;
       next.ready = true;
     }
@@ -236,7 +278,10 @@ class LanRooms {
 
   List<String> _fits(LanRoom room) {
     final n = room.players.length;
-    return [for (final g in games.values) if (n >= g.minPlayers && n <= g.maxPlayers) g.id];
+    return [
+      for (final g in games.values)
+        if (n >= g.minPlayers && n <= g.maxPlayers) g.id
+    ];
   }
 
   LanRoom selectGame(String userId, String gameType) {
@@ -264,12 +309,19 @@ class LanRooms {
     if (room.hostId != userId) throw const LanError('NOT_HOST');
     if (room.status != 'lobby') throw const LanError('BAD_PHASE');
     final g = _game(room.gameType);
-    if (room.players.length < max(2, g.minPlayers)) throw const LanError('NOT_ENOUGH_PLAYERS');
-    if (room.players.length > g.maxPlayers) throw const LanError('TOO_MANY_PLAYERS');
-    if (!room.players.every((p) => p.ready && p.connected)) throw const LanError('PLAYERS_NOT_READY');
+    if (room.players.length < max(2, g.minPlayers))
+      throw const LanError('NOT_ENOUGH_PLAYERS');
+    if (room.players.length > g.maxPlayers)
+      throw const LanError('TOO_MANY_PLAYERS');
+    if (!room.players.every((p) => p.ready && p.connected))
+      throw const LanError('PLAYERS_NOT_READY');
     final ids = [for (final p in room.players) p.userId];
     room.status = 'playing';
-    room.game = LanRelay(room.gameType, ids, {for (final p in room.players) p.userId: p.username}, ids.contains(room.hostId) ? room.hostId : ids.first);
+    room.game = LanRelay(
+        room.gameType,
+        ids,
+        {for (final p in room.players) p.userId: p.username},
+        ids.contains(room.hostId) ? room.hostId : ids.first);
     room.seqs = {};
     _changed(room);
     return room;
@@ -279,7 +331,8 @@ class LanRooms {
     final room = _mustRoom(userId);
     if (room.hostId != userId) throw const LanError('NOT_HOST');
     if (room.status != 'lobby') throw const LanError('BAD_PHASE');
-    if (count is! int || count < 2 || count > 10) throw const LanError('INVALID_PAYLOAD');
+    if (count is! int || count < 2 || count > 10)
+      throw const LanError('INVALID_PAYLOAD');
     if (room.players.length < 2) throw const LanError('NOT_ENOUGH_PLAYERS');
     final pool = _fits(room)..shuffle(_rng);
     final list = pool.take(count).toList();
@@ -291,7 +344,13 @@ class LanRooms {
       room.gameType = prev;
       rethrow;
     }
-    room.party = {'games': list, 'index': 0, 'totals': {for (final p in room.players) p.userId: 0}, 'lastPoints': null, 'done': false};
+    room.party = {
+      'games': list,
+      'index': 0,
+      'totals': {for (final p in room.players) p.userId: 0},
+      'lastPoints': null,
+      'done': false
+    };
     _changed(room);
     return room;
   }
@@ -333,26 +392,39 @@ class LanRooms {
     final last = <String, int>{};
     final totals = (party['totals'] as Map).cast<String, int>();
     for (final r in ranking) {
-      final pts = n - ((r['rank'] as int?) ?? n) + 1; // 1st gets n points, last gets 1
+      final pts =
+          n - ((r['rank'] as int?) ?? n) + 1; // 1st gets n points, last gets 1
       last[r['userId'] as String] = pts;
       totals[r['userId'] as String] = (totals[r['userId']] ?? 0) + pts;
     }
     party['totals'] = totals;
     party['lastPoints'] = last;
-    party['done'] = (party['index'] as int) >= (party['games'] as List).length - 1;
+    party['done'] =
+        (party['index'] as int) >= (party['games'] as List).length - 1;
     return {...result, 'party': publicParty(room)};
   }
 
   Map<String, Object?>? publicParty(LanRoom room) {
     final p = room.party;
-    return p == null ? null : {'games': p['games'], 'index': p['index'], 'totals': p['totals'], 'lastPoints': p['lastPoints'], 'done': p['done']};
+    return p == null
+        ? null
+        : {
+            'games': p['games'],
+            'index': p['index'],
+            'totals': p['totals'],
+            'lastPoints': p['lastPoints'],
+            'done': p['done']
+          };
   }
 
   /// A move or state from a phone. Returns the game's response for the ack.
-  Map<String, Object?>? gameAction(String userId, String type, Map payload, int seq) {
+  Map<String, Object?>? gameAction(
+      String userId, String type, Map payload, int seq) {
     final room = _mustRoom(userId);
-    if (room.status != 'playing' || room.game == null) throw const LanError('BAD_PHASE');
-    if ((room.seqs[userId] ?? -1) >= seq) throw const LanError('DUPLICATE_ACTION');
+    if (room.status != 'playing' || room.game == null)
+      throw const LanError('BAD_PHASE');
+    if ((room.seqs[userId] ?? -1) >= seq)
+      throw const LanError('DUPLICATE_ACTION');
     room.seqs[userId] = seq;
     final response = room.game!.action(userId, type, payload);
     Map<String, Object?>? result;
@@ -408,7 +480,14 @@ class LanRooms {
         'party': publicParty(room),
         'playable': _fits(room),
         'players': [
-          for (final p in room.players) {'userId': p.userId, 'username': p.username, 'avatar': null, 'ready': p.ready, 'connected': p.connected},
+          for (final p in room.players)
+            {
+              'userId': p.userId,
+              'username': p.username,
+              'avatar': null,
+              'ready': p.ready,
+              'connected': p.connected
+            },
         ],
       };
 

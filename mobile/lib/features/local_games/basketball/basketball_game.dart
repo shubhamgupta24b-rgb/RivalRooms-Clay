@@ -33,7 +33,8 @@ class BasketballLogic extends TimedDuel {
   final List<int> _lastShotAt;
   final List<Shot?> lastShot;
 
-  BasketballLogic({int durationMs = 30000, this.cooldownMs = 800, int players = 2})
+  BasketballLogic(
+      {int durationMs = 30000, this.cooldownMs = 800, int players = 2})
       : score = List.filled(players, 0),
         shots = List.filled(players, 0),
         _lastShotAt = List.filled(players, -1 << 30),
@@ -52,7 +53,8 @@ class BasketballLogic extends TimedDuel {
 
   double get hoopX => hoopXAt(elapsedMs);
 
-  bool canShoot(int player) => !finished && elapsedMs - _lastShotAt[player] >= cooldownMs;
+  bool canShoot(int player) =>
+      !finished && elapsedMs - _lastShotAt[player] >= cooldownMs;
 
   static int pointsFor(double miss) => miss <= 0.1
       ? 3
@@ -94,7 +96,9 @@ final LocalGameInfo basketballInfo = LocalGameInfo(
   bot: botFor<BasketballLogic>((g, b, now) {
     if (!g.canShoot(b.seat) || !b.due(now)) return;
     // Aims where the hoop will be, with a shaky hand.
-    final aim = BasketballLogic.hoopXAt(g.elapsedMs + BasketballLogic.flightMs) + (b.rng.nextDouble() - 0.5) * 0.45;
+    final aim =
+        BasketballLogic.hoopXAt(g.elapsedMs + BasketballLogic.flightMs) +
+            (b.rng.nextDouble() - 0.5) * 0.45;
     g.shoot(b.seat, aim);
     b.wait(now, 900, 1700);
   }),
@@ -106,7 +110,8 @@ final LocalGameInfo basketballInfo = LocalGameInfo(
       'shots': g.shots,
       'last': g._lastShotAt,
       'shotsAt': [
-        for (final s in g.lastShot) s == null ? null : [s.points, s.aim, s.hoopX, s.atMs, s.number]
+        for (final s in g.lastShot)
+          s == null ? null : [s.points, s.aim, s.hoopX, s.atMs, s.number]
       ],
     },
     load: (g, s, me) {
@@ -117,7 +122,10 @@ final LocalGameInfo basketballInfo = LocalGameInfo(
       final shots = s['shotsAt'] as List;
       for (var i = 0; i < shots.length; i++) {
         final v = shots[i] as List?;
-        g.lastShot[i] = v == null ? null : Shot(asInt(v[0]), asDouble(v[1]), asDouble(v[2]), asInt(v[3]), asInt(v[4]));
+        g.lastShot[i] = v == null
+            ? null
+            : Shot(asInt(v[0]), asDouble(v[1]), asDouble(v[2]), asInt(v[3]),
+                asInt(v[4]));
       }
     },
     apply: (g, from, name, a) {
@@ -132,10 +140,16 @@ final LocalGameInfo basketballInfo = LocalGameInfo(
           Expanded(
             child: Wrap(spacing: 6, runSpacing: 4, children: [
               for (var i = 0; i < players.length; i++)
-                EdgeTag('${players[i].name} ${g.score[i]}', color: players[i].color),
+                EdgeTag('${players[i].name} ${g.score[i]}',
+                    color: players[i].color),
             ]),
           ),
-          Text('${g.secondsLeft}s', style: const TextStyle(fontFamily: Fonts.display, color: Colors.white, fontSize: 22, fontFeatures: [FontFeature.tabularFigures()])),
+          Text('${g.secondsLeft}s',
+              style: const TextStyle(
+                  fontFamily: Fonts.display,
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontFeatures: [FontFeature.tabularFigures()])),
         ]),
       ),
       Expanded(child: _HoopZone(player: players[me], index: me, g: g)),
@@ -147,11 +161,17 @@ final LocalGameInfo basketballInfo = LocalGameInfo(
       create: () => BasketballLogic(players: 1, durationMs: ms),
       onFinished: (s) => onDone(s.first),
       builder: (context, g) => Column(children: [
-        TurnBar(player: player, score: g.score.first, secondsLeft: g.secondsLeft),
-        Expanded(child: _HoopZone(player: player, index: 0, g: g, chrome: false)),
+        TurnBar(
+            player: player, score: g.score.first, secondsLeft: g.secondsLeft),
+        Expanded(
+            child: _HoopZone(player: player, index: 0, g: g, chrome: false)),
       ]),
     ),
-    simulate: (ms, rng) => simulateTurn(BasketballLogic(players: 1, durationMs: ms), basketballInfo.bot!, ms, rng),
+    simulate: (ms, rng) => simulateTurn(
+        BasketballLogic(players: 1, durationMs: ms),
+        basketballInfo.bot!,
+        ms,
+        rng),
   ),
   play: (players, onFinished) => TickingPlay<BasketballLogic>(
     create: () => BasketballLogic(players: players.length),
@@ -159,7 +179,11 @@ final LocalGameInfo basketballInfo = LocalGameInfo(
     builder: (context, g) => PlayerZones(
       count: players.length,
       colors: [for (final p in players) p.color],
-      middle: DuelMiddleBar(players: players, scores: g.scores, secondsLeft: g.secondsLeft, progress: g.progress),
+      middle: DuelMiddleBar(
+          players: players,
+          scores: g.scores,
+          secondsLeft: g.secondsLeft,
+          progress: g.progress),
       center: ZoneCenterChip('${g.secondsLeft}s'),
       zone: (i) => _HoopZone(player: players[i], index: i, g: g),
     ),
@@ -169,12 +193,17 @@ final LocalGameInfo basketballInfo = LocalGameInfo(
 /// Sizes for one player's court, worked out from the space it has.
 class _Geo {
   final double w, h;
-  late final double fenceTop = h * 0.30, grassTop = h * 0.52, courtTop = h * 0.62;
-  late final double bbW = min(w * 0.5, h * 0.42), bbH = bbW * 0.68, rimW = bbW * 0.4;
+  late final double fenceTop = h * 0.30,
+      grassTop = h * 0.52,
+      courtTop = h * 0.62;
+  late final double bbW = min(w * 0.5, h * 0.42),
+      bbH = bbW * 0.68,
+      rimW = bbW * 0.4;
   late final double bbTop = h * 0.1 + bbH * 0.28;
   late final double rimY = bbTop + bbH * 0.8;
   late final double netH = rimW * 0.62;
-  late final double unit = max(1.0, min(rimW * 1.4, (w / 2 - bbW / 2 - 4) / BasketballLogic.swing));
+  late final double unit =
+      max(1.0, min(rimW * 1.4, (w / 2 - bbW / 2 - 4) / BasketballLogic.swing));
   late final double startX = w / 2, startY = h * 0.84;
   late final double r0 = min(rimW * 0.62, h * 0.075), rB = rimW * 0.36;
   _Geo(this.w, this.h);
@@ -186,8 +215,13 @@ class _HoopZone extends StatefulWidget {
   final GpPlayer player;
   final int index;
   final BasketballLogic g;
-  final bool chrome; // its own name tag and clock (the take-turns bar shows them instead)
-  const _HoopZone({required this.player, required this.index, required this.g, this.chrome = true});
+  final bool
+      chrome; // its own name tag and clock (the take-turns bar shows them instead)
+  const _HoopZone(
+      {required this.player,
+      required this.index,
+      required this.g,
+      this.chrome = true});
   @override
   State<_HoopZone> createState() => _HoopZoneState();
 }
@@ -204,7 +238,9 @@ class _HoopZoneState extends State<_HoopZone> {
     // Carry the swipe's direction on from the ball up to the rim.
     final landing = geo.startX + d.dx / -d.dy * (geo.startY - geo.rimY);
     final pts = widget.g.shoot(widget.index, (landing - geo.w / 2) / geo.unit);
-    if (pts != null) (pts > 0 ? HapticFeedback.lightImpact() : HapticFeedback.selectionClick()).ignore();
+    if (pts != null)
+      (pts > 0 ? HapticFeedback.lightImpact() : HapticFeedback.selectionClick())
+          .ignore();
   }
 
   @override
@@ -216,7 +252,8 @@ class _HoopZoneState extends State<_HoopZone> {
       final shot = g.lastShot[i];
       final since = shot == null ? 1 << 30 : g.elapsedMs - shot.atMs;
       const flight = BasketballLogic.flightMs;
-      final showText = shot != null && since >= flight - 60 && since < flight + 700;
+      final showText =
+          shot != null && since >= flight - 60 && since < flight + 700;
       return GestureDetector(
         behavior: HitTestBehavior.opaque,
         onPanStart: (d) => _from = _to = d.localPosition,
@@ -227,16 +264,35 @@ class _HoopZoneState extends State<_HoopZone> {
           child: Stack(children: [
             Positioned.fill(
               child: CustomPaint(
-                painter: _CourtPainter(geo: geo, hoopX: g.hoopX, score: g.score[i], shot: shot, since: since, ready: g.canShoot(i)),
+                painter: _CourtPainter(
+                    geo: geo,
+                    hoopX: g.hoopX,
+                    score: g.score[i],
+                    shot: shot,
+                    since: since,
+                    ready: g.canShoot(i)),
               ),
             ),
-            if (widget.chrome) Positioned(
+            if (widget.chrome)
+              Positioned(
                 left: 8,
                 top: 6,
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  PlayerBadge(index: PlayerPalette.indexOf(widget.player.color) ?? i, size: 22, color: widget.player.color, initial: widget.player.name),
+                  PlayerBadge(
+                      index: PlayerPalette.indexOf(widget.player.color) ?? i,
+                      size: 22,
+                      color: widget.player.color,
+                      initial: widget.player.name),
                   const SizedBox(width: 6),
-                  Text(widget.player.name, style: TextStyle(fontFamily: Fonts.body, color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14, shadows: const [Shadow(color: Color(0x99000000), blurRadius: 3)])),
+                  Text(widget.player.name,
+                      style: TextStyle(
+                          fontFamily: Fonts.body,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14,
+                          shadows: const [
+                            Shadow(color: Color(0x99000000), blurRadius: 3)
+                          ])),
                 ]),
               ),
             if (widget.chrome)
@@ -244,13 +300,20 @@ class _HoopZoneState extends State<_HoopZone> {
                 right: 0,
                 bottom: geo.h * 0.06,
                 child: Container(
-                  padding: EdgeInsets.fromLTRB(geo.h * 0.05 + 6, 4, geo.h * 0.05, 4),
+                  padding:
+                      EdgeInsets.fromLTRB(geo.h * 0.05 + 6, 4, geo.h * 0.05, 4),
                   decoration: BoxDecoration(
                     color: const Color(0xFF2B2D34),
-                    borderRadius: const BorderRadius.horizontal(left: Radius.circular(40)),
+                    borderRadius: const BorderRadius.horizontal(
+                        left: Radius.circular(40)),
                     border: Border.all(color: Colors.black, width: 3),
                   ),
-                  child: Text('${g.secondsLeft}', style: TextStyle(fontFamily: Fonts.display, color: const Color(0xFFFF5B57), fontSize: max(16.0, geo.h * 0.06), fontFeatures: const [FontFeature.tabularFigures()])),
+                  child: Text('${g.secondsLeft}',
+                      style: TextStyle(
+                          fontFamily: Fonts.display,
+                          color: const Color(0xFFFF5B57),
+                          fontSize: max(16.0, geo.h * 0.06),
+                          fontFeatures: const [FontFeature.tabularFigures()])),
                 ),
               ),
             if (showText)
@@ -267,9 +330,16 @@ class _HoopZoneState extends State<_HoopZone> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: Fonts.display,
-                    color: shot.points == 0 ? const Color(0xFFFF8E8B) : (shot.points == 3 ? Brand.gold : Colors.white),
+                    color: shot.points == 0
+                        ? const Color(0xFFFF8E8B)
+                        : (shot.points == 3 ? Brand.gold : Colors.white),
                     fontSize: max(18.0, geo.h * 0.08),
-                    shadows: const [Shadow(color: Colors.black87, blurRadius: 4, offset: Offset(0, 2))],
+                    shadows: const [
+                      Shadow(
+                          color: Colors.black87,
+                          blurRadius: 4,
+                          offset: Offset(0, 2))
+                    ],
                   ),
                 ),
               ),
@@ -279,7 +349,11 @@ class _HoopZoneState extends State<_HoopZone> {
                 right: 0,
                 top: geo.courtTop + (geo.h - geo.courtTop) * 0.06,
                 child: Text('Swipe up to shoot',
-                    textAlign: TextAlign.center, style: TextStyle(fontFamily: Fonts.display, color: Colors.white.withValues(alpha: 0.8), fontSize: max(13.0, geo.h * 0.04))),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: Fonts.display,
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: max(13.0, geo.h * 0.04))),
               ),
           ]),
         ),
@@ -296,7 +370,13 @@ class _CourtPainter extends CustomPainter {
   final Shot? shot;
   final int since; // ms since the last shot
   final bool ready;
-  _CourtPainter({required this.geo, required this.hoopX, required this.score, required this.shot, required this.since, required this.ready});
+  _CourtPainter(
+      {required this.geo,
+      required this.hoopX,
+      required this.score,
+      required this.shot,
+      required this.since,
+      required this.ready});
 
   static const _coral = Color(0xFFFF6150);
 
@@ -326,7 +406,11 @@ class _CourtPainter extends CustomPainter {
       if (s.points > 0) {
         // Drops through the net: ball behind the net and front of the rim.
         final x = geo.px(s.aim) + (hx - geo.px(s.aim)) * u;
-        _ball(canvas, Offset(x, geo.rimY - geo.rB * 0.6 + (geo.netH + geo.rB * 1.6) * u), geo.rB, opacity: 1 - u * 0.6);
+        _ball(
+            canvas,
+            Offset(x, geo.rimY - geo.rB * 0.6 + (geo.netH + geo.rB * 1.6) * u),
+            geo.rB,
+            opacity: 1 - u * 0.6);
         _net(canvas, hx, stretch: sin(u * pi) * 0.25);
         _rim(canvas, hx, back: false);
       } else {
@@ -335,7 +419,10 @@ class _CourtPainter extends CustomPainter {
         _rim(canvas, hx, back: false);
         final dir = s.aim >= s.hoopX ? 1.0 : -1.0;
         final x = geo.px(s.aim) + dir * geo.unit * 0.9 * u;
-        final y = geo.rimY - geo.rB * 0.6 - sin(u * pi) * geo.bbH * 0.3 + (geo.courtTop - geo.rimY) * u * u;
+        final y = geo.rimY -
+            geo.rB * 0.6 -
+            sin(u * pi) * geo.bbH * 0.3 +
+            (geo.courtTop - geo.rimY) * u * u;
         _ball(canvas, Offset(x, y), geo.rB, opacity: 1 - u * 0.6);
       }
       return;
@@ -343,7 +430,12 @@ class _CourtPainter extends CustomPainter {
     _net(canvas, hx);
     _rim(canvas, hx, back: false);
     if (ready) {
-      canvas.drawOval(Rect.fromCenter(center: Offset(geo.startX, geo.startY + geo.r0 * 0.95), width: geo.r0 * 2.1, height: geo.r0 * 0.5), Paint()..color = Colors.black26);
+      canvas.drawOval(
+          Rect.fromCenter(
+              center: Offset(geo.startX, geo.startY + geo.r0 * 0.95),
+              width: geo.r0 * 2.1,
+              height: geo.r0 * 0.5),
+          Paint()..color = Colors.black26);
       _ball(canvas, Offset(geo.startX, geo.startY), geo.r0);
     }
   }
@@ -356,16 +448,26 @@ class _CourtPainter extends CustomPainter {
     canvas.drawRect(
         Rect.fromLTWH(0, 0, w, geo.courtTop),
         Paint()
-          ..shader = const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF8FE3FB), Color(0xFFA6ECFC)])
+          ..shader = const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFF8FE3FB), Color(0xFFA6ECFC)])
               .createShader(Rect.fromLTWH(0, 0, w, geo.courtTop)));
     // Cloud.
     final cloud = Paint()..color = const Color(0xFFB8F2FE);
     final cr = h * 0.05;
-    for (final (dx, dy, r) in [(0.0, 0.0, 1.0), (-1.1, 0.35, 0.7), (1.0, 0.35, 0.75), (-0.2, 0.45, 0.8)]) {
-      canvas.drawCircle(Offset(w * 0.9 + dx * cr, h * 0.16 + dy * cr), cr * r, cloud);
+    for (final (dx, dy, r) in [
+      (0.0, 0.0, 1.0),
+      (-1.1, 0.35, 0.7),
+      (1.0, 0.35, 0.75),
+      (-0.2, 0.45, 0.8)
+    ]) {
+      canvas.drawCircle(
+          Offset(w * 0.9 + dx * cr, h * 0.16 + dy * cr), cr * r, cloud);
     }
     // Grass behind the fence.
-    canvas.drawRect(Rect.fromLTRB(0, geo.grassTop, w, geo.courtTop), Paint()..color = const Color(0xFF7ED957));
+    canvas.drawRect(Rect.fromLTRB(0, geo.grassTop, w, geo.courtTop),
+        Paint()..color = const Color(0xFF7ED957));
     // Chain-link fence.
     final fence = Rect.fromLTRB(0, geo.fenceTop, w, geo.courtTop);
     final wire = Paint()
@@ -384,16 +486,21 @@ class _CourtPainter extends CustomPainter {
       ..color = const Color(0xFF6E7179)
       ..strokeWidth = max(3.0, h * 0.012);
     canvas.drawLine(Offset(0, fence.top), Offset(w, fence.top), rail);
-    canvas.drawLine(Offset(0, fence.bottom - rail.strokeWidth / 2), Offset(w, fence.bottom - rail.strokeWidth / 2), rail);
+    canvas.drawLine(Offset(0, fence.bottom - rail.strokeWidth / 2),
+        Offset(w, fence.bottom - rail.strokeWidth / 2), rail);
     // Court.
-    canvas.drawRect(Rect.fromLTRB(0, geo.courtTop, w, h), Paint()..color = const Color(0xFF30323A));
+    canvas.drawRect(Rect.fromLTRB(0, geo.courtTop, w, h),
+        Paint()..color = const Color(0xFF30323A));
     final line = Paint()
       ..color = _coral
       ..strokeWidth = max(3.0, h * 0.008);
     final ch = h - geo.courtTop;
-    canvas.drawLine(Offset(0, geo.courtTop + line.strokeWidth / 2), Offset(w, geo.courtTop + line.strokeWidth / 2), line);
-    canvas.drawLine(Offset(w * 0.17, geo.courtTop), Offset(-w * 0.02, geo.courtTop + ch * 0.45), line);
-    canvas.drawLine(Offset(w * 0.83, geo.courtTop), Offset(w * 1.02, geo.courtTop + ch * 0.45), line);
+    canvas.drawLine(Offset(0, geo.courtTop + line.strokeWidth / 2),
+        Offset(w, geo.courtTop + line.strokeWidth / 2), line);
+    canvas.drawLine(Offset(w * 0.17, geo.courtTop),
+        Offset(-w * 0.02, geo.courtTop + ch * 0.45), line);
+    canvas.drawLine(Offset(w * 0.83, geo.courtTop),
+        Offset(w * 1.02, geo.courtTop + ch * 0.45), line);
     canvas.drawLine(
         Offset(w * 0.09, geo.courtTop + ch * 0.2),
         Offset(w * 0.91, geo.courtTop + ch * 0.2),
@@ -410,14 +517,21 @@ class _CourtPainter extends CustomPainter {
       ..strokeWidth = stroke;
     // Pole.
     final pw = max(4.0, geo.bbW * 0.06);
-    final pole = Rect.fromLTRB(hx - pw / 2, geo.bbTop + geo.bbH, hx + pw / 2, geo.courtTop + (geo.h - geo.courtTop) * 0.02);
+    final pole = Rect.fromLTRB(hx - pw / 2, geo.bbTop + geo.bbH, hx + pw / 2,
+        geo.courtTop + (geo.h - geo.courtTop) * 0.02);
     canvas.drawRect(pole, Paint()..color = const Color(0xFF45474F));
-    canvas.drawRect(Rect.fromLTWH(pole.left, pole.top, pw * 0.3, pole.height), Paint()..color = const Color(0xFF5C5F68));
+    canvas.drawRect(Rect.fromLTWH(pole.left, pole.top, pw * 0.3, pole.height),
+        Paint()..color = const Color(0xFF5C5F68));
     // Backboard.
-    final board = RRect.fromRectAndRadius(Rect.fromLTWH(hx - geo.bbW / 2, geo.bbTop, geo.bbW, geo.bbH), Radius.circular(geo.bbW * 0.06));
+    final board = RRect.fromRectAndRadius(
+        Rect.fromLTWH(hx - geo.bbW / 2, geo.bbTop, geo.bbW, geo.bbH),
+        Radius.circular(geo.bbW * 0.06));
     canvas.drawRRect(board, Paint()..color = const Color(0xFFFF5B57));
     canvas.drawRRect(board, black);
-    final inner = RRect.fromRectAndRadius(Rect.fromLTWH(hx - geo.bbW * 0.25, geo.bbTop + geo.bbH * 0.24, geo.bbW * 0.5, geo.bbH * 0.5), Radius.circular(geo.bbW * 0.03));
+    final inner = RRect.fromRectAndRadius(
+        Rect.fromLTWH(hx - geo.bbW * 0.25, geo.bbTop + geo.bbH * 0.24,
+            geo.bbW * 0.5, geo.bbH * 0.5),
+        Radius.circular(geo.bbW * 0.03));
     canvas.drawRRect(
         inner,
         Paint()
@@ -425,17 +539,26 @@ class _CourtPainter extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeWidth = stroke * 1.6);
     // Scoreboard on top.
-    final sb = RRect.fromRectAndRadius(Rect.fromLTWH(hx - geo.bbW * 0.16, geo.bbTop - geo.bbH * 0.22, geo.bbW * 0.32, geo.bbH * 0.25), Radius.circular(geo.bbW * 0.03));
+    final sb = RRect.fromRectAndRadius(
+        Rect.fromLTWH(hx - geo.bbW * 0.16, geo.bbTop - geo.bbH * 0.22,
+            geo.bbW * 0.32, geo.bbH * 0.25),
+        Radius.circular(geo.bbW * 0.03));
     canvas.drawRRect(sb, Paint()..color = const Color(0xFF2A2A2E));
     canvas.drawRRect(sb, black);
     final tp = TextPainter(
-      text: TextSpan(text: '$score', style: TextStyle(fontFamily: Fonts.display, color: const Color(0xFFFF5B57), fontSize: geo.bbH * 0.17)),
+      text: TextSpan(
+          text: '$score',
+          style: TextStyle(
+              fontFamily: Fonts.display,
+              color: const Color(0xFFFF5B57),
+              fontSize: geo.bbH * 0.17)),
       textDirection: TextDirection.ltr,
     )..layout();
     tp.paint(canvas, sb.center - Offset(tp.width / 2, tp.height / 2));
   }
 
-  Rect _rimRect(double hx) => Rect.fromCenter(center: Offset(hx, geo.rimY), width: geo.rimW, height: geo.rimW * 0.24);
+  Rect _rimRect(double hx) => Rect.fromCenter(
+      center: Offset(hx, geo.rimY), width: geo.rimW, height: geo.rimW * 0.24);
 
   void _rim(Canvas canvas, double hx, {required bool back}) {
     final sw = max(3.0, geo.rimW * 0.08);
@@ -481,12 +604,16 @@ class _CourtPainter extends CustomPainter {
   }
 
   void _ball(Canvas canvas, Offset c, double r, {double opacity = 1}) {
-    if (opacity < 1) canvas.saveLayer(Rect.fromCircle(center: c, radius: r + 4), Paint()..color = Color.fromRGBO(0, 0, 0, opacity));
+    if (opacity < 1)
+      canvas.saveLayer(Rect.fromCircle(center: c, radius: r + 4),
+          Paint()..color = Color.fromRGBO(0, 0, 0, opacity));
     canvas.drawCircle(c, r, Paint()..color = const Color(0xFFFF7F1F));
     canvas.save();
     canvas.clipPath(Path()..addOval(Rect.fromCircle(center: c, radius: r)));
-    canvas.drawCircle(c.translate(r * 0.35, r * 0.35), r, Paint()..color = const Color(0xFFE5600A));
-    canvas.drawCircle(c.translate(-r * 0.1, -r * 0.1), r * 0.85, Paint()..color = const Color(0xFFFF7F1F));
+    canvas.drawCircle(c.translate(r * 0.35, r * 0.35), r,
+        Paint()..color = const Color(0xFFE5600A));
+    canvas.drawCircle(c.translate(-r * 0.1, -r * 0.1), r * 0.85,
+        Paint()..color = const Color(0xFFFF7F1F));
     final seam = Paint()
       ..color = const Color(0xFF8A3300)
       ..style = PaintingStyle.stroke

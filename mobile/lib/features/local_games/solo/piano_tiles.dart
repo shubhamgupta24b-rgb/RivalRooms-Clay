@@ -33,7 +33,8 @@ class PianoLogic extends SoloLogic {
     }
   }
 
-  double get speed => min(1.9, 0.55 + score * 0.018); // screen heights per second
+  double get speed =>
+      min(1.9, 0.55 + score * 0.018); // screen heights per second
   Tile? get next => tiles.where((t) => !t.tapped).firstOrNull;
 
   @override
@@ -46,7 +47,8 @@ class PianoLogic extends SoloLogic {
     }
     // Keep the column full from the top.
     while (tiles.isEmpty || tiles.last.y > 0) {
-      tiles.add(Tile(_rng.nextInt(lanes), (tiles.isEmpty ? 0 : tiles.last.y) - tileH));
+      tiles.add(Tile(
+          _rng.nextInt(lanes), (tiles.isEmpty ? 0 : tiles.last.y) - tileH));
     }
     tiles.removeWhere((t) => t.tapped && t.y > 1);
     final n = next;
@@ -104,8 +106,14 @@ final pianoInfo = LocalGameInfo(
       child: LayoutBuilder(
         builder: (context, c) => GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTapDown: (d) => g.tap((d.localPosition.dx / c.maxWidth * PianoLogic.lanes).floor().clamp(0, PianoLogic.lanes - 1), d.localPosition.dy / c.maxHeight),
-          child: ClipRRect(borderRadius: BorderRadius.circular(12), child: CustomPaint(size: c.biggest, painter: _PianoPainter(g))),
+          onTapDown: (d) => g.tap(
+              (d.localPosition.dx / c.maxWidth * PianoLogic.lanes)
+                  .floor()
+                  .clamp(0, PianoLogic.lanes - 1),
+              d.localPosition.dy / c.maxHeight),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: CustomPaint(size: c.biggest, painter: _PianoPainter(g))),
         ),
       ),
     ),
@@ -120,19 +128,40 @@ class _PianoPainter extends CustomPainter {
     final w = size.width / PianoLogic.lanes, h = size.height;
     canvas.drawRect(Offset.zero & size, Paint()..color = Colors.white);
     for (var l = 1; l < PianoLogic.lanes; l++) {
-      canvas.drawLine(Offset(l * w, 0), Offset(l * w, h), Paint()..color = const Color(0xFFCFD8DC));
+      canvas.drawLine(Offset(l * w, 0), Offset(l * w, h),
+          Paint()..color = const Color(0xFFCFD8DC));
     }
     for (final t in g.tiles) {
-      final r = Rect.fromLTWH(t.lane * w + 1, t.y * h + 1, w - 2, PianoLogic.tileH * h - 2);
-      canvas.drawRRect(RRect.fromRectAndRadius(r, const Radius.circular(6)), Paint()..color = t.tapped ? const Color(0xFFB0BEC5) : const Color(0xFF1E1B3A));
+      final r = Rect.fromLTWH(
+          t.lane * w + 1, t.y * h + 1, w - 2, PianoLogic.tileH * h - 2);
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(r, const Radius.circular(6)),
+          Paint()
+            ..color =
+                t.tapped ? const Color(0xFFB0BEC5) : const Color(0xFF1E1B3A));
     }
     final n = g.next;
     if (!g.started && n != null) {
-      final tp = TextPainter(text: const TextSpan(text: 'START', style: TextStyle(fontFamily: Fonts.display, color: Colors.white, fontSize: 20, letterSpacing: 1)), textDirection: TextDirection.ltr)..layout();
-      tp.paint(canvas, Offset(n.lane * w + (w - tp.width) / 2, (n.y + PianoLogic.tileH / 2) * h - tp.height / 2));
+      final tp = TextPainter(
+          text: const TextSpan(
+              text: 'START',
+              style: TextStyle(
+                  fontFamily: Fonts.display,
+                  color: Colors.white,
+                  fontSize: 20,
+                  letterSpacing: 1)),
+          textDirection: TextDirection.ltr)
+        ..layout();
+      tp.paint(
+          canvas,
+          Offset(n.lane * w + (w - tp.width) / 2,
+              (n.y + PianoLogic.tileH / 2) * h - tp.height / 2));
     }
     if (g.wrongLane != null) {
-      canvas.drawRect(Rect.fromLTWH(g.wrongLane! * w, (g.wrongY! * h - 30).clamp(0, h - 60), w, 60), Paint()..color = Colors.redAccent.withValues(alpha: 0.8));
+      canvas.drawRect(
+          Rect.fromLTWH(
+              g.wrongLane! * w, (g.wrongY! * h - 30).clamp(0, h - 60), w, 60),
+          Paint()..color = Colors.redAccent.withValues(alpha: 0.8));
     }
   }
 

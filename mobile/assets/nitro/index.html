@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#07111d" />
+    <meta name="description" content="Nitro Knockout — fast 3D kart combat with WebAssembly physics, five weapons, three arenas, and bot matches." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%2362f5ff'/><path d='M4 3h3l2 4 2-4h2l-4 10H7z' fill='%2307111d'/></svg>" />
+    <title>Nitro Knockout — 3D Kart Combat</title>
+    <script>
+      // Surface engine failures to Flutter, including a lost host WebGL world.
+      const reportNitroError = message => window.NitroBridge?.postMessage(
+        JSON.stringify({kind: 'engine_error', message: String(message)}));
+      window.addEventListener('error', event => reportNitroError(event.message || 'Game asset failed to load'));
+      window.addEventListener('unhandledrejection', event => reportNitroError(event.reason));
+      document.addEventListener('webglcontextlost', () => reportNitroError('The graphics context was lost. Leave this match and start a new one.'), true);
+    </script>
+    <script defer src="./assets/index-CejRMBG2.js"></script>
+    <link rel="stylesheet" href="./assets/index-CiJwpIAO.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

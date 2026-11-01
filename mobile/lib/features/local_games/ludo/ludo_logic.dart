@@ -15,17 +15,56 @@ class LudoLogic extends LocalGameLogic {
 
   /// The 52 track squares (col, row) on the 15x15 board, clockwise from seat 0's start.
   static const track = [
-    (1, 6), (2, 6), (3, 6), (4, 6), (5, 6),
-    (6, 5), (6, 4), (6, 3), (6, 2), (6, 1), (6, 0),
+    (1, 6),
+    (2, 6),
+    (3, 6),
+    (4, 6),
+    (5, 6),
+    (6, 5),
+    (6, 4),
+    (6, 3),
+    (6, 2),
+    (6, 1),
+    (6, 0),
     (7, 0),
-    (8, 0), (8, 1), (8, 2), (8, 3), (8, 4), (8, 5),
-    (9, 6), (10, 6), (11, 6), (12, 6), (13, 6), (14, 6),
+    (8, 0),
+    (8, 1),
+    (8, 2),
+    (8, 3),
+    (8, 4),
+    (8, 5),
+    (9, 6),
+    (10, 6),
+    (11, 6),
+    (12, 6),
+    (13, 6),
+    (14, 6),
     (14, 7),
-    (14, 8), (13, 8), (12, 8), (11, 8), (10, 8), (9, 8),
-    (8, 9), (8, 10), (8, 11), (8, 12), (8, 13), (8, 14),
+    (14, 8),
+    (13, 8),
+    (12, 8),
+    (11, 8),
+    (10, 8),
+    (9, 8),
+    (8, 9),
+    (8, 10),
+    (8, 11),
+    (8, 12),
+    (8, 13),
+    (8, 14),
     (7, 14),
-    (6, 14), (6, 13), (6, 12), (6, 11), (6, 10), (6, 9),
-    (5, 8), (4, 8), (3, 8), (2, 8), (1, 8), (0, 8),
+    (6, 14),
+    (6, 13),
+    (6, 12),
+    (6, 11),
+    (6, 10),
+    (6, 9),
+    (5, 8),
+    (4, 8),
+    (3, 8),
+    (2, 8),
+    (1, 8),
+    (0, 8),
     (0, 7),
     (0, 6),
   ];
@@ -39,6 +78,7 @@ class LudoLogic extends LocalGameLogic {
   ];
 
   final int players;
+
   /// 2 vs 2: players 1+3 against 2+4 (opposite corners). Partners never capture each other,
   /// a player whose tokens are all home moves their partner's, and a team wins together.
   final bool teams;
@@ -58,14 +98,20 @@ class LudoLogic extends LocalGameLogic {
   LudoLogic({this.players = 2, bool teams = false, Random? random})
       : assert(players >= 2 && players <= 4),
         teams = teams && players == 4,
-        seats = players == 2 ? const [0, 2] : [for (var i = 0; i < players; i++) i],
+        seats =
+            players == 2 ? const [0, 2] : [for (var i = 0; i < players; i++) i],
         tokens = List.generate(players, (_) => List.filled(tokensEach, -1)),
         _random = random ?? Random();
 
   @override
   bool get finished => winner != null;
   @override
-  List<int> get scores => [for (var i = 0; i < players; i++) winner != null && (winner == i || (teams && sameTeam(winner!, i))) ? 1 : 0];
+  List<int> get scores => [
+        for (var i = 0; i < players; i++)
+          winner != null && (winner == i || (teams && sameTeam(winner!, i)))
+              ? 1
+              : 0
+      ];
 
   bool sameTeam(int a, int b) => teams && a % 2 == b % 2;
   int partnerOf(int p) => (p + 2) % 4;
@@ -79,7 +125,9 @@ class LudoLogic extends LocalGameLogic {
   int startOf(int player) => seats[player] * 13;
 
   /// Absolute track index (0-51) of a token, or null when it isn't on the shared track.
-  int? trackIndex(int player, int progress) => progress >= 0 && progress <= 50 ? (startOf(player) + progress) % 52 : null;
+  int? trackIndex(int player, int progress) => progress >= 0 && progress <= 50
+      ? (startOf(player) + progress) % 52
+      : null;
 
   bool canMove(int player, int token) {
     final r = lastRoll;
@@ -89,7 +137,10 @@ class LudoLogic extends LocalGameLogic {
     return p != home && p + r <= home;
   }
 
-  List<int> get movable => [for (var t = 0; t < tokensEach; t++) if (canMove(mover, t)) t];
+  List<int> get movable => [
+        for (var t = 0; t < tokensEach; t++)
+          if (canMove(mover, t)) t
+      ];
 
   int? roll([int? value]) {
     if (forward('roll', const [])) return null;
@@ -126,7 +177,8 @@ class LudoLogic extends LocalGameLogic {
     final cell = trackIndex(who, np);
     if (cell != null && !safeCells.contains(cell)) {
       for (var o = 0; o < players; o++) {
-        if (o == who || sameTeam(o, who)) continue; // partners share squares safely
+        if (o == who || sameTeam(o, who))
+          continue; // partners share squares safely
         for (var t = 0; t < tokensEach; t++) {
           if (trackIndex(o, tokens[o][t]) == cell) {
             tokens[o][t] = -1;
@@ -139,7 +191,8 @@ class LudoLogic extends LocalGameLogic {
     if (allHome(who) && (!teams || allHome(partnerOf(who)))) {
       winner = who;
       phase = LudoPhase.finished;
-      message = teams ? 'Both partners home: the team wins!' : 'All tokens home!';
+      message =
+          teams ? 'Both partners home: the team wins!' : 'All tokens home!';
       notifyListeners();
       return true;
     }

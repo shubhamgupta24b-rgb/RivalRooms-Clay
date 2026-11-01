@@ -1,0 +1,704 @@
+
+> multiplayer-game-server@0.1.0 test
+> node --test tests/*.test.js
+
+TAP version 13
+# Subtest: relay publication rejection preserves state, views, version and input queue
+ok 1 - relay publication rejection preserves state, views, version and input queue
+  ---
+  duration_ms: 6.0123
+  type: 'test'
+  ...
+# Subtest: relay rejects oversized/non-finite inputs and unsafe or sparse scores without mutation
+ok 2 - relay rejects oversized/non-finite inputs and unsafe or sparse scores without mutation
+  ---
+  duration_ms: 0.7717
+  type: 'test'
+  ...
+# Subtest: sequence validation is enforced by RoomManager; only accepted actions advance it
+ok 3 - sequence validation is enforced by RoomManager; only accepted actions advance it
+  ---
+  duration_ms: 3.9796
+  type: 'test'
+  ...
+# Subtest: repeated disconnects cannot leave a timer that evicts a reconnected player
+ok 4 - repeated disconnects cannot leave a timer that evicts a reconnected player
+  ---
+  duration_ms: 2.5065
+  type: 'test'
+  ...
+# Subtest: leaving cancels grace timers; stale callbacks cannot affect a new room; close clears ownership
+ok 5 - leaving cancels grace timers; stale callbacks cannot affect a new room; close clears ownership
+  ---
+  duration_ms: 1.1768
+  type: 'test'
+  ...
+# Subtest: temporary relay-host disconnect preserves the game; permanent departure aborts without host migration
+ok 6 - temporary relay-host disconnect preserves the game; permanent departure aborts without host migration
+  ---
+  duration_ms: 2.669
+  type: 'test'
+  ...
+# Subtest: permanent non-host departure also aborts fixed-roster native games
+ok 7 - permanent non-host departure also aborts fixed-roster native games
+  ---
+  duration_ms: 1.8554
+  type: 'test'
+  ...
+# Subtest: failed next round preserves completed game, readiness, party and sequence state
+ok 8 - failed next round preserves completed game, readiness, party and sequence state
+  ---
+  duration_ms: 1.6171
+  type: 'test'
+  ...
+# Subtest: throwing plugin create leaves start and next-round transitions unchanged
+ok 9 - throwing plugin create leaves start and next-round transitions unchanged
+  ---
+  duration_ms: 1.5802
+  type: 'test'
+  ...
+# Subtest: replacement socket owns the seat; old handlers cannot mutate or disconnect it
+ok 10 - replacement socket owns the seat; old handlers cannot mutate or disconnect it
+  ---
+  duration_ms: 3.2188
+  type: 'test'
+  ...
+# Subtest: reconnect sends the finished result and standings without awarding party points again
+ok 11 - reconnect sends the finished result and standings without awarding party points again
+  ---
+  duration_ms: 1.5088
+  type: 'test'
+  ...
+# Subtest: Basketball Hoops scores shots from server timing
+ok 12 - Basketball Hoops scores shots from server timing
+  ---
+  duration_ms: 4.129
+  type: 'test'
+  ...
+# Subtest: Basketball Hoops finishes on server time and ranks players
+ok 13 - Basketball Hoops finishes on server time and ranks players
+  ---
+  duration_ms: 9.0158
+  type: 'test'
+  ...
+# Subtest: Basketball Hoops target moves every cycle using the fixed formula
+ok 14 - Basketball Hoops target moves every cycle using the fixed formula
+  ---
+  duration_ms: 0.7868
+  type: 'test'
+  ...
+# Subtest: Basketball Hoops points tiers at their exact boundaries
+ok 15 - Basketball Hoops points tiers at their exact boundaries
+  ---
+  duration_ms: 2.3131
+  type: 'test'
+  ...
+# Subtest: Basketball Hoops rejects bad input and enforces the per-player cooldown
+ok 16 - Basketball Hoops rejects bad input and enforces the per-player cooldown
+  ---
+  duration_ms: 1.4508
+  type: 'test'
+  ...
+# Subtest: Basketball Hoops accepts numeric strings and rejects shots after time
+ok 17 - Basketball Hoops accepts numeric strings and rejects shots after time
+  ---
+  duration_ms: 0.4855
+  type: 'test'
+  ...
+# Subtest: Basketball Hoops ties on points share first place
+ok 18 - Basketball Hoops ties on points share first place
+  ---
+  duration_ms: 0.7127
+  type: 'test'
+  ...
+# Subtest: Crush It counts taps and finishes on server time
+ok 19 - Crush It counts taps and finishes on server time
+  ---
+  duration_ms: 4.2191
+  type: 'test'
+  ...
+# Subtest: Crush It initial state: zero taps, playing, ends after the duration
+ok 20 - Crush It initial state: zero taps, playing, ends after the duration
+  ---
+  duration_ms: 0.5391
+  type: 'test'
+  ...
+# Subtest: Crush It rejects outsiders, wrong action types, payload data and late taps
+ok 21 - Crush It rejects outsiders, wrong action types, payload data and late taps
+  ---
+  duration_ms: 1.1359
+  type: 'test'
+  ...
+# Subtest: Crush It public state shows each player their own taps
+ok 22 - Crush It public state shows each player their own taps
+  ---
+  duration_ms: 0.4787
+  type: 'test'
+  ...
+# Subtest: Crush It ties share first place; ticks after finishing change nothing
+ok 23 - Crush It ties share first place; ticks after finishing change nothing
+  ---
+  duration_ms: 2.3595
+  type: 'test'
+  ...
+# Subtest: Fruit Duel validates lane and awards hits
+ok 24 - Fruit Duel validates lane and awards hits
+  ---
+  duration_ms: 9.9403
+  type: 'test'
+  ...
+# Subtest: Fruit Duel advances fruit and ends
+ok 25 - Fruit Duel advances fruit and ends
+  ---
+  duration_ms: 0.5459
+  type: 'test'
+  ...
+# Subtest: Fruit Duel allows one slash per player per fruit
+ok 26 - Fruit Duel allows one slash per player per fruit
+  ---
+  duration_ms: 1.2158
+  type: 'test'
+  ...
+# Subtest: Fruit Duel initial state and lane sequence
+ok 27 - Fruit Duel initial state and lane sequence
+  ---
+  duration_ms: 6.6705
+  type: 'test'
+  ...
+# Subtest: Fruit Duel rejects invalid lanes, stale fruit ids, outsiders and wrong actions
+ok 28 - Fruit Duel rejects invalid lanes, stale fruit ids, outsiders and wrong actions
+  ---
+  duration_ms: 4.7639
+  type: 'test'
+  ...
+# Subtest: Fruit Duel counts a slash after the fruit expired (before the tick) as a miss
+ok 29 - Fruit Duel counts a slash after the fruit expired (before the tick) as a miss
+  ---
+  duration_ms: 0.433
+  type: 'test'
+  ...
+# Subtest: Fruit Duel stops at the end and ranks by score then hits
+ok 30 - Fruit Duel stops at the end and ranks by score then hits
+  ---
+  duration_ms: 1.821
+  type: 'test'
+  ...
+# Subtest: matcher: case, accents, aliases, one typo on long answers only
+ok 31 - matcher: case, accents, aliases, one typo on long answers only
+  ---
+  duration_ms: 9.3214
+  type: 'test'
+  ...
+# Subtest: Guess the Person starts round 1 with one clue and hides the answer
+ok 32 - Guess the Person starts round 1 with one clue and hides the answer
+  ---
+  duration_ms: 2.632
+  type: 'test'
+  ...
+# Subtest: Guess the Person unlocks clues on the clock
+ok 33 - Guess the Person unlocks clues on the clock
+  ---
+  duration_ms: 0.4631
+  type: 'test'
+  ...
+# Subtest: Guess the Person rejects invalid answers
+ok 34 - Guess the Person rejects invalid answers
+  ---
+  duration_ms: 1.1788
+  type: 'test'
+  ...
+# Subtest: Guess the Person scores by clues shown, first solver bonus, and ends the round when all are done
+ok 35 - Guess the Person scores by clues shown, first solver bonus, and ends the round when all are done
+  ---
+  duration_ms: 1.0531
+  type: 'test'
+  ...
+# Subtest: Guess the Person limits wrong attempts and running out counts as done
+ok 36 - Guess the Person limits wrong attempts and running out counts as done
+  ---
+  duration_ms: 0.7879
+  type: 'test'
+  ...
+# Subtest: Guess the Person runs both rounds on the clock and finishes
+ok 37 - Guess the Person runs both rounds on the clock and finishes
+  ---
+  duration_ms: 0.8324
+  type: 'test'
+  ...
+# Subtest: Guess the Person ties share the win
+ok 38 - Guess the Person ties share the win
+  ---
+  duration_ms: 0.3007
+  type: 'test'
+  ...
+# Subtest: full Guess the Person game over sockets
+ok 39 - full Guess the Person game over sockets
+  ---
+  duration_ms: 3406.9894
+  type: 'test'
+  ...
+# Subtest: Guess Who: 30 people, every pair can be told apart, questions cover all categories
+ok 40 - Guess Who: 30 people, every pair can be told apart, questions cover all categories
+  ---
+  duration_ms: 6.6809
+  type: 'test'
+  ...
+# Subtest: Guess Who: starts in choosing with a 30-card board and no secrets
+ok 41 - Guess Who: starts in choosing with a 30-card board and no secrets
+  ---
+  duration_ms: 1.6914
+  type: 'test'
+  ...
+# Subtest: Guess Who: choosing validates the person, can change, and starts play once both pick
+ok 42 - Guess Who: choosing validates the person, can change, and starts play once both pick
+  ---
+  duration_ms: 1.9336
+  type: 'test'
+  ...
+# Subtest: Guess Who: the opponent secret is never in your state until the reveal
+ok 43 - Guess Who: the opponent secret is never in your state until the reveal
+  ---
+  duration_ms: 0.6401
+  type: 'test'
+  ...
+# Subtest: Guess Who: questions are answered from the real secret, turns alternate, no repeats
+ok 44 - Guess Who: questions are answered from the real secret, turns alternate, no repeats
+  ---
+  duration_ms: 1.589
+  type: 'test'
+  ...
+# Subtest: Guess Who: a correct guess wins the round; a wrong guess gives it away
+ok 45 - Guess Who: a correct guess wins the round; a wrong guess gives it away
+  ---
+  duration_ms: 4.2103
+  type: 'test'
+  ...
+# Subtest: Guess Who: finishes after the last round and ranks players; rejects outsiders and unknown actions
+ok 46 - Guess Who: finishes after the last round and ranks players; rejects outsiders and unknown actions
+  ---
+  duration_ms: 2.2578
+  type: 'test'
+  ...
+# Subtest: Guess Who: only starts with exactly 2 players
+ok 47 - Guess Who: only starts with exactly 2 players
+  ---
+  duration_ms: 16.8439
+  type: 'test'
+  ...
+# Subtest: Guess Who over sockets: two phones choose, ask, guess; secrets never leak
+ok 48 - Guess Who over sockets: two phones choose, ask, guess; secrets never leak
+  ---
+  duration_ms: 233.9139
+  type: 'test'
+  ...
+# Subtest: memory matching and turn rotation
+ok 49 - memory matching and turn rotation
+  ---
+  duration_ms: 5.3058
+  type: 'test'
+  ...
+# Subtest: memory hides unmatched cards
+ok 50 - memory hides unmatched cards
+  ---
+  duration_ms: 0.7803
+  type: 'test'
+  ...
+# Subtest: memory deals 12 pairs, first player starts, all cards hidden
+ok 51 - memory deals 12 pairs, first player starts, all cards hidden
+  ---
+  duration_ms: 0.7565
+  type: 'test'
+  ...
+# Subtest: memory rejects bad ids, wrong turn, outsiders and repeated flips
+ok 52 - memory rejects bad ids, wrong turn, outsiders and repeated flips
+  ---
+  duration_ms: 1.5576
+  type: 'test'
+  ...
+# Subtest: memory locks the board during a mismatch and shows both picks to everyone
+ok 53 - memory locks the board during a mismatch and shows both picks to everyone
+  ---
+  duration_ms: 0.7351
+  type: 'test'
+  ...
+# Subtest: memory turn order wraps around with three players
+ok 54 - memory turn order wraps around with three players
+  ---
+  duration_ms: 0.9142
+  type: 'test'
+  ...
+# Subtest: memory ends when every pair is found; winners and ties
+ok 55 - memory ends when every pair is found; winners and ties
+  ---
+  duration_ms: 3.5768
+  type: 'test'
+  ...
+# Subtest: Nitro: dedicated registry entry and exactly 2-10 human seats
+ok 56 - Nitro: dedicated registry entry and exactly 2-10 human seats
+  ---
+  duration_ms: 6.849
+  type: 'test'
+  ...
+# Subtest: Nitro: host-only snapshots, fixed roster, dedicated action namespace
+ok 57 - Nitro: host-only snapshots, fixed roster, dedicated action namespace
+  ---
+  duration_ms: 1.7569
+  type: 'test'
+  ...
+# Subtest: Nitro: snapshot shapes, dense integers, bounds and serialization are validated atomically
+ok 58 - Nitro: snapshot shapes, dense integers, bounds and serialization are validated atomically
+  ---
+  duration_ms: 4.2219
+  type: 'test'
+  ...
+# Subtest: Nitro: guest tuples are bounded, owned, silent, and host-private; queue caps at 200
+ok 59 - Nitro: guest tuples are bounded, owned, silent, and host-private; queue caps at 200
+  ---
+  duration_ms: 3.1413
+  type: 'test'
+  ...
+# Subtest: Nitro: invalid ack never publishes or consumes inputs; repeated/older ack cannot resurrect them
+ok 60 - Nitro: invalid ack never publishes or consumes inputs; repeated/older ack cannot resurrect them
+  ---
+  duration_ms: 2.7155
+  type: 'test'
+  ...
+# Subtest: Nitro: accepted snapshots own their data and cannot rewind time, scores or terminal status
+ok 61 - Nitro: accepted snapshots own their data and cannot rewind time, scores or terminal status
+  ---
+  duration_ms: 1.2996
+  type: 'test'
+  ...
+# Subtest: Nitro: finish requires matching terminal snapshot; result is derived once with tied ranks
+ok 62 - Nitro: finish requires matching terminal snapshot; result is derived once with tied ranks
+  ---
+  duration_ms: 1.8305
+  type: 'test'
+  ...
+# Subtest: Nitro: standalone validators and special identity keys
+ok 63 - Nitro: standalone validators and special identity keys
+  ---
+  duration_ms: 0.4937
+  type: 'test'
+  ...
+# Subtest: Nitro: silent input consumes accepted sequence only and publishes on next host frame
+ok 64 - Nitro: silent input consumes accepted sequence only and publishes on next host frame
+  ---
+  duration_ms: 4.3321
+  type: 'test'
+  ...
+# Subtest: Nitro: temporary host/guest disconnect preserves progress; permanent departure explicitly aborts
+ok 65 - Nitro: temporary host/guest disconnect preserves progress; permanent departure explicitly aborts
+  ---
+  duration_ms: 3.1271
+  type: 'test'
+  ...
+# Subtest: Nitro: completed rematch starts fresh and failed next game preserves completed result
+ok 66 - Nitro: completed rematch starts fresh and failed next game preserves completed result
+  ---
+  duration_ms: 3.7998
+  type: 'test'
+  ...
+# Subtest: Nitro: room capacity accepts 2-10 and other games still enforce their own seat limits
+ok 67 - Nitro: room capacity accepts 2-10 and other games still enforce their own seat limits
+  ---
+  duration_ms: 2.6819
+  type: 'test'
+  ...
+# Subtest: Nitro: ten-human online lifecycle, private queue, reconnect, terminal finish and rematch
+ok 68 - Nitro: ten-human online lifecycle, private queue, reconnect, terminal finish and rematch
+  ---
+  duration_ms: 420.8258
+  type: 'test'
+  ...
+# Subtest: Paint Fight claims cells and removes overwritten ownership
+ok 69 - Paint Fight claims cells and removes overwritten ownership
+  ---
+  duration_ms: 5.1595
+  type: 'test'
+  ...
+# Subtest: Paint Fight ends on server time
+ok 70 - Paint Fight ends on server time
+  ---
+  duration_ms: 0.5008
+  type: 'test'
+  ...
+# Subtest: Paint Fight overwritten cells change the final ranking
+ok 71 - Paint Fight overwritten cells change the final ranking
+  ---
+  duration_ms: 2.67
+  type: 'test'
+  ...
+# Subtest: Paint Fight initial state uses the default 10x10 board
+ok 72 - Paint Fight initial state uses the default 10x10 board
+  ---
+  duration_ms: 1.9684
+  type: 'test'
+  ...
+# Subtest: Paint Fight rejects out-of-bounds or non-integer cells, outsiders and wrong actions
+ok 73 - Paint Fight rejects out-of-bounds or non-integer cells, outsiders and wrong actions
+  ---
+  duration_ms: 1.9881
+  type: 'test'
+  ...
+# Subtest: Paint Fight repainting your own cell changes nothing; corners are valid
+ok 74 - Paint Fight repainting your own cell changes nothing; corners are valid
+  ---
+  duration_ms: 0.5503
+  type: 'test'
+  ...
+# Subtest: Paint Fight with three players: stealing takes the cell from whoever owned it
+ok 75 - Paint Fight with three players: stealing takes the cell from whoever owned it
+  ---
+  duration_ms: 0.4721
+  type: 'test'
+  ...
+# Subtest: Paint Fight rejects painting at or after the end and ties share the win
+ok 76 - Paint Fight rejects painting at or after the end and ties share the win
+  ---
+  duration_ms: 0.5906
+  type: 'test'
+  ...
+# Subtest: /privacy serves the privacy policy page
+ok 77 - /privacy serves the privacy policy page
+  ---
+  duration_ms: 236.9609
+  type: 'test'
+  ...
+# Subtest: quick play opens a public room, and the next quick player joins it
+ok 78 - quick play opens a public room, and the next quick player joins it
+  ---
+  duration_ms: 4.8729
+  type: 'test'
+  ...
+# Subtest: rooms made with a code are private: quick play never joins them
+ok 79 - rooms made with a code are private: quick play never joins them
+  ---
+  duration_ms: 0.6044
+  type: 'test'
+  ...
+# Subtest: quick play for one game only joins rooms set to that game
+ok 80 - quick play for one game only joins rooms set to that game
+  ---
+  duration_ms: 0.5563
+  type: 'test'
+  ...
+# Subtest: full, playing or abandoned rooms are skipped
+ok 81 - full, playing or abandoned rooms are skipped
+  ---
+  duration_ms: 1.4297
+  type: 'test'
+  ...
+# Subtest: unknown games and players already in a room are refused
+ok 82 - unknown games and players already in a room are refused
+  ---
+  duration_ms: 0.894
+  type: 'test'
+  ...
+# Subtest: Raja Mantri: points table
+ok 83 - Raja Mantri: points table
+  ---
+  duration_ms: 2.6514
+  type: 'test'
+  ...
+# Subtest: Raja Mantri: exactly 4 players
+ok 84 - Raja Mantri: exactly 4 players
+  ---
+  duration_ms: 17.1399
+  type: 'test'
+  ...
+# Subtest: Raja Mantri: every round deals each role exactly once
+ok 85 - Raja Mantri: every round deals each role exactly once
+  ---
+  duration_ms: 3.365
+  type: 'test'
+  ...
+# Subtest: Raja Mantri: cards stay private until announced
+ok 86 - Raja Mantri: cards stay private until announced
+  ---
+  duration_ms: 2.4968
+  type: 'test'
+  ...
+# Subtest: Raja Mantri: Mantri catches the Chor: 1800 points handed out
+ok 87 - Raja Mantri: Mantri catches the Chor: 1800 points handed out
+  ---
+  duration_ms: 2.0367
+  type: 'test'
+  ...
+# Subtest: Raja Mantri: wrong guess or timeout lets the Chor escape
+ok 88 - Raja Mantri: wrong guess or timeout lets the Chor escape
+  ---
+  duration_ms: 0.3846
+  type: 'test'
+  ...
+# Subtest: Raja Mantri: 20 rounds then finished with a ranking
+ok 89 - Raja Mantri: 20 rounds then finished with a ranking
+  ---
+  duration_ms: 0.9735
+  type: 'test'
+  ...
+# Subtest: Raja Mantri over sockets: 4 phones, each sees only their own card
+ok 90 - Raja Mantri over sockets: 4 phones, each sees only their own card
+  ---
+  duration_ms: 225.3395
+  type: 'test'
+  ...
+# Subtest: Relay: every relay game is registered with its player limits
+ok 91 - Relay: every relay game is registered with its player limits
+  ---
+  duration_ms: 2.6303
+  type: 'test'
+  ...
+# Subtest: Smash Karts is no longer exposed by the relay registry
+ok 92 - Smash Karts is no longer exposed by the relay registry
+  ---
+  duration_ms: 0.1864
+  type: 'test'
+  ...
+# Subtest: Relay: player count limits and host choice
+ok 93 - Relay: player count limits and host choice
+  ---
+  duration_ms: 0.712
+  type: 'test'
+  ...
+# Subtest: Relay: only the host publishes state; guests send inputs only the host sees
+ok 94 - Relay: only the host publishes state; guests send inputs only the host sees
+  ---
+  duration_ms: 1.1321
+  type: 'test'
+  ...
+# Subtest: Relay: inputs and states are validated
+ok 95 - Relay: inputs and states are validated
+  ---
+  duration_ms: 2.2921
+  type: 'test'
+  ...
+# Subtest: Relay: rejected publications are atomic, including private views and acknowledgements
+ok 96 - Relay: rejected publications are atomic, including private views and acknowledgements
+  ---
+  duration_ms: 2.5787
+  type: 'test'
+  ...
+# Subtest: Relay: limits measure UTF-8 bytes and accept the exact state-size boundary
+ok 97 - Relay: limits measure UTF-8 bytes and accept the exact state-size boundary
+  ---
+  duration_ms: 3.2414
+  type: 'test'
+  ...
+# Subtest: Relay: malformed inputs and scores do not consume queue IDs or finish the game
+ok 98 - Relay: malformed inputs and scores do not consume queue IDs or finish the game
+  ---
+  duration_ms: 1.1139
+  type: 'test'
+  ...
+# Subtest: Relay: the host finishes the game with scores in player order
+ok 99 - Relay: the host finishes the game with scores in player order
+  ---
+  duration_ms: 1.2332
+  type: 'test'
+  ...
+# Subtest: Rooms: up to 10 players; a game only starts if it supports everyone in the room
+ok 100 - Rooms: up to 10 players; a game only starts if it supports everyone in the room
+  ---
+  duration_ms: 21.6854
+  type: 'test'
+  ...
+# Subtest: Relay over sockets: guest input reaches the host, host state reaches everyone, results at the end
+ok 101 - Relay over sockets: guest input reaches the host, host state reaches everyone, results at the end
+  ---
+  duration_ms: 230.4583
+  type: 'test'
+  ...
+# Subtest: Relay over sockets: duplicates and rejected publications cannot corrupt the queue or snapshot
+ok 102 - Relay over sockets: duplicates and rejected publications cannot corrupt the queue or snapshot
+  ---
+  duration_ms: 63.1322
+  type: 'test'
+  ...
+# Subtest: rejects unauthenticated sockets
+ok 103 - rejects unauthenticated sockets
+  ---
+  duration_ms: 200.7793
+  type: 'test'
+  ...
+# Subtest: room capacity (2/3/4) enforced by server
+ok 104 - room capacity (2/3/4) enforced by server
+  ---
+  duration_ms: 168.835
+  type: 'test'
+  ...
+# Subtest: payload validation
+ok 105 - payload validation
+  ---
+  duration_ms: 30.83
+  type: 'test'
+  ...
+# Subtest: ready/start rules; unimplemented games cannot start
+ok 106 - ready/start rules; unimplemented games cannot start
+  ---
+  duration_ms: 34.5291
+  type: 'test'
+  ...
+# Subtest: host transfer and room cleanup on leave
+ok 107 - host transfer and room cleanup on leave
+  ---
+  duration_ms: 29.8678
+  type: 'test'
+  ...
+# Subtest: game action pipeline: anti-cheat, finish, return to lobby
+ok 108 - game action pipeline: anti-cheat, finish, return to lobby
+  ---
+  duration_ms: 38.5474
+  type: 'test'
+  ...
+# Subtest: reconnect within grace keeps seat; expires after grace
+ok 109 - reconnect within grace keeps seat; expires after grace
+  ---
+  duration_ms: 537.9663
+  type: 'test'
+  ...
+# Subtest: Session: host switches games in the lobby; guests cannot
+ok 110 - Session: host switches games in the lobby; guests cannot
+  ---
+  duration_ms: 10.9806
+  type: 'test'
+  ...
+# Subtest: Session: after a game the host starts the next one straight away, same room, players stay ready
+ok 111 - Session: after a game the host starts the next one straight away, same room, players stay ready
+  ---
+  duration_ms: 4.7669
+  type: 'test'
+  ...
+# Subtest: Session: Nitro terminal result scores a party once and advances to the next game
+ok 112 - Session: Nitro terminal result scores a party once and advances to the next game
+  ---
+  duration_ms: 3.122
+  type: 'test'
+  ...
+# Subtest: Party: 5 random games that fit the room, points by place, running totals
+ok 113 - Party: 5 random games that fit the room, points by place, running totals
+  ---
+  duration_ms: 2.6353
+  type: 'test'
+  ...
+# Subtest: Party: picking a game by hand ends the party
+ok 114 - Party: picking a game by hand ends the party
+  ---
+  duration_ms: 3.3454
+  type: 'test'
+  ...
+# Subtest: Session over sockets: select a game, party results carry the standings, next game
+ok 115 - Session over sockets: select a game, party results carry the standings, next game
+  ---
+  duration_ms: 87.3885
+  type: 'test'
+  ...
+1..115
+# tests 115
+# suites 0
+# pass 115
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7195.4771

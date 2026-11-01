@@ -10,7 +10,17 @@ const bool flatStyle = String.fromEnvironment('APP_STYLE') == 'flat';
 const String appName = flatStyle ? '${Skin.name} Flat' : Skin.name;
 
 /// Games that use the flat look in the flat app: the ones that are mostly words and cards.
-const flatGames = {'memory', 'charades', 'heads_up', 'find_spy', 'undercover', 'mafia', 'most_likely', 'would_rather', 'truth_dare'};
+const flatGames = {
+  'memory',
+  'charades',
+  'heads_up',
+  'find_spy',
+  'undercover',
+  'mafia',
+  'most_likely',
+  'would_rather',
+  'truth_dare'
+};
 
 bool isFlatGame(String id) => flatStyle && flatGames.contains(id);
 
@@ -32,13 +42,18 @@ class FlatColors {
 class FlatBackground extends StatelessWidget {
   final Widget child;
   final Color color;
-  const FlatBackground({super.key, required this.child, this.color = FlatColors.sky});
+  const FlatBackground(
+      {super.key, required this.child, this.color = FlatColors.sky});
   @override
   Widget build(BuildContext context) => DecoratedBox(
         decoration: BoxDecoration(
-          gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color.lerp(color, Colors.white, 0.12)!, color]),
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color.lerp(color, Colors.white, 0.12)!, color]),
         ),
-        child: CustomPaint(painter: const QuestionMarksPainter(FlatColors.mark), child: child),
+        child: CustomPaint(
+            painter: const QuestionMarksPainter(FlatColors.mark), child: child),
       );
 }
 
@@ -58,7 +73,12 @@ class QuestionMarksPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     for (final (x, y, s, rot) in _marks) {
       final tp = TextPainter(
-        text: TextSpan(text: '?', style: TextStyle(fontFamily: Fonts.display, color: color, fontSize: size.width * s)),
+        text: TextSpan(
+            text: '?',
+            style: TextStyle(
+                fontFamily: Fonts.display,
+                color: color,
+                fontSize: size.width * s)),
         textDirection: TextDirection.ltr,
       )..layout();
       canvas.save();
@@ -74,8 +94,13 @@ class QuestionMarksPainter extends CustomPainter {
 }
 
 /// White chunky tile with a darker bottom edge, the flat look's basic card.
-BoxDecoration flatTile({double radius = 16, Color color = FlatColors.tile}) => BoxDecoration(
+BoxDecoration flatTile({double radius = 16, Color color = FlatColors.tile}) =>
+    BoxDecoration(
       color: color,
       borderRadius: BorderRadius.circular(radius),
-      boxShadow: [BoxShadow(color: Color.lerp(color, Colors.black, 0.22)!, offset: const Offset(0, 4))],
+      boxShadow: [
+        BoxShadow(
+            color: Color.lerp(color, Colors.black, 0.22)!,
+            offset: const Offset(0, 4))
+      ],
     );

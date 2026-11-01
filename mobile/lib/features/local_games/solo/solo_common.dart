@@ -46,7 +46,14 @@ class SoloFrame extends StatefulWidget {
   final int? lives; // hearts left, drawn as icons next to the score
   final int maxLives;
   final Widget child;
-  const SoloFrame({super.key, required this.title, required this.score, this.extra, this.lives, this.maxLives = 3, required this.child});
+  const SoloFrame(
+      {super.key,
+      required this.title,
+      required this.score,
+      this.extra,
+      this.lives,
+      this.maxLives = 3,
+      required this.child});
 
   @override
   State<SoloFrame> createState() => _SoloFrameState();
@@ -88,7 +95,12 @@ class _SoloFrameState extends State<SoloFrame> {
                     for (var h = 0; h < widget.maxLives; h++)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 1),
-                        child: GameIcon(h < widget.lives! ? GameIcons.heart : GameIcons.heartEmpty, size: 16, color: const Color(0xFFFF5B6E)),
+                        child: GameIcon(
+                            h < widget.lives!
+                                ? GameIcons.heart
+                                : GameIcons.heartEmpty,
+                            size: 16,
+                            color: const Color(0xFFFF5B6E)),
                       ),
                   ]),
                 ),
@@ -101,18 +113,38 @@ class _SoloFrameState extends State<SoloFrame> {
                   child: beaten
                       ? Container(
                           key: const ValueKey('new'),
-                          padding: const EdgeInsets.symmetric(horizontal: Space.s, vertical: 4),
-                          decoration: BoxDecoration(color: Brand.gold, borderRadius: Radii.rMd),
-                          child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                            GameIcon(GameIcons.trophy, size: 14, color: Brand.ink),
-                            SizedBox(width: 4),
-                            Text('NEW BEST', style: TextStyle(fontFamily: Fonts.display, color: Brand.ink, fontSize: 13)),
-                          ]),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Space.s, vertical: 4),
+                          decoration: BoxDecoration(
+                              color: Brand.gold, borderRadius: Radii.rMd),
+                          child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                GameIcon(GameIcons.trophy,
+                                    size: 14, color: Brand.ink),
+                                SizedBox(width: 4),
+                                Text('NEW BEST',
+                                    style: TextStyle(
+                                        fontFamily: Fonts.display,
+                                        color: Brand.ink,
+                                        fontSize: 13)),
+                              ]),
                         )
-                      : Column(key: const ValueKey('best'), mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
-                          Text('BEST', style: t.styles.label.copyWith(fontSize: 10, color: t.flat ? t.textMuted : t.onBgMuted)),
-                          Text('$best', style: t.styles.score.copyWith(fontSize: 14, color: t.flat ? t.text : t.onBg)),
-                        ]),
+                      : Column(
+                          key: const ValueKey('best'),
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                              Text('BEST',
+                                  style: t.styles.label.copyWith(
+                                      fontSize: 10,
+                                      color:
+                                          t.flat ? t.textMuted : t.onBgMuted)),
+                              Text('$best',
+                                  style: t.styles.score.copyWith(
+                                      fontSize: 14,
+                                      color: t.flat ? t.text : t.onBg)),
+                            ]),
                 ),
               ),
             Semantics(
@@ -122,7 +154,8 @@ class _SoloFrameState extends State<SoloFrame> {
                 key: ValueKey(widget.score),
                 tween: Tween(begin: Motion.reduced(context) ? 1 : 1.25, end: 1),
                 duration: Motion.of(context, Motion.normal),
-                builder: (_, s, child) => Transform.scale(scale: s, child: child),
+                builder: (_, s, child) =>
+                    Transform.scale(scale: s, child: child),
                 child: ScorePill('${widget.score}'),
               ),
             ),
@@ -134,6 +167,7 @@ class _SoloFrameState extends State<SoloFrame> {
     );
   }
 }
+
 /// Swipe direction from a fling: 0 up, 1 right, 2 down, 3 left (or null if too small).
 int? swipeDir(Offset v, {double minSpeed = 120}) {
   if (v.distance < minSpeed) return null;

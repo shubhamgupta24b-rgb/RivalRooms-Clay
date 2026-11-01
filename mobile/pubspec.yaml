@@ -1,21 +1,29 @@
 name: multiplayer_game
 description: Online multiplayer mini-game platform.
 publish_to: none
-version: 0.1.0+1
+version: 0.1.0+9
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: ">=3.10.0 <4.0.0"
 dependencies:
   flutter:
     sdk: flutter
   provider: ^6.1.2
   socket_io_client: ^2.0.3+1
   shared_preferences: ^2.2.3
+  google_mobile_ads: ^9.2.0
+  webview_flutter: ^4.13.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
   flutter_lints: ^4.0.0
+  webview_flutter_platform_interface: ^2.14.0
 flutter:
   uses-material-design: true
+  assets:
+    - assets/nitro/
+    - assets/nitro/assets/
   # Bundled OFL fonts (licences in assets/fonts/OFL-*.txt). Nunito static weights come from
   # Fontsource's build of the Google Fonts family (Latin subset).
   fonts:

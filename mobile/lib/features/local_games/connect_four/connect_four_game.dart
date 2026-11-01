@@ -84,7 +84,8 @@ final connectFourInfo = LocalGameInfo(
   splitScreen: false,
   bot: botFor<ConnectFourLogic>((g, b, now) {
     if (g.finished || g.turn != b.seat) return;
-    if (!b.thinkFirst(g.cells.where((c) => c >= 0).length, now, 600, 1300)) return;
+    if (!b.thinkFirst(g.cells.where((c) => c >= 0).length, now, 600, 1300))
+      return;
     const cols = ConnectFourLogic.cols, rows = ConnectFourLogic.rows;
     int? landing(int c) {
       for (var r = rows - 1; r >= 0; r--) {
@@ -120,12 +121,22 @@ final connectFourInfo = LocalGameInfo(
     // Win, else block, else favour the middle (with a little randomness).
     final int col = open.where((c) => wins(c, b.seat)).firstOrNull ??
         open.where((c) => wins(c, opp)).firstOrNull ??
-        (b.chance(0.2) ? b.pick<int>(open) : (open.toList()..sort((a, c) => (a - 3).abs().compareTo((c - 3).abs()))).first);
+        (b.chance(0.2)
+            ? b.pick<int>(open)
+            : (open.toList()
+                  ..sort((a, c) => (a - 3).abs().compareTo((c - 3).abs())))
+                .first);
     g.drop(col);
   }),
   online: RelaySpec<ConnectFourLogic>(
     create: (n) => ConnectFourLogic(),
-    save: (g) => {'cells': g.cells, 'turn': g.turn, 'winner': g.winner, 'winCells': g.winCells, 'lastDrop': g.lastDrop},
+    save: (g) => {
+      'cells': g.cells,
+      'turn': g.turn,
+      'winner': g.winner,
+      'winCells': g.winCells,
+      'lastDrop': g.lastDrop
+    },
     load: (g, s, me) {
       g.cells.setAll(0, ints(s['cells']));
       g.turn = asInt(s['turn']);
@@ -159,6 +170,7 @@ class _Board extends StatefulWidget {
 
 class _BoardState extends State<_Board> {
   int _bumps = 0;
+  int _lockedUntil = 0;
 
   /// The row a disc dropped in column [c] would land on, or null if the column is full.
   int? _landing(int c) {
@@ -170,7 +182,9 @@ class _BoardState extends State<_Board> {
 
   void _drop(int c) {
     final g = widget.g;
-    if (g.finished) return;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (g.finished || now < _lockedUntil) return;
+    _lockedUntil = now + 160;
     if (_landing(c) == null) {
       haptic(HapticWeight.heavy);
       setState(() => _bumps++);
@@ -186,13 +200,18 @@ class _BoardState extends State<_Board> {
   Widget build(BuildContext context) {
     final g = widget.g, players = widget.players;
     final current = players[g.turn];
-    ResultScope.of(context)?.subtitle = g.winner != null ? 'Four in a row' : (g.isDraw ? 'The board is full' : null);
+    ResultScope.of(context)?.subtitle = g.winner != null
+        ? 'Four in a row'
+        : (g.isDraw ? 'The board is full' : null);
     return MomentWatcher<bool>(
       value: g.finished,
       onChange: (fx, _, done) {
         if (!done) return;
         if (g.winner != null) {
-          keyMoment(fx, 'FOUR IN A ROW!', sub: '${players[g.winner!].name} wins', sound: 'win', confetti: true);
+          keyMoment(fx, 'FOUR IN A ROW!',
+              sub: '${players[g.winner!].name} wins',
+              sound: 'win',
+              confetti: true);
         } else {
           keyMoment(fx, 'DRAW!', sub: 'The board is full', color: Colors.white);
         }
@@ -202,16 +221,21 @@ class _BoardState extends State<_Board> {
         child: Column(children: [
           ScoreHud(
             title: 'Connect Four',
-            state: g.winner != null ? '${players[g.winner!].name} wins' : (g.isDraw ? 'Draw' : '${possessive(current.name)} turn'),
+            state: g.winner != null
+                ? '${players[g.winner!].name} wins'
+                : (g.isDraw ? 'Draw' : '${possessive(current.name)} turn'),
             players: players,
             turn: g.finished ? null : g.turn,
-            tag: (i) => !g.finished && i == g.turn ? 'YOUR TURN' : (g.winner == i ? 'WINNER' : null),
+            tag: (i) => !g.finished && i == g.turn
+                ? 'YOUR TURN'
+                : (g.winner == i ? 'WINNER' : null),
           ),
           const SizedBox(height: Space.m),
           Expanded(
             child: Center(
               child: AspectRatio(
-                aspectRatio: ConnectFourLogic.cols / (ConnectFourLogic.rows + 1.4),
+                aspectRatio:
+                    ConnectFourLogic.cols / (ConnectFourLogic.rows + 1.4),
                 child: Shake(
                   trigger: _bumps == 0 ? null : _bumps,
                   child: Column(children: [
@@ -225,33 +249,60 @@ class _BoardState extends State<_Board> {
                           child: Container(
                             padding: const EdgeInsets.all(Space.s),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(colors: _frame, begin: Alignment.topCenter, end: Alignment.bottomCenter),
+                              gradient: const LinearGradient(
+                                  colors: _frame,
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter),
                               borderRadius: Radii.rXl,
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.25), width: 2),
-                              boxShadow: const [BoxShadow(color: Colors.black54, offset: Offset(0, 8), blurRadius: 6)],
+                              border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.25),
+                                  width: 2),
+                              boxShadow: const [
+                                BoxShadow(
+                                    color: Colors.black54,
+                                    offset: Offset(0, 8),
+                                    blurRadius: 6)
+                              ],
                             ),
                             child: Stack(children: [
                               RepaintBoundary(
                                 child: Row(children: [
-                                  for (var c = 0; c < ConnectFourLogic.cols; c++)
+                                  for (var c = 0;
+                                      c < ConnectFourLogic.cols;
+                                      c++)
                                     Expanded(
                                       child: Semantics(
-                                        button: _landing(c) != null && !g.finished,
-                                        label: 'Column ${c + 1}${_landing(c) == null ? ', full' : ''}',
+                                        button:
+                                            _landing(c) != null && !g.finished,
+                                        label:
+                                            'Column ${c + 1}${_landing(c) == null ? ', full' : ''}',
                                         excludeSemantics: true,
                                         child: GestureDetector(
                                           behavior: HitTestBehavior.opaque,
                                           onTap: () => _drop(c),
                                           child: Column(children: [
-                                            for (var r = 0; r < ConnectFourLogic.rows; r++)
+                                            for (var r = 0;
+                                                r < ConnectFourLogic.rows;
+                                                r++)
                                               Expanded(
                                                 child: _Hole(
                                                   owner: g.at(c, r),
                                                   players: players,
                                                   row: r,
-                                                  win: g.winCells?.contains(r * ConnectFourLogic.cols + c) ?? false,
-                                                  fresh: g.lastDrop == r * ConnectFourLogic.cols + c,
-                                                  ghost: !g.finished && _landing(c) == r ? current.color : null,
+                                                  win: g.winCells?.contains(r *
+                                                              ConnectFourLogic
+                                                                  .cols +
+                                                          c) ??
+                                                      false,
+                                                  fresh: g.lastDrop ==
+                                                      r *
+                                                              ConnectFourLogic
+                                                                  .cols +
+                                                          c,
+                                                  ghost: !g.finished &&
+                                                          _landing(c) == r
+                                                      ? current.color
+                                                      : null,
                                                 ),
                                               ),
                                           ]),
@@ -260,7 +311,10 @@ class _BoardState extends State<_Board> {
                                     ),
                                 ]),
                               ),
-                              if (g.winCells != null) Positioned.fill(child: IgnorePointer(child: _WinLine(g.winCells!))),
+                              if (g.winCells != null)
+                                Positioned.fill(
+                                    child: IgnorePointer(
+                                        child: _WinLine(g.winCells!))),
                             ]),
                           ),
                         ),
@@ -297,8 +351,11 @@ class _WinLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     const cols = ConnectFourLogic.cols, rows = ConnectFourLogic.rows;
-    Offset at(int i) => Offset((i % cols + 0.5) * size.width / cols, (i ~/ cols + 0.5) * size.height / rows);
-    final pts = cells.map(at).toList()..sort((a, b) => a.dx != b.dx ? a.dx.compareTo(b.dx) : a.dy.compareTo(b.dy));
+    Offset at(int i) => Offset((i % cols + 0.5) * size.width / cols,
+        (i ~/ cols + 0.5) * size.height / rows);
+    final pts = cells.map(at).toList()
+      ..sort(
+          (a, b) => a.dx != b.dx ? a.dx.compareTo(b.dx) : a.dy.compareTo(b.dy));
     final a = pts.first, b = Offset.lerp(pts.first, pts.last, t)!;
     canvas.drawLine(
         a,
@@ -325,7 +382,13 @@ class _Foot extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         width: 46,
         height: 18,
-        decoration: BoxDecoration(color: _frame.last, borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)), boxShadow: const [BoxShadow(color: Colors.black45, offset: Offset(0, 3))]),
+        decoration: BoxDecoration(
+            color: _frame.last,
+            borderRadius:
+                const BorderRadius.vertical(bottom: Radius.circular(8)),
+            boxShadow: const [
+              BoxShadow(color: Colors.black45, offset: Offset(0, 3))
+            ]),
       );
 }
 
@@ -336,7 +399,13 @@ class _Hole extends StatelessWidget {
   final bool win;
   final bool fresh;
   final Color? ghost; // where the current player's disc would land
-  const _Hole({required this.owner, required this.players, required this.row, required this.win, required this.fresh, this.ghost});
+  const _Hole(
+      {required this.owner,
+      required this.players,
+      required this.row,
+      required this.win,
+      required this.fresh,
+      this.ghost});
 
   @override
   Widget build(BuildContext context) {
@@ -347,9 +416,27 @@ class _Hole extends StatelessWidget {
         shape: BoxShape.circle,
         color: c == null ? (ghost?.withValues(alpha: 0.25) ?? _hole) : null,
         // Discs get a shine so they look like plastic counters.
-        gradient: c == null ? null : RadialGradient(center: const Alignment(-0.3, -0.35), colors: [Color.lerp(c, Colors.white, 0.45)!, c, Color.lerp(c, Colors.black, 0.3)!]),
-        border: win ? Border.all(color: Brand.gold, width: 4) : (ghost != null && c == null ? Border.all(color: ghost!.withValues(alpha: 0.8), width: 2) : null),
-        boxShadow: c == null ? const [BoxShadow(color: Colors.black87, offset: Offset(0, -2), blurRadius: 3, spreadRadius: -1)] : const [BoxShadow(color: Colors.black38, offset: Offset(0, 2))],
+        gradient: c == null
+            ? null
+            : RadialGradient(center: const Alignment(-0.3, -0.35), colors: [
+                Color.lerp(c, Colors.white, 0.45)!,
+                c,
+                Color.lerp(c, Colors.black, 0.3)!
+              ]),
+        border: win
+            ? Border.all(color: Brand.gold, width: 4)
+            : (ghost != null && c == null
+                ? Border.all(color: ghost!.withValues(alpha: 0.8), width: 2)
+                : null),
+        boxShadow: c == null
+            ? const [
+                BoxShadow(
+                    color: Colors.black87,
+                    offset: Offset(0, -2),
+                    blurRadius: 3,
+                    spreadRadius: -1)
+              ]
+            : const [BoxShadow(color: Colors.black38, offset: Offset(0, 2))],
       ),
       // The player's shape pressed into the disc: colour is never the only clue.
       child: seat == null
@@ -357,7 +444,9 @@ class _Hole extends StatelessWidget {
           : FractionallySizedBox(
               widthFactor: 0.38,
               heightFactor: 0.38,
-              child: CustomPaint(painter: PlayerShapePainter(PlayerPalette.shape(seat), Colors.white.withValues(alpha: 0.45))),
+              child: CustomPaint(
+                  painter: PlayerShapePainter(PlayerPalette.shape(seat),
+                      Colors.white.withValues(alpha: 0.45))),
             ),
     );
     return Padding(
@@ -371,7 +460,8 @@ class _Hole extends StatelessWidget {
                 tween: Tween(begin: -(row + 1.0) * 1.1, end: 0),
                 duration: Duration(milliseconds: 180 + 45 * row),
                 curve: Curves.bounceOut,
-                builder: (_, y, child) => FractionalTranslation(translation: Offset(0, y), child: child),
+                builder: (_, y, child) => FractionalTranslation(
+                    translation: Offset(0, y), child: child),
                 child: disc,
               )
             : disc,

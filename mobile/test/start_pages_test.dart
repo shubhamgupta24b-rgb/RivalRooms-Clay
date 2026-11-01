@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:multiplayer_game/core/auth/authentication_manager.dart';
@@ -27,38 +29,62 @@ class FakeSocket extends SocketManager {
   Future<void> connect(String url, String token) async => connects.add(token);
 }
 
-Future<(AuthenticationManager, FakeSocket)> pumpApp(WidgetTester tester, Widget home, {Map<String, Object> prefs = const {}, Size size = const Size(411, 914)}) async {
+class HangingAuth extends AuthenticationManager {
+  @override
+  Future<bool> restore() => Completer<bool>().future;
+}
+
+Future<(AuthenticationManager, FakeSocket)> pumpApp(
+  WidgetTester tester,
+  Widget home, {
+  Map<String, Object> prefs = const {},
+  Size size = const Size(411, 914),
+  AuthenticationManager? authentication,
+}) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   SharedPreferences.setMockInitialValues(prefs);
-  final auth = AuthenticationManager();
+  final auth = authentication ?? AuthenticationManager();
   final socket = FakeSocket();
-  await tester.pumpWidget(MultiProvider(
-    providers: [
-      ChangeNotifierProvider.value(value: auth),
-      Provider<SocketManager>.value(value: socket),
-      ChangeNotifierProvider.value(value: RoomManager(socket)),
-    ],
-    child: MaterialApp(theme: buildAppTheme(), home: home),
-  ));
+  await tester.pumpWidget(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: auth),
+        Provider<SocketManager>.value(value: socket),
+        ChangeNotifierProvider.value(value: RoomManager(socket)),
+      ],
+      child: MaterialApp(theme: buildAppTheme(), home: home),
+    ),
+  );
   return (auth, socket);
 }
 
 /// Runs the splash's real async start-up (SharedPreferences) and its intro.
 Future<void> bootSplash(WidgetTester tester) async {
   for (var i = 0; i < 5; i++) {
-    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 20)));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 20)),
+    );
     await tester.pump(const Duration(milliseconds: 300));
   }
   await tester.pump(const Duration(milliseconds: 700));
 }
 
 void main() {
-  testWidgets('first launch: splash -> login -> home with your name', (tester) async {
-    final (auth, socket) = await pumpApp(tester, const SplashScreen(minShow: Duration.zero));
+  testWidgets('first launch: splash -> login -> home with your name', (
+    tester,
+  ) async {
+    final (auth, socket) = await pumpApp(
+      tester,
+      const SplashScreen(minShow: Duration.zero),
+    );
     await tester.pump(const Duration(milliseconds: 400)); // the splash fades in
-    expect(find.bySemanticsLabel(appName), findsWidgets, reason: 'logo and name');
+    expect(
+      find.bySemanticsLabel(appName),
+      findsWidgets,
+      reason: 'logo and name',
+    );
     expect(find.text(appName), findsOneWidget);
     await bootSplash(tester);
     expect(find.byType(LoginScreen), findsOneWidget);
@@ -81,11 +107,19 @@ void main() {
     expect(find.byType(HomeScreen), findsOneWidget);
     expect(find.text('Hi, asha'), findsOneWidget);
     expect(auth.displayName, 'asha');
-    expect(socket.connects.single, auth.token, reason: 'connects in the background');
+    expect(
+      socket.connects.single,
+      auth.token,
+      reason: 'connects in the background',
+    );
   });
 
   testWidgets('returning player goes straight to home', (tester) async {
-    final (_, socket) = await pumpApp(tester, const SplashScreen(minShow: Duration.zero), prefs: {'uid': 'u1', 'name': 'Ravi'});
+    final (_, socket) = await pumpApp(
+      tester,
+      const SplashScreen(minShow: Duration.zero),
+      prefs: {'uid': 'u1', 'name': 'Ravi'},
+    );
     await bootSplash(tester);
     await tester.pumpAndSettle();
     expect(find.byType(HomeScreen), findsOneWidget);
@@ -93,87 +127,151 @@ void main() {
     expect(socket.connects, ['dev:u1:Ravi']);
   });
 
+  testWidgets('stalled saved-player restore falls through to guest setup', (
+    tester,
+  ) async {
+    await pumpApp(
+      tester,
+      const SplashScreen(
+        minShow: Duration.zero,
+        authRestoreTimeout: Duration(milliseconds: 20),
+      ),
+      authentication: HangingAuth(),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 25));
+    await tester.pumpAndSettle();
+    expect(find.byType(LoginScreen), findsOneWidget);
+    expect(find.byType(HomeScreen), findsNothing);
+  });
+
   for (final size in const [Size(320, 568), Size(411, 914)]) {
-    testWidgets('create room: pick a game, filter, players follow the game limits (${size.width.toInt()})', (tester) async {
-      await pumpApp(tester, const CreateRoomScreen(), size: size);
-      await tester.pump();
-      expect(find.text('CREATE A ROOM'), findsOneWidget);
-      expect(find.text('Guess the Person (quiz)'), findsNothing);
-      // Colour Clash is first and selected: up to 6 players.
-      expect(find.bySemanticsLabel(RegExp('^Colour Clash, ')), findsOneWidget);
-      await setPlayers(tester, 6);
+    testWidgets(
+      'create room: pick a game, filter, players follow the game limits (${size.width.toInt()})',
+      (tester) async {
+        await pumpApp(tester, const CreateRoomScreen(), size: size);
+        await tester.pump();
+        expect(find.text('CREATE A ROOM'), findsOneWidget);
+        expect(find.text('Guess the Person (quiz)'), findsNothing);
+        // Colour Clash is first and selected: two phones, two players.
+        expect(
+          find.bySemanticsLabel(RegExp('^Colour Clash, ')),
+          findsOneWidget,
+        );
+        await setPlayers(tester, 2);
 
-      // Raja Mantri: exactly 4 players.
-      await tester.tap(find.text('Raja Mantri Chor Sipahi').first);
-      await tester.pump();
-      // A room for 6 can still start with Raja Mantri's 4 players later: just a hint, not a block.
-      expect(find.text('Needs 4 players: you can switch games in the room'), findsOneWidget);
-      await setPlayers(tester, 4);
-      expect(find.text('Can the Mantri catch the Chor?'), findsOneWidget);
+        // Raja Mantri: exactly 4 players.
+        await tester.tap(find.text('Raja Mantri Chor Sipahi').first);
+        await tester.pump();
+        // A room for 6 can still start with Raja Mantri's 4 players later: just a hint, not a block.
+        expect(
+          find.text('Needs 4 players: you can switch games in the room'),
+          findsOneWidget,
+        );
+        await setPlayers(tester, 4);
+        expect(find.text('Can the Mantri catch the Chor?'), findsOneWidget);
 
-      // Filter to action games.
-      await tester.ensureVisible(find.text('Action'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Action'));
-      await tester.pump();
-      expect(find.text('Air Hockey'), findsOneWidget);
-      expect(find.text('Ludo'), findsNothing);
-      await tester.tap(find.text('Air Hockey'));
-      await tester.pump();
-      expect(find.text('Create room'), findsOneWidget);
-      final chips = find.ancestor(of: find.text('Action'), matching: find.byType(ListView));
-      await tester.dragUntilVisible(find.text('All'), chips, const Offset(120, 0));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('All'));
-      await tester.pump();
-      expect(find.text('Colour Clash'), findsWidgets, reason: 'back to all games, from the top');
-    });
+        // Filter to action games.
+        await tester.ensureVisible(find.text('Action'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Action'));
+        await tester.pump();
+        expect(find.text('Air Hockey'), findsOneWidget);
+        expect(find.text('Ludo'), findsNothing);
+        await tester.tap(find.text('Air Hockey'));
+        await tester.pump();
+        expect(find.text('Create room'), findsOneWidget);
+        final chips = find.ancestor(
+          of: find.text('Action'),
+          matching: find.byType(ListView),
+        );
+        await tester.dragUntilVisible(
+          find.text('All'),
+          chips,
+          const Offset(120, 0),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('All'));
+        await tester.pump();
+        expect(
+          find.text('Colour Clash'),
+          findsWidgets,
+          reason: 'back to all games, from the top',
+        );
+      },
+    );
   }
 
   for (final size in const [Size(320, 568), Size(411, 914), Size(800, 1280)]) {
-    testWidgets('home lays out and every section opens on ${size.width.toInt()}x${size.height.toInt()}', (tester) async {
-      final (auth, _) = await pumpApp(tester, const HomeScreen(), prefs: {'uid': 'u1', 'name': 'A very long player name'}, size: size);
-      await tester.runAsync(auth.restore);
-      await tester.pump();
-      expect(find.text('Offline'), findsOneWidget);
-      expect(find.text('Ready to play?'), findsOneWidget);
+    testWidgets(
+      'home lays out and every section opens on ${size.width.toInt()}x${size.height.toInt()}',
+      (tester) async {
+        final (auth, _) = await pumpApp(
+          tester,
+          const HomeScreen(),
+          prefs: {'uid': 'u1', 'name': 'A very long player name'},
+          size: size,
+        );
+        await tester.runAsync(auth.restore);
+        await tester.pump();
+        expect(find.text('Offline'), findsOneWidget);
+        expect(find.text('Ready to play?'), findsOneWidget);
 
-      Future<void> open(Finder target) async {
-        await tester.scrollUntilVisible(target, 120, scrollable: find.byType(Scrollable).first);
-        await tester.ensureVisible(target); // also scrolls the sideways featured row
-        await tester.pumpAndSettle();
-        await tester.tap(target);
-        await tester.pumpAndSettle();
-      }
+        Future<void> open(Finder target) async {
+          await tester.scrollUntilVisible(
+            target,
+            120,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.ensureVisible(
+            target,
+          ); // also scrolls the sideways featured row
+          await tester.pumpAndSettle();
+          await tester.tap(target);
+          await tester.pumpAndSettle();
+        }
 
-      Future<void> openAndBack(Finder target, Type page) async {
-        await open(target);
-        expect(find.byType(page), findsOneWidget);
-        Navigator.of(tester.element(find.byType(page))).pop();
-        await tester.pumpAndSettle();
-      }
+        Future<void> openAndBack(Finder target, Type page) async {
+          await open(target);
+          expect(find.byType(page), findsOneWidget);
+          Navigator.of(tester.element(find.byType(page))).pop();
+          await tester.pumpAndSettle();
+        }
 
-      await openAndBack(find.text('Play on one phone'), LocalGamesHubScreen);
-      // Play online: a sheet with create, join and quick play.
-      for (final (label, page) in const [('Create room', CreateRoomScreen), ('Join room', JoinRoomScreen), ('Quick play', QuickPlayScreen)]) {
-        await open(find.text('Play online'));
-        await tester.tap(find.text(label));
-        await tester.pumpAndSettle();
-        expect(find.byType(page), findsOneWidget);
-        Navigator.of(tester.element(find.byType(page))).pop();
-        await tester.pumpAndSettle();
-      }
-      await openAndBack(find.text('My records'), RecordsScreen);
-      await openAndBack(find.text('Memory'), LocalGameShell);
-      // Featured games scroll sideways.
-      await tester.dragUntilVisible(find.text('Raja Mantri'), find.byType(ListView).last, const Offset(-150, 0));
-      await openAndBack(find.text('Raja Mantri'), RmcsMenuScreen);
-      await openAndBack(find.text('See all'), LocalGamesHubScreen);
-      await openAndBack(find.text('Privacy'), PrivacyScreen);
-      // No server addresses on screen: just the connection pill.
-      expect(find.textContaining('Server: '), findsNothing);
-      await tester.scrollUntilVisible(find.text('Same Wi-Fi'), -120, scrollable: find.byType(Scrollable).first);
-      expect(find.text('Same Wi-Fi'), findsOneWidget);
-    });
+        await openAndBack(find.text('Play on one phone'), LocalGamesHubScreen);
+        // Play online: a sheet with create, join and quick play.
+        for (final (label, page) in const [
+          ('Create room', CreateRoomScreen),
+          ('Join room', JoinRoomScreen),
+          ('Quick play', QuickPlayScreen),
+        ]) {
+          await open(find.text('Play online'));
+          await tester.tap(find.text(label));
+          await tester.pumpAndSettle();
+          expect(find.byType(page), findsOneWidget);
+          Navigator.of(tester.element(find.byType(page))).pop();
+          await tester.pumpAndSettle();
+        }
+        await openAndBack(find.text('My records'), RecordsScreen);
+        await openAndBack(find.text('Memory'), LocalGameShell);
+        // Featured games scroll sideways.
+        await tester.dragUntilVisible(
+          find.text('Raja Mantri'),
+          find.byType(ListView).last,
+          const Offset(-150, 0),
+        );
+        await openAndBack(find.text('Raja Mantri'), RmcsMenuScreen);
+        await openAndBack(find.text('See all'), LocalGamesHubScreen);
+        await openAndBack(find.text('Privacy'), PrivacyScreen);
+        // No server addresses on screen: just the connection pill.
+        expect(find.textContaining('Server: '), findsNothing);
+        await tester.scrollUntilVisible(
+          find.text('Same Wi-Fi'),
+          -120,
+          scrollable: find.byType(Scrollable).first,
+        );
+        expect(find.text('Same Wi-Fi'), findsOneWidget);
+      },
+    );
   }
 }

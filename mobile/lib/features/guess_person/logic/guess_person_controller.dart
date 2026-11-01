@@ -9,9 +9,26 @@ import 'gp_rules.dart';
 import 'gp_settings.dart';
 
 /// The single authoritative state. The UI renders whatever phase this is.
-enum GpPhase { roundSetup, selectingPerson, confirmSelection, passDevice, guessing, finalGuess, result, gameOver }
+enum GpPhase {
+  roundSetup,
+  selectingPerson,
+  confirmSelection,
+  passDevice,
+  guessing,
+  finalGuess,
+  result,
+  gameOver
+}
 
-enum GpSfx { select, question, eliminate, correct, wrong, timerWarning, gameOver }
+enum GpSfx {
+  select,
+  question,
+  eliminate,
+  correct,
+  wrong,
+  timerWarning,
+  gameOver
+}
 
 enum GuessPick { ok, eliminated, invalid }
 
@@ -21,7 +38,12 @@ class RoundResult {
   final Person? guessed;
   final GpPlayer guesser;
   final int points;
-  const RoundResult({required this.outcome, required this.secret, required this.guessed, required this.guesser, required this.points});
+  const RoundResult(
+      {required this.outcome,
+      required this.secret,
+      required this.guessed,
+      required this.guesser,
+      required this.points});
 }
 
 /// Local pass-and-play Guess the Person. Everything runs on this device; the online
@@ -33,7 +55,12 @@ class GuessPersonController extends ChangeNotifier {
   final Random _rng;
   final void Function(GpSfx)? onSfx;
 
-  GuessPersonController({GpSettings? settings, List<GpPlayer>? players, List<Person>? cast, Random? random, this.onSfx})
+  GuessPersonController(
+      {GpSettings? settings,
+      List<GpPlayer>? players,
+      List<Person>? cast,
+      Random? random,
+      this.onSfx})
       : settings = settings ?? const GpSettings(),
         players = players ?? defaultPlayers(),
         _cast = List.unmodifiable(cast ?? allPeople),
@@ -102,7 +129,8 @@ class GuessPersonController extends ChangeNotifier {
   void startRound() {
     _stopTimer();
     final count = settings.peopleCount.clamp(0, _cast.length);
-    people = (List.of(_cast)..shuffle(_rng)).take(count).toList()..shuffle(_rng);
+    people = (List.of(_cast)..shuffle(_rng)).take(count).toList()
+      ..shuffle(_rng);
     questions = buildQuestions(people);
     eliminated.clear();
     history.clear();
@@ -155,7 +183,8 @@ class GuessPersonController extends ChangeNotifier {
     if (phase != GpPhase.confirmSelection || selectedPerson == null) return;
     _secretId = selectedId;
     _lastSecretId = selectedId;
-    selectedId = null; // nothing selection-related survives into the guesser's view
+    selectedId =
+        null; // nothing selection-related survives into the guesser's view
     phase = GpPhase.passDevice;
     _notify();
   }
@@ -216,7 +245,8 @@ class GuessPersonController extends ChangeNotifier {
   }
 
   GuessPick chooseGuess(int id) {
-    if (phase != GpPhase.finalGuess || _byId(id) == null) return GuessPick.invalid;
+    if (phase != GpPhase.finalGuess || _byId(id) == null)
+      return GuessPick.invalid;
     if (eliminated.contains(id)) return GuessPick.eliminated;
     pendingGuessId = id;
     _sfx(GpSfx.select);
@@ -237,7 +267,9 @@ class GuessPersonController extends ChangeNotifier {
 
   void makeFinalGuess() {
     final guess = pendingGuess;
-    if (phase != GpPhase.finalGuess || guess == null || eliminated.contains(guess.id)) return;
+    if (phase != GpPhase.finalGuess ||
+        guess == null ||
+        eliminated.contains(guess.id)) return;
     if (guess.id == _secretId) {
       handleCorrectGuess(guess);
     } else {
@@ -245,7 +277,8 @@ class GuessPersonController extends ChangeNotifier {
     }
   }
 
-  void handleCorrectGuess(Person guess) => _endRound(RoundOutcome.correct, guess);
+  void handleCorrectGuess(Person guess) =>
+      _endRound(RoundOutcome.correct, guess);
   void handleWrongGuess(Person guess) => _endRound(RoundOutcome.wrong, guess);
 
   void handleTimeUp() {
@@ -259,7 +292,12 @@ class GuessPersonController extends ChangeNotifier {
     if (secret == null) return;
     final pts = pointsFor(outcome);
     guesser.score += pts;
-    result = RoundResult(outcome: outcome, secret: secret, guessed: guessed, guesser: guesser, points: pts);
+    result = RoundResult(
+        outcome: outcome,
+        secret: secret,
+        guessed: guessed,
+        guesser: guesser,
+        points: pts);
     pendingGuessId = null;
     phase = GpPhase.result;
     _sfx(outcome == RoundOutcome.correct ? GpSfx.correct : GpSfx.wrong);
@@ -297,7 +335,8 @@ class GuessPersonController extends ChangeNotifier {
 
   @visibleForTesting
   void tick() {
-    if (_disposed || (phase != GpPhase.guessing && phase != GpPhase.finalGuess)) {
+    if (_disposed ||
+        (phase != GpPhase.guessing && phase != GpPhase.finalGuess)) {
       _stopTimer();
       return;
     }

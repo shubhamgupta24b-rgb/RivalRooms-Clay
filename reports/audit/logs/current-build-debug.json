@@ -1,0 +1,109 @@
+{
+  "command": [
+    "C:/Users/sg857/Downloads/flutter/flutter/bin/flutter",
+    "build",
+    "apk",
+    "--debug",
+    "--no-pub",
+    "--dart-define=ADMOB_USE_TEST_ADS=true",
+    "--dart-define=ADMOB_APP_ID=ca-app-pub-3940256099942544~3347511713"
+  ],
+  "launcher": "C:/Program Files/Git/usr/bin/bash.exe",
+  "cwd": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile",
+  "started_utc": "2026-10-30T11:22:50.620760+00:00",
+  "timeout_seconds": 590,
+  "artifacts_before": [
+    {
+      "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\flutter-apk\\app-debug.apk",
+      "relative_path": "mobile/build/app/outputs/flutter-apk/app-debug.apk",
+      "size_bytes": 201288894,
+      "sha256": "499baf66939fbb4336a6f8fa3c28ce6f044c6a614a5802da15d170f3a9304e30",
+      "modified_utc": "2026-10-24T07:42:38.063096+00:00",
+      "created_utc": "2026-10-24T04:48:27.394237+00:00"
+    },
+    {
+      "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\apk\\debug\\app-debug.apk",
+      "relative_path": "mobile/build/app/outputs/apk/debug/app-debug.apk",
+      "size_bytes": 201288894,
+      "sha256": "499baf66939fbb4336a6f8fa3c28ce6f044c6a614a5802da15d170f3a9304e30",
+      "modified_utc": "2026-10-24T07:40:26.593825+00:00",
+      "created_utc": "2026-10-24T04:48:24.513092+00:00"
+    }
+  ],
+  "prior_launcher_attempt": {
+    "command": [
+      "C:/Users/sg857/Downloads/flutter/flutter/bin/flutter",
+      "build",
+      "apk",
+      "--debug",
+      "--no-pub",
+      "--dart-define=ADMOB_USE_TEST_ADS=true",
+      "--dart-define=ADMOB_APP_ID=ca-app-pub-3940256099942544~3347511713"
+    ],
+    "cwd": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile",
+    "started_utc": "2026-10-30T11:22:15.503940+00:00",
+    "timeout_seconds": 590,
+    "artifacts_before": [
+      {
+        "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\flutter-apk\\app-debug.apk",
+        "relative_path": "mobile/build/app/outputs/flutter-apk/app-debug.apk",
+        "size_bytes": 201288894,
+        "sha256": "499baf66939fbb4336a6f8fa3c28ce6f044c6a614a5802da15d170f3a9304e30",
+        "modified_utc": "2026-10-24T07:42:38.063096+00:00",
+        "created_utc": "2026-10-24T04:48:27.394237+00:00"
+      },
+      {
+        "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\apk\\debug\\app-debug.apk",
+        "relative_path": "mobile/build/app/outputs/apk/debug/app-debug.apk",
+        "size_bytes": 201288894,
+        "sha256": "499baf66939fbb4336a6f8fa3c28ce6f044c6a614a5802da15d170f3a9304e30",
+        "modified_utc": "2026-10-24T07:40:26.593825+00:00",
+        "created_utc": "2026-10-24T04:48:24.513092+00:00"
+      }
+    ],
+    "exit_code": 127,
+    "timed_out": false,
+    "finished_utc": "2026-10-30T11:22:22.167392+00:00",
+    "elapsed_seconds": 5.907,
+    "artifacts_after": [
+      {
+        "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\flutter-apk\\app-debug.apk",
+        "relative_path": "mobile/build/app/outputs/flutter-apk/app-debug.apk",
+        "size_bytes": 201288894,
+        "sha256": "499baf66939fbb4336a6f8fa3c28ce6f044c6a614a5802da15d170f3a9304e30",
+        "modified_utc": "2026-10-24T07:42:38.063096+00:00",
+        "created_utc": "2026-10-24T04:48:27.394237+00:00"
+      },
+      {
+        "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\apk\\debug\\app-debug.apk",
+        "relative_path": "mobile/build/app/outputs/apk/debug/app-debug.apk",
+        "size_bytes": 201288894,
+        "sha256": "499baf66939fbb4336a6f8fa3c28ce6f044c6a614a5802da15d170f3a9304e30",
+        "modified_utc": "2026-10-24T07:40:26.593825+00:00",
+        "created_utc": "2026-10-24T04:48:24.513092+00:00"
+      }
+    ]
+  },
+  "exit_code": 0,
+  "timed_out": false,
+  "finished_utc": "2026-10-30T11:24:14.774246+00:00",
+  "elapsed_seconds": 83.641,
+  "artifacts_after": [
+    {
+      "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\flutter-apk\\app-debug.apk",
+      "relative_path": "mobile/build/app/outputs/flutter-apk/app-debug.apk",
+      "size_bytes": 201289196,
+      "sha256": "039af6908e8dfe83547c8600ceb980ad90a6bb982a057b1ccb236d4ad70b0b95",
+      "modified_utc": "2026-10-30T11:24:10.521596+00:00",
+      "created_utc": "2026-10-24T04:48:27.394237+00:00"
+    },
+    {
+      "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\apk\\debug\\app-debug.apk",
+      "relative_path": "mobile/build/app/outputs/apk/debug/app-debug.apk",
+      "size_bytes": 201289196,
+      "sha256": "039af6908e8dfe83547c8600ceb980ad90a6bb982a057b1ccb236d4ad70b0b95",
+      "modified_utc": "2026-10-30T11:24:07.246843+00:00",
+      "created_utc": "2026-10-24T04:48:24.513092+00:00"
+    }
+  ]
+}

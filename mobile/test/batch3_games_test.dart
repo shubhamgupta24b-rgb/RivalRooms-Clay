@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,7 +10,8 @@ import 'package:multiplayer_game/features/local_games/mini_golf/mini_golf_game.d
 import 'package:multiplayer_game/features/local_games/shooting_gallery/shooting_gallery_game.dart';
 import 'package:multiplayer_game/features/local_games/slingshot/slingshot_game.dart';
 
-Map<String, dynamic> roundTrip(Map<String, dynamic> s) => jsonDecode(jsonEncode(s)) as Map<String, dynamic>;
+Map<String, dynamic> roundTrip(Map<String, dynamic> s) =>
+    jsonDecode(jsonEncode(s)) as Map<String, dynamic>;
 
 void main() {
   group('Mini Golf', () {
@@ -30,13 +31,19 @@ void main() {
     test('the ball never goes through a wall or off the course', () {
       for (final h in golfHoles) {
         for (var a = 0; a < 16; a++) {
-          final s = [h.tee.dx, h.tee.dy, cos(a * pi / 8) * GolfLogic.maxSpeed, sin(a * pi / 8) * GolfLogic.maxSpeed];
+          final s = [
+            h.tee.dx,
+            h.tee.dy,
+            cos(a * pi / 8) * GolfLogic.maxSpeed,
+            sin(a * pi / 8) * GolfLogic.maxSpeed
+          ];
           for (var i = 0; i < 800; i++) {
             if (GolfLogic.stepBall(h, s, 1 / 240)) break;
             expect(s[0], inInclusiveRange(0, 1));
             expect(s[1], inInclusiveRange(0, GolfLogic.courseH));
             for (final w in h.walls) {
-              expect(w.contains(Offset(s[0], s[1])), isFalse, reason: 'inside a wall');
+              expect(w.contains(Offset(s[0], s[1])), isFalse,
+                  reason: 'inside a wall');
             }
           }
         }
@@ -50,7 +57,9 @@ void main() {
       expect(sunk || (end - g.course.cup).distance < 0.25, isTrue);
     });
 
-    test('scores: 7 minus strokes, all holes, then finished; online state round-trips', () {
+    test(
+        'scores: 7 minus strokes, all holes, then finished; online state round-trips',
+        () {
       final g = GolfLogic(players: 2);
       var t = 0;
       final rng = Random(2);
@@ -80,7 +89,11 @@ void main() {
     test('every fort is the same for everyone and has pigs', () {
       for (var r = 1; r <= SlingLogic.rounds; r++) {
         expect(SlingLogic.buildFort(r), SlingLogic.buildFort(r));
-        expect(SlingLogic.buildFort(r).expand((c) => c).where((k) => k == Cell.pig), isNotEmpty);
+        expect(
+            SlingLogic.buildFort(r)
+                .expand((c) => c)
+                .where((k) => k == Cell.pig),
+            isNotEmpty);
       }
     });
 
@@ -97,7 +110,8 @@ void main() {
       for (var t = 0; t < 5000 && !g.ready; t += 16) {
         g.update(t);
       }
-      expect(g.grid[0][0], Cell.wood, reason: 'the block landed where the pig was');
+      expect(g.grid[0][0], Cell.wood,
+          reason: 'the block landed where the pig was');
       expect(g.score[0], 100);
       expect(g.birds, SlingLogic.birdsEach - 1);
     });
@@ -130,14 +144,17 @@ void main() {
   });
 
   group('Shooting Gallery', () {
-    test('targets slide by; shooting one scores and removes it; a bomb costs points', () {
+    test(
+        'targets slide by; shooting one scores and removes it; a bomb costs points',
+        () {
       final g = GalleryLogic(players: 1);
       g.update(0);
       g.begin(0);
       g.update(4000);
       final targets = g.targets;
       expect(targets, isNotEmpty);
-      final good = targets.firstWhere((t) => t.kind != 3, orElse: () => targets.first);
+      final good =
+          targets.firstWhere((t) => t.kind != 3, orElse: () => targets.first);
       g.shoot(0, good.x, good.y);
       expect(g.score[0], const [10, 20, 50, 0][good.kind]);
       expect(g.targets.map((t) => t.id), isNot(contains(good.id)));
@@ -167,7 +184,8 @@ void main() {
       g.throwBall(0, c.dx, (0.62 - c.dy) / 0.6);
       g.update(1000);
       expect(corner.down, isTrue);
-      expect(g.bottles.firstWhere((b) => b.row == 1 && b.col == 0).down, isTrue);
+      expect(
+          g.bottles.firstWhere((b) => b.row == 1 && b.col == 0).down, isTrue);
       expect(g.bottles.firstWhere((b) => b.row == 2).down, isTrue);
       expect(g.score[0], greaterThanOrEqualTo(3));
     });
@@ -179,7 +197,8 @@ void main() {
       final spec = bottleInfo.online!;
       final copy = spec.create(2) as BottleLogic;
       spec.load(copy, roundTrip(spec.save(g)), 1);
-      expect([for (final b in copy.bottles) b.down], [for (final b in g.bottles) b.down]);
+      expect([for (final b in copy.bottles) b.down],
+          [for (final b in g.bottles) b.down]);
       expect(copy.score, g.score);
       expect(copy.balls, g.balls);
     });
@@ -201,7 +220,8 @@ void main() {
       final wav = renderTrack(chiptunes['arcade']!);
       expect(ascii.decode(wav.sublist(0, 4)), 'RIFF');
       expect(ascii.decode(wav.sublist(8, 12)), 'WAVE');
-      final samples = Int16List.view(Uint8List.fromList(wav.sublist(44)).buffer);
+      final samples =
+          Int16List.view(Uint8List.fromList(wav.sublist(44)).buffer);
       expect(samples.any((s) => s.abs() > 3000), isTrue, reason: 'not silent');
     });
 

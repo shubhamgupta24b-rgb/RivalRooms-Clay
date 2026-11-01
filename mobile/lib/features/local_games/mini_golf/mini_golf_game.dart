@@ -13,14 +13,23 @@ import '../shell/ticking_play.dart';
 class GolfHole {
   final Offset tee, cup;
   final List<Rect> walls, sand;
-  const GolfHole(this.tee, this.cup, {this.walls = const [], this.sand = const []});
+  const GolfHole(this.tee, this.cup,
+      {this.walls = const [], this.sand = const []});
 }
 
 const golfHoles = [
   GolfHole(Offset(0.5, 1.3), Offset(0.5, 0.25)),
-  GolfHole(Offset(0.5, 1.3), Offset(0.5, 0.2), walls: [Rect.fromLTWH(0.28, 0.65, 0.44, 0.08)], sand: [Rect.fromLTWH(0.05, 0.35, 0.2, 0.2)]),
-  GolfHole(Offset(0.2, 1.3), Offset(0.78, 0.22), walls: [Rect.fromLTWH(0, 0.7, 0.66, 0.07)]),
-  GolfHole(Offset(0.5, 1.35), Offset(0.5, 0.15), walls: [Rect.fromLTWH(0, 1.0, 0.62, 0.06), Rect.fromLTWH(0.38, 0.55, 0.62, 0.06)], sand: [Rect.fromLTWH(0.05, 0.62, 0.3, 0.3)]),
+  GolfHole(Offset(0.5, 1.3), Offset(0.5, 0.2),
+      walls: [Rect.fromLTWH(0.28, 0.65, 0.44, 0.08)],
+      sand: [Rect.fromLTWH(0.05, 0.35, 0.2, 0.2)]),
+  GolfHole(Offset(0.2, 1.3), Offset(0.78, 0.22),
+      walls: [Rect.fromLTWH(0, 0.7, 0.66, 0.07)]),
+  GolfHole(Offset(0.5, 1.35), Offset(0.5, 0.15), walls: [
+    Rect.fromLTWH(0, 1.0, 0.62, 0.06),
+    Rect.fromLTWH(0.38, 0.55, 0.62, 0.06)
+  ], sand: [
+    Rect.fromLTWH(0.05, 0.62, 0.3, 0.3)
+  ]),
   GolfHole(Offset(0.5, 1.35), Offset(0.5, 0.18), walls: [
     Rect.fromLTWH(0.22, 0.92, 0.09, 0.09),
     Rect.fromLTWH(0.62, 0.92, 0.09, 0.09),
@@ -43,7 +52,11 @@ const golfHoles = [
 /// as few strokes as you can. Each hole is worth 7 minus your strokes (a hole in one is 6);
 /// after 6 strokes the ball is picked up. 6 holes, taking turns.
 class GolfLogic extends LocalGameLogic {
-  static const courseH = 1.5, ballR = 0.018, cupR = 0.03, maxSpeed = 1.7, maxStrokes = 6;
+  static const courseH = 1.5,
+      ballR = 0.018,
+      cupR = 0.03,
+      maxSpeed = 1.7,
+      maxStrokes = 6;
   final int players;
   final List<int> score;
   final List<List<int>> card; // strokes per player per hole
@@ -88,7 +101,8 @@ class GolfLogic extends LocalGameLogic {
     final inSand = h.sand.any((r) => r.contains(Offset(x, y)));
     final speed = sqrt(vx * vx + vy * vy);
     if (speed > 0) {
-      final slow = (inSand ? 2.2 : 0.22) * dt + speed * (inSand ? 2.0 : 0.9) * dt;
+      final slow =
+          (inSand ? 2.2 : 0.22) * dt + speed * (inSand ? 2.0 : 0.9) * dt;
       final k = max(0.0, speed - slow) / speed;
       vx *= k;
       vy *= k;
@@ -140,7 +154,9 @@ class GolfLogic extends LocalGameLogic {
   }
 
   /// Where a putt ends up: (resting spot, sunk?).
-  static (Offset, bool) simulate(GolfHole h, Offset from, double angle, double power, {double dt = 1 / 60}) {
+  static (Offset, bool) simulate(
+      GolfHole h, Offset from, double angle, double power,
+      {double dt = 1 / 60}) {
     final p = power.clamp(0.05, 1.0) * maxSpeed;
     final s = [from.dx, from.dy, cos(angle) * p, sin(angle) * p];
     for (var i = 0; i < 1200; i++) {
@@ -182,7 +198,11 @@ class GolfLogic extends LocalGameLogic {
     score[turn] += 7 - taken;
     message = pickedUp
         ? 'Picked up · +0'
-        : (strokes == 1 ? '⛳ HOLE IN ONE! +6' : (strokes == 2 ? '🐦 BIRDIE! +5' : 'In the cup in $strokes · +${7 - strokes}'));
+        : (strokes == 1
+            ? '⛳ HOLE IN ONE! +6'
+            : (strokes == 2
+                ? '🐦 BIRDIE! +5'
+                : 'In the cup in $strokes · +${7 - strokes}'));
     messageAt = now;
     HapticFeedback.mediumImpact().ignore();
     GameAudio.sfx(pickedUp ? 'lose' : 'coin');
@@ -216,12 +236,16 @@ class GolfLogic extends LocalGameLogic {
   }
   // Fine-tune around the best one.
   for (var i = 0; i < 40; i++) {
-    final angle = best.$1 + (rng.nextDouble() - 0.5) * 0.12, power = (best.$2 + (rng.nextDouble() - 0.5) * 0.12).clamp(0.05, 1.0);
+    final angle = best.$1 + (rng.nextDouble() - 0.5) * 0.12,
+        power = (best.$2 + (rng.nextDouble() - 0.5) * 0.12).clamp(0.05, 1.0);
     final (end, sunk) = GolfLogic.simulate(g.course, g.ball, angle, power);
     final d = sunk ? -1.0 + power * 0.01 : (end - g.course.cup).distance;
     if (d < bestD) (bestD, best) = (d, (angle, power));
   }
-  return (best.$1 + (rng.nextDouble() - 0.5) * 0.06, best.$2 * (0.93 + rng.nextDouble() * 0.14));
+  return (
+    best.$1 + (rng.nextDouble() - 0.5) * 0.06,
+    best.$2 * (0.93 + rng.nextDouble() * 0.14)
+  );
 }
 
 final golfInfo = LocalGameInfo(
@@ -281,14 +305,19 @@ final golfInfo = LocalGameInfo(
       g.done = s['done'] == true;
     },
     apply: (g, from, name, a) {
-      if (name == 'putt' && asInt(a[0]) == from) g.putt(from, asDouble(a[1]), asDouble(a[2]));
+      if (name == 'putt' && asInt(a[0]) == from)
+        g.putt(from, asDouble(a[1]), asDouble(a[2]));
     },
-    view: (context, g, players, me) => _GolfView(g: g, players: players, me: me),
+    view: (context, g, players, me) =>
+        _GolfView(g: g, players: players, me: me),
   ),
   play: (players, onFinished) => TickingPlay<GolfLogic>(
     create: () => GolfLogic(players: players.length),
     onFinished: onFinished,
-    builder: (context, g) => _GolfView(g: g, players: players, bots: {for (var i = 0; i < players.length; i++) if (BotScope.isBot(context, i)) i}),
+    builder: (context, g) => _GolfView(g: g, players: players, bots: {
+      for (var i = 0; i < players.length; i++)
+        if (BotScope.isBot(context, i)) i
+    }),
   ),
 );
 
@@ -297,7 +326,8 @@ class _GolfView extends StatefulWidget {
   final List<GpPlayer> players;
   final int? me;
   final Set<int> bots;
-  const _GolfView({required this.g, required this.players, this.me, this.bots = const {}});
+  const _GolfView(
+      {required this.g, required this.players, this.me, this.bots = const {}});
   @override
   State<_GolfView> createState() => _GolfViewState();
 }
@@ -305,7 +335,10 @@ class _GolfView extends StatefulWidget {
 class _GolfViewState extends State<_GolfView> {
   Offset? _from, _to;
 
-  bool get _mine => !widget.bots.contains(widget.g.turn) && (widget.me == null || widget.me == widget.g.turn) && widget.g.ready;
+  bool get _mine =>
+      !widget.bots.contains(widget.g.turn) &&
+      (widget.me == null || widget.me == widget.g.turn) &&
+      widget.g.ready;
 
   /// (angle, power) for the current drag, pulling back like a slingshot.
   (double, double)? _aim(double w) {
@@ -324,7 +357,11 @@ class _GolfViewState extends State<_GolfView> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
       child: Column(children: [
-        GameHud(players: widget.players, scores: g.score, turn: g.finished ? null : g.turn, trailing: HudLabel('HOLE ${g.hole + 1}/${golfHoles.length}')),
+        GameHud(
+            players: widget.players,
+            scores: g.score,
+            turn: g.finished ? null : g.turn,
+            trailing: HudLabel('HOLE ${g.hole + 1}/${golfHoles.length}')),
         const SizedBox(height: 8),
         Expanded(
           child: LayoutBuilder(builder: (context, c) {
@@ -336,16 +373,23 @@ class _GolfViewState extends State<_GolfView> {
                 height: w * GolfLogic.courseH,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onPanStart: _mine ? (d) => setState(() => _from = _to = d.localPosition) : null,
-                  onPanUpdate: _mine ? (d) => setState(() => _to = d.localPosition) : null,
+                  onPanStart: _mine
+                      ? (d) => setState(() => _from = _to = d.localPosition)
+                      : null,
+                  onPanUpdate: _mine
+                      ? (d) => setState(() => _to = d.localPosition)
+                      : null,
                   onPanEnd: _mine
                       ? (_) {
                           final a = _aim(w);
                           setState(() => _from = _to = null);
-                          if (a != null && a.$2 > 0.04) g.putt(g.turn, a.$1, a.$2);
+                          if (a != null && a.$2 > 0.04)
+                            g.putt(g.turn, a.$1, a.$2);
                         }
                       : null,
-                  child: SceneFrame(child: CustomPaint(painter: _CoursePainter(g, w, aim, current.color))),
+                  child: SceneFrame(
+                      child: CustomPaint(
+                          painter: _CoursePainter(g, w, aim, current.color))),
                 ),
               ),
             );
@@ -354,7 +398,11 @@ class _GolfViewState extends State<_GolfView> {
         const SizedBox(height: 8),
         GameStatus(
           player: current,
-          turnText: g.finished ? 'Round over!' : (_mine ? '${current.whose} PUTT · stroke ${g.strokes + 1}' : (g.moving ? 'Rolling…' : '${current.name} is lining up…')),
+          turnText: g.finished
+              ? 'Round over!'
+              : (_mine
+                  ? '${current.whose} PUTT · stroke ${g.strokes + 1}'
+                  : (g.moving ? 'Rolling…' : '${current.name} is lining up…')),
           message: showMsg ? g.message : null,
         ),
       ]),
@@ -374,42 +422,82 @@ class _CoursePainter extends CustomPainter {
     final h = g.course;
     Offset o(Offset p) => p * s;
     // Striped mown grass with a darker border.
-    canvas.drawRect(Offset.zero & size, Paint()..color = const Color(0xFF2E7D32));
+    canvas.drawRect(
+        Offset.zero & size, Paint()..color = const Color(0xFF2E7D32));
     for (var i = 0; i < 12; i++) {
-      if (i.isEven) canvas.drawRect(Rect.fromLTWH(0, i * size.height / 12, size.width, size.height / 12), Paint()..color = const Color(0xFF388E3C));
+      if (i.isEven)
+        canvas.drawRect(
+            Rect.fromLTWH(
+                0, i * size.height / 12, size.width, size.height / 12),
+            Paint()..color = const Color(0xFF388E3C));
     }
-    canvas.drawRect(Offset.zero & size, Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 8
-      ..color = const Color(0xFF5D4037));
+    canvas.drawRect(
+        Offset.zero & size,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 8
+          ..color = const Color(0xFF5D4037));
     for (final r in h.sand) {
-      canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTRB(r.left * s, r.top * s, r.right * s, r.bottom * s), Radius.circular(s * 0.05)), Paint()..color = const Color(0xFFE6C98A));
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              Rect.fromLTRB(r.left * s, r.top * s, r.right * s, r.bottom * s),
+              Radius.circular(s * 0.05)),
+          Paint()..color = const Color(0xFFE6C98A));
       final dots = Random(r.left.hashCode);
       for (var i = 0; i < 25; i++) {
-        canvas.drawCircle(Offset((r.left + dots.nextDouble() * r.width) * s, (r.top + dots.nextDouble() * r.height) * s), 1.2, Paint()..color = const Color(0xFFC8A96A));
+        canvas.drawCircle(
+            Offset((r.left + dots.nextDouble() * r.width) * s,
+                (r.top + dots.nextDouble() * r.height) * s),
+            1.2,
+            Paint()..color = const Color(0xFFC8A96A));
       }
     }
     for (final r in h.walls) {
-      final rect = Rect.fromLTRB(r.left * s, r.top * s, r.right * s, r.bottom * s);
-      canvas.drawRRect(RRect.fromRectAndRadius(rect.shift(const Offset(2, 3)), const Radius.circular(4)), Paint()..color = Colors.black26);
-      canvas.drawRRect(RRect.fromRectAndRadius(rect, const Radius.circular(4)), Paint()..shader = const LinearGradient(colors: [Color(0xFFA1887F), Color(0xFF6D4C41)], begin: Alignment.topLeft, end: Alignment.bottomRight).createShader(rect));
-      canvas.drawRRect(RRect.fromRectAndRadius(rect.deflate(1.5), const Radius.circular(3)), Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5
-        ..color = const Color(0x55FFE0B2));
+      final rect =
+          Rect.fromLTRB(r.left * s, r.top * s, r.right * s, r.bottom * s);
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              rect.shift(const Offset(2, 3)), const Radius.circular(4)),
+          Paint()..color = Colors.black26);
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(rect, const Radius.circular(4)),
+          Paint()
+            ..shader = const LinearGradient(
+                    colors: [Color(0xFFA1887F), Color(0xFF6D4C41)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight)
+                .createShader(rect));
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(rect.deflate(1.5), const Radius.circular(3)),
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.5
+            ..color = const Color(0x55FFE0B2));
     }
     // Tee box, cup and flag.
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromCenter(center: o(h.tee), width: s * 0.12, height: s * 0.07), const Radius.circular(6)), Paint()..color = Colors.white12);
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromCenter(
+                center: o(h.tee), width: s * 0.12, height: s * 0.07),
+            const Radius.circular(6)),
+        Paint()..color = Colors.white12);
     final cup = o(h.cup);
-    canvas.drawCircle(cup, GolfLogic.cupR * s, Paint()..color = const Color(0xFF111111));
-    canvas.drawCircle(cup, GolfLogic.cupR * s, Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..color = Colors.white54);
+    canvas.drawCircle(
+        cup, GolfLogic.cupR * s, Paint()..color = const Color(0xFF111111));
+    canvas.drawCircle(
+        cup,
+        GolfLogic.cupR * s,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = Colors.white54);
     final wave = sin(g.now / 250) * 3;
-    canvas.drawLine(cup, cup - Offset(0, s * 0.13), Paint()
-      ..color = Colors.white
-      ..strokeWidth = 2.5);
+    canvas.drawLine(
+        cup,
+        cup - Offset(0, s * 0.13),
+        Paint()
+          ..color = Colors.white
+          ..strokeWidth = 2.5);
     canvas.drawPath(
         Path()
           ..moveTo(cup.dx, cup.dy - s * 0.13)
@@ -423,16 +511,35 @@ class _CoursePainter extends CustomPainter {
       final (a, p) = aim!;
       final dir = Offset(cos(a), sin(a));
       for (var i = 1; i <= 10; i++) {
-        canvas.drawCircle(ball + dir * (i * p * s * 0.045), 2.5 + p * 1.5, Paint()..color = Color.lerp(Colors.white, const Color(0xFFFF5252), p)!.withValues(alpha: 1 - i / 12));
+        canvas.drawCircle(
+            ball + dir * (i * p * s * 0.045),
+            2.5 + p * 1.5,
+            Paint()
+              ..color = Color.lerp(Colors.white, const Color(0xFFFF5252), p)!
+                  .withValues(alpha: 1 - i / 12));
       }
-      canvas.drawCircle(ball, GolfLogic.ballR * s * 2.2, Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2
-        ..color = colour);
+      canvas.drawCircle(
+          ball,
+          GolfLogic.ballR * s * 2.2,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2
+            ..color = colour);
     }
     if (g.sunkAt == null || g.now - g.sunkAt! < 200) {
-      canvas.drawCircle(ball + const Offset(1.5, 2), GolfLogic.ballR * s, Paint()..color = Colors.black38);
-      canvas.drawCircle(ball, GolfLogic.ballR * s, Paint()..shader = RadialGradient(center: const Alignment(-0.4, -0.4), colors: [Colors.white, colour.withValues(alpha: 0.5)]).createShader(Rect.fromCircle(center: ball, radius: GolfLogic.ballR * s)));
+      canvas.drawCircle(ball + const Offset(1.5, 2), GolfLogic.ballR * s,
+          Paint()..color = Colors.black38);
+      canvas.drawCircle(
+          ball,
+          GolfLogic.ballR * s,
+          Paint()
+            ..shader = RadialGradient(
+                center: const Alignment(-0.4, -0.4),
+                colors: [
+                  Colors.white,
+                  colour.withValues(alpha: 0.5)
+                ]).createShader(
+                Rect.fromCircle(center: ball, radius: GolfLogic.ballR * s)));
     }
   }
 

@@ -5,15 +5,26 @@ import '../shell/local_game_info.dart';
 import '../shell/ticking_play.dart';
 
 const wouldRatherPrompts = [
-  'Never use social media again|Never watch movies again', 'Eat only biryani forever|Eat only pizza forever', //
-  'Be able to fly|Be invisible', 'Live without music|Live without movies', 'Always be 10 minutes late|Always be 20 minutes early', //
-  'Have unlimited data|Have unlimited money for food', 'Talk to animals|Speak every language', 'Go to the mountains|Go to the beach', //
-  'Be a famous singer|Be a famous cricketer', 'Never feel cold|Never feel hot', 'Read minds|See the future', //
-  'Give up chai|Give up coffee', 'Have no exams ever|Have no homework ever', 'Live in a big city|Live in a quiet village', //
-  'Be the funniest person in the room|Be the smartest person in the room', 'Travel to the past|Travel to the future', //
-  'Have a pet dragon|Have a pet unicorn', 'Win the lottery|Live twice as long', 'Only whisper|Only shout', //
-  'Lose your phone|Lose your wallet', 'Be a superhero|Be a wizard', 'Eat spicy food forever|Eat sweet food forever', //
-  'Watch only cartoons|Watch only news', 'Have a rewind button|Have a pause button for life', 'Sleep 4 hours and feel great|Sleep 12 hours always',
+  'Never use social media again|Never watch movies again',
+  'Eat only biryani forever|Eat only pizza forever', //
+  'Be able to fly|Be invisible', 'Live without music|Live without movies',
+  'Always be 10 minutes late|Always be 20 minutes early', //
+  'Have unlimited data|Have unlimited money for food',
+  'Talk to animals|Speak every language',
+  'Go to the mountains|Go to the beach', //
+  'Be a famous singer|Be a famous cricketer', 'Never feel cold|Never feel hot',
+  'Read minds|See the future', //
+  'Give up chai|Give up coffee', 'Have no exams ever|Have no homework ever',
+  'Live in a big city|Live in a quiet village', //
+  'Be the funniest person in the room|Be the smartest person in the room',
+  'Travel to the past|Travel to the future', //
+  'Have a pet dragon|Have a pet unicorn', 'Win the lottery|Live twice as long',
+  'Only whisper|Only shout', //
+  'Lose your phone|Lose your wallet', 'Be a superhero|Be a wizard',
+  'Eat spicy food forever|Eat sweet food forever', //
+  'Watch only cartoons|Watch only news',
+  'Have a rewind button|Have a pause button for life',
+  'Sleep 4 hours and feel great|Sleep 12 hours always',
 ];
 
 final wouldRatherInfo = LocalGameInfo(
@@ -38,6 +49,13 @@ final wouldRatherInfo = LocalGameInfo(
   ),
 );
 
-PromptVoteLogic _create(int n) => PromptVoteLogic(mode: VoteMode.wouldRather, players: n, prompts: wouldRatherPrompts);
-Widget _view(BuildContext context, PromptVoteLogic g, List<GpPlayer> players, int? me) =>
-    PromptVoteView(players: players, g: g, me: me, title: 'Would You Rather', color: const Color(0xFF00B894));
+PromptVoteLogic _create(int n) => PromptVoteLogic(
+    mode: VoteMode.wouldRather, players: n, prompts: wouldRatherPrompts);
+Widget _view(BuildContext context, PromptVoteLogic g, List<GpPlayer> players,
+        int? me) =>
+    PromptVoteView(
+        players: players,
+        g: g,
+        me: me,
+        title: 'Would You Rather',
+        color: const Color(0xFF00B894));

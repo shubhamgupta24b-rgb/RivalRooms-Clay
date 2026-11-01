@@ -6,7 +6,7 @@ const { MemoryRoomStore } = require('./RoomStore');
 
 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 // Games the app no longer offers in rooms; never picked for party mode.
-const NOT_IN_ROOMS = new Set(['guess_person']);
+const NOT_IN_ROOMS = new Set(['guess_person', 'crush_it', 'fruit_duel', 'snake_duel', 'penalty', 'classic_snake']);
 
 class RoomManager extends EventEmitter {
   constructor({ store = new MemoryRoomStore(), graceMs = 60000 } = {}) {
@@ -39,9 +39,9 @@ class RoomManager extends EventEmitter {
     const game = registry.get(gameType);
     if (!game) throw new GameError('INVALID_PAYLOAD', 'unknown gameType');
     // The room size is independent of the game: the host can switch games in the lobby.
-    if (![2, 3, 4, 5, 6].includes(maxPlayers)) throw new GameError('INVALID_PAYLOAD', 'maxPlayers must be 2 to 6');
+    if (!Number.isInteger(maxPlayers) || maxPlayers < 2 || maxPlayers > 10) throw new GameError('INVALID_PAYLOAD', 'maxPlayers must be 2 to 10');
     const code = this._code();
-    const room = { code, gameType, maxPlayers, hostId: user.userId, status: 'lobby', players: [], game: null, seqs: {}, party: null, createdAt: Date.now() };
+    const room = { code, gameType, maxPlayers, hostId: user.userId, status: 'lobby', players: [], game: null, seqs: Object.create(null), party: null, createdAt: Date.now() };
     room.players.push({ ...user, ready: true, connected: true });
     this.store.set(code, room);
     this.userRoom.set(user.userId, code);
@@ -62,7 +62,7 @@ class RoomManager extends EventEmitter {
       const best = open.filter(r => r.players.length === most);
       return this.joinRoom(user, best[crypto.randomInt(best.length)].code);
     }
-    const pool = registry.list().filter(g => g.implemented && !NOT_IN_ROOMS.has(g.id) && g.minPlayers <= 2).map(g => g.id);
+    const pool = registry.list().filter(g => g.implemented && !g.optIn && !NOT_IN_ROOMS.has(g.id) && g.minPlayers <= 2).map(g => g.id);
     const room = this.createRoom(user, { gameType: gameType ?? pool[crypto.randomInt(pool.length)], maxPlayers: 6 });
     room.isPublic = true;
     return room;
@@ -97,15 +97,19 @@ class RoomManager extends EventEmitter {
       room.hostId = (room.players.find(p => p.connected) || room.players[0]).userId;
       room.players.find(p => p.userId === room.hostId).ready = true;
     }
-    if (room.status !== 'lobby' && room.players.length < 2) {
+    // Plugins keep a fixed roster and have no safe participant-removal/migration contract.
+    // Nitro snapshots omit velocities, cooldowns and other Rapier state: transferring
+    // its host would restart/diverge the simulation, not resume the existing match.
+    if (room.status === 'playing' || (room.status === 'finished' && room.players.length < 2)) {
       this._toLobby(room);
+      room.party = null;
       this.emit('game_aborted', room.code);
     }
     this._changed(room);
   }
 
   _toLobby(room) {
-    room.status = 'lobby'; room.game = null; room.seqs = {};
+    room.status = 'lobby'; room.game = null; room.seqs = Object.create(null);
     // Players who just played stay ready, so the host can go straight into the next game.
     for (const p of room.players) p.ready = p.userId === room.hostId || (p.ready && p.connected);
   }
@@ -136,7 +140,7 @@ class RoomManager extends EventEmitter {
     if (room.status !== 'lobby') throw new GameError('BAD_PHASE');
     if (!Number.isInteger(count) || count < 2 || count > 10) throw new GameError('INVALID_PAYLOAD');
     if (room.players.length < 2) throw new GameError('NOT_ENOUGH_PLAYERS');
-    const pool = this._fits(room);
+    const pool = this._fits(room).filter(id => !registry.get(id).optIn); // opt-in games only when picked
     for (let i = pool.length - 1; i > 0; i--) { const j = crypto.randomInt(i + 1); [pool[i], pool[j]] = [pool[j], pool[i]]; }
     const games = pool.slice(0, Math.min(count, pool.length));
     const prevType = room.gameType;
@@ -162,13 +166,13 @@ class RoomManager extends EventEmitter {
     }
     const game = registry.get(next);
     if (!game || !game.implemented || NOT_IN_ROOMS.has(next)) throw new GameError('INVALID_PAYLOAD', 'unknown gameType');
-    this._toLobby(room);
-    for (const p of room.players) if (p.connected) p.ready = true;
-    const prevType = room.gameType;
+    const players = room.players.map(p => ({ ...p, ready: p.connected ? true : p.ready }));
+    const state = this._createGame({ ...room, status: 'lobby', gameType: next, players });
+    room.players = players;
     room.gameType = next;
-    try {
-      this.startGame(userId);
-    } catch (e) { room.gameType = prevType; this._changed(room); throw e; }
+    room.game = state;
+    room.seqs = Object.create(null);
+    room.status = 'playing';
     if (party) party.index++;
     this._changed(room);
     return room;
@@ -209,32 +213,45 @@ class RoomManager extends EventEmitter {
     const room = this._mustRoom(userId);
     if (room.hostId !== userId) throw new GameError('NOT_HOST');
     if (room.status !== 'lobby') throw new GameError('BAD_PHASE');
+    const state = this._createGame(room);
+    room.game = state;
+    room.status = 'playing';
+    room.seqs = Object.create(null);
+    this._changed(room);
+    return room;
+  }
+
+  _createGame(room) {
     const game = registry.get(room.gameType);
-    if (!game.implemented) throw new GameError('GAME_NOT_AVAILABLE');
+    if (!game || !game.implemented) throw new GameError('GAME_NOT_AVAILABLE');
     if (room.players.length < Math.max(2, game.minPlayers)) throw new GameError('NOT_ENOUGH_PLAYERS');
     if (room.players.length > game.maxPlayers) throw new GameError('TOO_MANY_PLAYERS');
     if (!room.players.every(p => p.ready && p.connected)) throw new GameError('PLAYERS_NOT_READY');
-    room.status = 'playing';
-    room.game = game.create(room);
-    room.seqs = {};
-    this._changed(room);
-    return room;
+    return game.create(room);
   }
 
   gameAction(userId, { type, payload, seq }) {
     const room = this._mustRoom(userId);
     if (room.status !== 'playing') throw new GameError('BAD_PHASE');
+    if (typeof type !== 'string' || type.length > 40 || !Number.isSafeInteger(seq) || seq < 0
+      || (payload !== undefined && (typeof payload !== 'object' || payload === null || Array.isArray(payload)))) {
+      throw new GameError('INVALID_PAYLOAD');
+    }
     if ((room.seqs[userId] ?? -1) >= seq) throw new GameError('DUPLICATE_ACTION');
-    room.seqs[userId] = seq;
     const game = registry.get(room.gameType);
     const response = game.onAction(room.game, userId, { type, payload }, Date.now());   // throws GameError if invalid
+    room.seqs[userId] = seq;
     let result = null;
     if (game.isFinished(room.game)) {
       room.status = 'finished';
       result = this._ended(room, game.getResult(room.game));
     }
-    this._changed(room);
-    this.emit('game_updated', room.code, result);
+    // Nitro inputs are pulled by the host on its next snapshot, without echoing
+    // the full room and game to every player for each steering update.
+    if (result || !response?.silent) {
+      this._changed(room);
+      this.emit('game_updated', room.code, result);
+    }
     return { room, result, response };
   }
 
@@ -265,10 +282,16 @@ class RoomManager extends EventEmitter {
   markDisconnected(userId) {
     const room = this.roomOf(userId);
     if (!room) return;
-    room.players.find(p => p.userId === userId).connected = false;
+    const player = room.players.find(p => p.userId === userId);
+    if (!player.connected) return;
+    player.connected = false;
     this.emit('player_disconnected', room.code, userId);
     this._changed(room);
-    const t = setTimeout(() => { this.timers.delete(userId); this._removePlayer(userId); }, this.graceMs);
+    const t = setTimeout(() => {
+      if (this.timers.get(userId) !== t) return;
+      this.timers.delete(userId);
+      if (this.roomOf(userId) === room && !player.connected) this._removePlayer(userId);
+    }, this.graceMs);
     t.unref();
     this.timers.set(userId, t);
   }
@@ -281,6 +304,13 @@ class RoomManager extends EventEmitter {
     this.emit('player_reconnected', room.code, userId);
     this._changed(room);
     return room;
+  }
+
+  close() {
+    for (const timer of this.timers.values()) clearTimeout(timer);
+    this.timers.clear();
+    this.userRoom.clear();
+    for (const room of this.store.values()) this.store.delete(room.code);
   }
 
   publicRoom(room) {

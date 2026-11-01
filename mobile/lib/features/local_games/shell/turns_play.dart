@@ -15,7 +15,14 @@ class TurnsPlay extends StatefulWidget {
   final int durationMs;
   final void Function(List<int> scores) onFinished;
   final Random? random;
-  const TurnsPlay({super.key, required this.spec, required this.players, required this.botSeats, required this.durationMs, required this.onFinished, this.random});
+  const TurnsPlay(
+      {super.key,
+      required this.spec,
+      required this.players,
+      required this.botSeats,
+      required this.durationMs,
+      required this.onFinished,
+      this.random});
 
   @override
   State<TurnsPlay> createState() => _TurnsPlayState();
@@ -27,7 +34,8 @@ enum _Step { ready, playing, scored }
 class _TurnLength extends InheritedWidget {
   final int ms;
   const _TurnLength({required this.ms, required super.child});
-  static int? of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<_TurnLength>()?.ms;
+  static int? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_TurnLength>()?.ms;
   @override
   bool updateShouldNotify(_TurnLength old) => old.ms != ms;
 }
@@ -79,14 +87,19 @@ class _TurnsPlayState extends State<TurnsPlay> {
     return AnimatedSwitcher(
       duration: Motion.of(context, Motion.normal),
       child: switch (step) {
-        _Step.playing => _TurnLength(ms: widget.durationMs, child: KeyedSubtree(key: ValueKey('turn$index'), child: widget.spec.play(p, widget.durationMs, _done))),
+        _Step.playing => _TurnLength(
+            ms: widget.durationMs,
+            child: KeyedSubtree(
+                key: ValueKey('turn$index'),
+                child: widget.spec.play(p, widget.durationMs, _done))),
         // The hand-off card: only who's next and the scores so far, nothing from the last turn's screen.
         _Step.ready => _Card(
             key: ValueKey('ready$index'),
             player: p,
             title: index == 0 ? '${p.whose} TURN FIRST' : 'PASS THE PHONE TO',
             big: p.name,
-            line: '${_time(widget.durationMs)} on the whole screen. Everyone else, just watch!',
+            line:
+                '${_time(widget.durationMs)} on the whole screen. Everyone else, just watch!',
             button: 'START',
             onTap: () => setState(() => step = _Step.playing),
             scores: scores,
@@ -110,18 +123,25 @@ class _TurnsPlayState extends State<TurnsPlay> {
     );
   }
 
-  bool _hasNextPerson() => [for (var i = index + 1; i < widget.players.length; i++) i].any((i) => !widget.botSeats.contains(i));
+  bool _hasNextPerson() => [
+        for (var i = index + 1; i < widget.players.length; i++) i
+      ].any((i) => !widget.botSeats.contains(i));
 
   String _nextLine() {
     for (var i = index + 1; i < widget.players.length; i++) {
-      if (!widget.botSeats.contains(i)) return 'Next up: ${widget.players[i].name}';
+      if (!widget.botSeats.contains(i))
+        return 'Next up: ${widget.players[i].name}';
     }
-    return widget.botSeats.isEmpty ? 'That was the last turn!' : 'The computer plays its turns now.';
+    return widget.botSeats.isEmpty
+        ? 'That was the last turn!'
+        : 'The computer plays its turns now.';
   }
 
   static String _time(int ms) {
     final s = ms ~/ 1000;
-    return s % 60 == 0 ? '${s ~/ 60} min' : '${s ~/ 60}:${(s % 60).toString().padLeft(2, '0')}';
+    return s % 60 == 0
+        ? '${s ~/ 60} min'
+        : '${s ~/ 60}:${(s % 60).toString().padLeft(2, '0')}';
   }
 }
 
@@ -162,37 +182,61 @@ class _Card extends StatelessWidget {
                 constraints: const BoxConstraints(maxWidth: 460),
                 child: AppCard(
                   tint: c,
-                  padding: const EdgeInsets.fromLTRB(Space.xl, Space.xl, Space.xl, Space.l),
+                  padding: const EdgeInsets.fromLTRB(
+                      Space.xl, Space.xl, Space.xl, Space.l),
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                     Stack(clipBehavior: Clip.none, children: [
                       PlayerAvatar(name: player.name, color: c, size: 96),
-                      Positioned(right: -14, bottom: -6, child: ExcludeSemantics(child: GameIcon(scored ? GameIcons.star : GameIcons.forward, size: 34, color: Brand.gold))),
+                      Positioned(
+                          right: -14,
+                          bottom: -6,
+                          child: ExcludeSemantics(
+                              child: GameIcon(
+                                  scored ? GameIcons.star : GameIcons.forward,
+                                  size: 34,
+                                  color: Brand.gold))),
                     ]),
                     const SizedBox(height: Space.l),
-                    Text(title, textAlign: TextAlign.center, style: t.styles.label),
+                    Text(title,
+                        textAlign: TextAlign.center, style: t.styles.label),
                     const SizedBox(height: Space.xs),
                     Semantics(
                       liveRegion: true,
                       child: FittedBox(
-                        child: Text(big.toUpperCase(), style: (scored ? t.styles.scoreLarge : t.styles.display).copyWith(color: Color.lerp(c, Colors.white, 0.35), fontSize: scored ? 60 : 40)),
+                        child: Text(big.toUpperCase(),
+                            style: (scored
+                                    ? t.styles.scoreLarge
+                                    : t.styles.display)
+                                .copyWith(
+                                    color: Color.lerp(c, Colors.white, 0.35),
+                                    fontSize: scored ? 60 : 40)),
                       ),
                     ),
                     const SizedBox(height: Space.s),
-                    Text(line, textAlign: TextAlign.center, style: t.styles.body),
+                    Text(line,
+                        textAlign: TextAlign.center, style: t.styles.body),
                     const SizedBox(height: Space.xl),
-                    GpButton(button, icon: Icons.play_arrow_rounded, color: c, textColor: Colors.white, onPressed: onTap),
+                    GpButton(button,
+                        icon: Icons.play_arrow_rounded,
+                        color: c,
+                        textColor: Colors.white,
+                        onPressed: onTap),
                     const SizedBox(height: Space.xl),
                     // Scores so far.
-                    Wrap(alignment: WrapAlignment.center, spacing: Space.s, runSpacing: Space.s, children: [
-                      for (var i = 0; i < players.length; i++)
-                        PlayerChip(
-                          name: players[i].name,
-                          color: players[i].color,
-                          score: scores[i],
-                          suffix: scores[i] == null ? '—' : null,
-                          active: i == current,
-                        ),
-                    ]),
+                    Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: Space.s,
+                        runSpacing: Space.s,
+                        children: [
+                          for (var i = 0; i < players.length; i++)
+                            PlayerChip(
+                              name: players[i].name,
+                              color: players[i].color,
+                              score: scores[i],
+                              suffix: scores[i] == null ? '—' : null,
+                              active: i == current,
+                            ),
+                        ]),
                   ]),
                 ),
               ),
@@ -209,7 +253,11 @@ class TurnBar extends StatelessWidget {
   final GpPlayer player;
   final int score;
   final int secondsLeft;
-  const TurnBar({super.key, required this.player, required this.score, required this.secondsLeft});
+  const TurnBar(
+      {super.key,
+      required this.player,
+      required this.score,
+      required this.secondsLeft});
 
   @override
   Widget build(BuildContext context) {
@@ -220,13 +268,16 @@ class TurnBar extends StatelessWidget {
       child: Row(children: [
         const PauseButton(),
         const SizedBox(width: Space.xs),
-        Flexible(child: PlayerChip(name: player.name, color: player.color, active: true)),
+        Flexible(
+            child: PlayerChip(
+                name: player.name, color: player.color, active: true)),
         const Spacer(),
         Semantics(
           label: 'Score $score',
           excludeSemantics: true,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: Space.m, vertical: Space.xs),
+            padding: const EdgeInsets.symmetric(
+                horizontal: Space.m, vertical: Space.xs),
             decoration: Skin.pill(),
             child: Text('$score', style: t.styles.score),
           ),
@@ -234,7 +285,9 @@ class TurnBar extends StatelessWidget {
         const SizedBox(width: Space.s),
         TimerRing(
           fraction: secondsLeft / total,
-          label: secondsLeft >= 60 ? '${secondsLeft ~/ 60}:${(secondsLeft % 60).toString().padLeft(2, '0')}' : '$secondsLeft',
+          label: secondsLeft >= 60
+              ? '${secondsLeft ~/ 60}:${(secondsLeft % 60).toString().padLeft(2, '0')}'
+              : '$secondsLeft',
           urgent: secondsLeft <= 10,
           color: player.color,
           size: 46,

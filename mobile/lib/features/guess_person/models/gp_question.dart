@@ -6,7 +6,8 @@ class GpQuestion {
   final String prompt; // full question, e.g. "Does the person have glasses?"
   final bool Function(Person) test;
   final String category; // a GpCategory id
-  const GpQuestion(this.id, this.label, this.prompt, this.test, {this.category = 'other'});
+  const GpQuestion(this.id, this.label, this.prompt, this.test,
+      {this.category = 'other'});
 }
 
 /// A group of questions shown as one tile on the guessing screen.

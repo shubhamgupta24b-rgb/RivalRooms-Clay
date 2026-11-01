@@ -26,7 +26,12 @@ class WordTurnsLogic extends LocalGameLogic {
   late final List<int> score = List.filled(players, 0);
   int gotThisTurn = 0;
 
-  WordTurnsLogic({required this.players, required List<String> words, this.turnsEach = 2, this.turnMs = 60000, Random? random})
+  WordTurnsLogic(
+      {required this.players,
+      required List<String> words,
+      this.turnsEach = 2,
+      this.turnMs = 60000,
+      Random? random})
       : deck = [...words]..shuffle(random ?? Random());
 
   int get performer => turn % players;
@@ -84,10 +89,42 @@ class WordTurnsLogic extends LocalGameLogic {
 }
 
 /// Online support shared by the word-turn games: only the performer runs their turn.
-RelaySpec<WordTurnsLogic> wordTurnsRelay({required WordTurnsLogic Function(int players) create, required Widget Function(BuildContext, WordTurnsLogic, List<GpPlayer>, int me) view}) =>
+RelaySpec<WordTurnsLogic> wordTurnsRelay({
+  required WordTurnsLogic Function(int players) create,
+  required Widget Function(BuildContext, WordTurnsLogic, List<GpPlayer>, int me)
+      view,
+  bool actorOnly = false,
+  bool hideFromActor = false,
+}) =>
     RelaySpec<WordTurnsLogic>(
       create: create,
-      save: (g) => {'phase': g.phase.index, 'turn': g.turn, 'word': g.word, 'left': g.msLeft, 'score': g.score, 'got': g.gotThisTurn, 'deck': g.deck},
+      save: (g) => {
+        'phase': g.phase.index,
+        'turn': g.turn,
+        'word': g.word,
+        'left': g.msLeft,
+        'score': g.score,
+        'got': g.gotThisTurn,
+        'deck': g.deck
+      },
+      wire: (g) => {
+        'phase': g.phase.index,
+        'turn': g.turn,
+        'word': g.word,
+        'left': g.msLeft,
+        'score': g.score,
+        'got': g.gotThisTurn
+      },
+      views: (g) => [
+        for (var i = 0; i < g.players; i++)
+          (actorOnly
+                  ? i == g.performer
+                  : hideFromActor
+                      ? i != g.performer
+                      : true)
+              ? {'word': g.current}
+              : <String, dynamic>{},
+      ],
       load: (g, s, me) {
         g.phase = TurnPhase.values[asInt(s['phase'])];
         g.turn = asInt(s['turn']);
@@ -96,9 +133,18 @@ RelaySpec<WordTurnsLogic> wordTurnsRelay({required WordTurnsLogic Function(int p
         g.deadline = asInt(s['left']);
         g.score.setAll(0, ints(s['score']));
         g.gotThisTurn = asInt(s['got']);
-        g.deck
-          ..clear()
-          ..addAll((s['deck'] as List).cast<String>());
+        if (s['deck'] is List) {
+          g.deck
+            ..clear()
+            ..addAll((s['deck'] as List).cast<String>());
+        } else {
+          final seat = s['_seat'];
+          final secret = seat is Map ? seat['word'] as String? : null;
+          g.deck
+            ..clear()
+            ..add(secret ?? '');
+          g.word = 0;
+        }
       },
       apply: (g, from, name, a) {
         if (name == 'next') return g.next();
@@ -145,9 +191,11 @@ class WordTurnsView extends StatelessWidget {
     final p = players[g.performer];
     final seat = PlayerPalette.indexOf(p.color) ?? g.performer;
     final isPerformer = me == null || me == g.performer;
-    final turnLabel = 'Turn ${min(g.turn + 1, g.totalTurns)} of ${g.totalTurns}';
+    final turnLabel =
+        'Turn ${min(g.turn + 1, g.totalTurns)} of ${g.totalTurns}';
     final t = context.tk;
-    ResultScope.of(context)?.subtitle = '${g.totalTurns} turns of ${g.turnMs ~/ 1000} seconds';
+    ResultScope.of(context)?.subtitle =
+        '${g.totalTurns} turns of ${g.turnMs ~/ 1000} seconds';
     void got() {
       haptic(HapticWeight.medium);
       GameAudio.sfx('coin');
@@ -168,33 +216,54 @@ class WordTurnsView extends StatelessWidget {
         return PartyFrame(
           title: title,
           subtitle: turnLabel,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
                   child: Column(children: [
-                    PlayerBadge(index: seat, size: 72, color: p.color, initial: p.name),
+                    PlayerBadge(
+                        index: seat, size: 72, color: p.color, initial: p.name),
                     const SizedBox(height: 10),
-                    Text('${possessive(p.name)} turn', textAlign: TextAlign.center, style: t.styles.h1.copyWith(color: t.flat ? fillFor(p.color) : nameColor(p.color))),
+                    Text('${possessive(p.name)} turn',
+                        textAlign: TextAlign.center,
+                        style: t.styles.h1.copyWith(
+                            color: t.flat
+                                ? fillFor(p.color)
+                                : nameColor(p.color))),
                     const SizedBox(height: 14),
-                    PromptCard(header: isPerformer ? (performerSeesWord ? 'You act' : 'You guess') : 'Everyone else', text: isPerformer ? readyText : watchText, footer: '${g.turnMs ~/ 1000} seconds. Get as many as you can!', color: p.color),
+                    PromptCard(
+                        header: isPerformer
+                            ? (performerSeesWord ? 'You act' : 'You guess')
+                            : 'Everyone else',
+                        text: isPerformer ? readyText : watchText,
+                        footer:
+                            '${g.turnMs ~/ 1000} seconds. Get as many as you can!',
+                        color: p.color),
                   ]),
                 ),
               ),
             ),
             const SizedBox(height: 10),
-            if (isPerformer) GoldButton('Start turn', icon: GameIcons.play, height: 58, onPressed: g.start) else WaitingNote('Waiting for ${p.name} to start…'),
+            if (isPerformer)
+              GoldButton('Start turn',
+                  icon: GameIcons.play, height: 58, onPressed: g.start)
+            else
+              WaitingNote('Waiting for ${p.name} to start…'),
           ]),
         );
       case TurnPhase.playing:
         final showWord = me == null || (me == g.performer) == performerSeesWord;
-        final ring = _BigTimer(msLeft: g.msLeft, totalMs: g.turnMs, got: g.gotThisTurn);
+        final ring =
+            _BigTimer(msLeft: g.msLeft, totalMs: g.turnMs, got: g.gotThisTurn);
         final Widget middle;
         if (!showWord) {
           middle = Column(mainAxisSize: MainAxisSize.min, children: [
             ring,
             const SizedBox(height: 14),
-            Text(isPerformer ? 'Listen to the clues and guess!' : watchText, textAlign: TextAlign.center, style: t.styles.h3.copyWith(color: t.onBg)),
+            Text(isPerformer ? 'Listen to the clues and guess!' : watchText,
+                textAlign: TextAlign.center,
+                style: t.styles.h3.copyWith(color: t.onBg)),
           ]);
         } else if (performerSeesWord) {
           middle = Column(mainAxisSize: MainAxisSize.min, children: [
@@ -206,22 +275,39 @@ class WordTurnsView extends StatelessWidget {
           middle = _WordCard(word: g.current, color: color);
         }
         final buttons = Row(children: [
-          Expanded(child: KitButton('Skip', icon: GameIcons.skip, style: KitButtonStyle.soft, height: 58, onPressed: skip)),
+          Expanded(
+              child: KitButton('Skip',
+                  icon: GameIcons.skip,
+                  style: KitButtonStyle.soft,
+                  height: 58,
+                  onPressed: skip)),
           const SizedBox(width: 12),
-          Expanded(flex: 2, child: GoldButton('Got it', icon: GameIcons.check, height: 58, onPressed: got)),
+          Expanded(
+              flex: 2,
+              child: GoldButton('Got it',
+                  icon: GameIcons.check, height: 58, onPressed: got)),
         ]);
         return PartyFrame(
           title: '${p.name} · ${g.gotThisTurn} got',
           subtitle: turnLabel,
           trailing: TimeChip(g.msLeft),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Expanded(
               // Heads Up: tap the left side to skip, the right side when they got it.
               child: !performerSeesWord && showWord
                   ? Row(children: [
-                      _SideZone(label: 'Skip', color: const Color(0xFFFF8A1F), icon: GameIcons.skip, onTap: isPerformer ? skip : null),
+                      _SideZone(
+                          label: 'Skip',
+                          color: const Color(0xFFFF8A1F),
+                          icon: GameIcons.skip,
+                          onTap: isPerformer ? skip : null),
                       Expanded(child: middle),
-                      _SideZone(label: 'Got it', color: StatusColors.success, icon: GameIcons.check, onTap: isPerformer ? got : null),
+                      _SideZone(
+                          label: 'Got it',
+                          color: StatusColors.success,
+                          icon: GameIcons.check,
+                          onTap: isPerformer ? got : null),
                     ])
                   : Center(child: SingleChildScrollView(child: middle)),
             ),
@@ -234,12 +320,17 @@ class WordTurnsView extends StatelessWidget {
         return PartyFrame(
           title: 'Time\'s up!',
           subtitle: turnLabel,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
                   child: Column(children: [
-                    PromptCard(header: p.name, text: '${g.gotThisTurn} correct!', footer: g.gotThisTurn >= 5 ? 'On fire!' : 'Nice one!', color: p.color),
+                    PromptCard(
+                        header: p.name,
+                        text: '${g.gotThisTurn} correct!',
+                        footer: g.gotThisTurn >= 5 ? 'On fire!' : 'Nice one!',
+                        color: p.color),
                     const SizedBox(height: 14),
                     PlayerScoreRow(
                       count: players.length,
@@ -257,7 +348,11 @@ class WordTurnsView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            GoldButton(g.turn + 1 >= g.totalTurns ? 'See scores' : 'Next player', icon: GameIcons.forward, height: 58, onPressed: g.next),
+            GoldButton(
+                g.turn + 1 >= g.totalTurns ? 'See scores' : 'Next player',
+                icon: GameIcons.forward,
+                height: 58,
+                onPressed: g.next),
           ]),
         );
     }
@@ -267,7 +362,8 @@ class WordTurnsView extends StatelessWidget {
 /// A big ring timer with the seconds and the count got so far.
 class _BigTimer extends StatelessWidget {
   final int msLeft, totalMs, got;
-  const _BigTimer({required this.msLeft, required this.totalMs, required this.got});
+  const _BigTimer(
+      {required this.msLeft, required this.totalMs, required this.got});
   @override
   Widget build(BuildContext context) {
     final s = (msLeft / 1000).ceil();
@@ -279,11 +375,26 @@ class _BigTimer extends StatelessWidget {
         width: 170,
         height: 170,
         child: CustomPaint(
-          painter: _RingPainter(msLeft / totalMs, urgent ? StatusColors.danger : Brand.gold),
+          painter: _RingPainter(
+              msLeft / totalMs, urgent ? StatusColors.danger : Brand.gold),
           child: Center(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Text('$s', style: TextStyle(fontFamily: Fonts.display, fontSize: 64, height: 1, color: urgent ? StatusColors.danger : context.tk.onBg, fontFeatures: const [FontFeature.tabularFigures()])),
-              Text('$got GOT', style: TextStyle(fontFamily: Fonts.body, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: context.tk.flat ? FlatPalette.label : NeonPalette.label)),
+              Text('$s',
+                  style: TextStyle(
+                      fontFamily: Fonts.display,
+                      fontSize: 64,
+                      height: 1,
+                      color: urgent ? StatusColors.danger : context.tk.onBg,
+                      fontFeatures: const [FontFeature.tabularFigures()])),
+              Text('$got GOT',
+                  style: TextStyle(
+                      fontFamily: Fonts.body,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.4,
+                      color: context.tk.flat
+                          ? FlatPalette.label
+                          : NeonPalette.label)),
             ]),
           ),
         ),
@@ -299,15 +410,25 @@ class _RingPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final r = (Offset.zero & size).deflate(8);
-    canvas.drawArc(r, 0, 2 * pi, false, Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 12
-      ..color = Colors.white.withValues(alpha: 0.14));
-    canvas.drawArc(r, -pi / 2, 2 * pi * f.clamp(0, 1), false, Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 12
-      ..strokeCap = StrokeCap.round
-      ..color = color);
+    canvas.drawArc(
+        r,
+        0,
+        2 * pi,
+        false,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 12
+          ..color = Colors.white.withValues(alpha: 0.14));
+    canvas.drawArc(
+        r,
+        -pi / 2,
+        2 * pi * f.clamp(0, 1),
+        false,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 12
+          ..strokeCap = StrokeCap.round
+          ..color = color);
   }
 
   @override
@@ -339,24 +460,51 @@ class _ClapperboardState extends State<_Clapperboard> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 420),
           child: Container(
-            decoration: BoxDecoration(color: const Color(0xFF22212B), borderRadius: Radii.rButton, boxShadow: Shadows.large),
+            decoration: BoxDecoration(
+                color: const Color(0xFF22212B),
+                borderRadius: Radii.rButton,
+                boxShadow: Shadows.large),
             clipBehavior: Clip.antiAlias,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              SizedBox(height: 34, child: CustomPaint(painter: _ClapStripes(), size: const Size(double.infinity, 34))),
+              SizedBox(
+                  height: 34,
+                  child: CustomPaint(
+                      painter: _ClapStripes(),
+                      size: const Size(double.infinity, 34))),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 18, 16, 20),
                 child: Column(children: [
-                  const Text('THE MOVIE', style: TextStyle(fontFamily: Fonts.body, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.8, color: Color(0xFFE9C46A))),
+                  const Text('THE MOVIE',
+                      style: TextStyle(
+                          fontFamily: Fonts.body,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.8,
+                          color: Color(0xFFE9C46A))),
                   const SizedBox(height: 8),
                   AnimatedSwitcher(
                     duration: Motion.of(context, Motion.fast),
                     child: _peek
-                        ? Text(widget.word, key: const ValueKey('w'), textAlign: TextAlign.center, style: const TextStyle(fontFamily: Fonts.display, fontSize: 34, height: 1.1, color: Colors.white))
-                        : const Row(key: ValueKey('h'), mainAxisSize: MainAxisSize.min, children: [
-                            GameIcon(GameIcons.eye, size: 22),
-                            SizedBox(width: 8),
-                            Text('Hold to see', style: TextStyle(fontFamily: Fonts.display, fontSize: 26, color: Colors.white)),
-                          ]),
+                        ? Text(widget.word,
+                            key: const ValueKey('w'),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontFamily: Fonts.display,
+                                fontSize: 34,
+                                height: 1.1,
+                                color: Colors.white))
+                        : const Row(
+                            key: ValueKey('h'),
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                                GameIcon(GameIcons.eye, size: 22),
+                                SizedBox(width: 8),
+                                Text('Hold to see',
+                                    style: TextStyle(
+                                        fontFamily: Fonts.display,
+                                        fontSize: 26,
+                                        color: Colors.white)),
+                              ]),
                   ),
                 ]),
               ),
@@ -371,7 +519,8 @@ class _ClapperboardState extends State<_Clapperboard> {
 class _ClapStripes extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Offset.zero & size, Paint()..color = const Color(0xFF2E2C38));
+    canvas.drawRect(
+        Offset.zero & size, Paint()..color = const Color(0xFF2E2C38));
     final white = Paint()..color = Colors.white;
     for (var x = -size.height; x < size.width + size.height; x += 44) {
       canvas.drawPath(
@@ -405,7 +554,13 @@ class _WordCard extends StatelessWidget {
               padding: const EdgeInsets.all(14),
               child: FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text(word, textAlign: TextAlign.center, style: const TextStyle(fontFamily: Fonts.display, fontSize: 56, height: 1.05, color: Brand.onGold)),
+                child: Text(word,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontFamily: Fonts.display,
+                        fontSize: 56,
+                        height: 1.05,
+                        color: Brand.onGold)),
               ),
             ),
           ),
@@ -419,7 +574,11 @@ class _SideZone extends StatelessWidget {
   final Color color;
   final GameIcons icon;
   final VoidCallback? onTap;
-  const _SideZone({required this.label, required this.color, required this.icon, this.onTap});
+  const _SideZone(
+      {required this.label,
+      required this.color,
+      required this.icon,
+      this.onTap});
   @override
   Widget build(BuildContext context) => Semantics(
         button: onTap != null,
@@ -430,11 +589,24 @@ class _SideZone extends StatelessWidget {
           onTap: onTap,
           child: Container(
             width: 52,
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.16), borderRadius: Radii.rChip, border: Border.all(color: color.withValues(alpha: 0.7), width: 1.5)),
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.16),
+                borderRadius: Radii.rChip,
+                border: Border.all(
+                    color: color.withValues(alpha: 0.7), width: 1.5)),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               GameIcon(icon, size: 22, color: color),
               const SizedBox(height: 8),
-              RotatedBox(quarterTurns: 3, child: Text(label.toUpperCase(), style: TextStyle(fontFamily: Fonts.body, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 1.6, color: color))),
+              RotatedBox(
+                  quarterTurns: 3,
+                  child: Text(label.toUpperCase(),
+                      style: TextStyle(
+                          fontFamily: Fonts.body,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.6,
+                          color: color))),
             ]),
           ),
         ),

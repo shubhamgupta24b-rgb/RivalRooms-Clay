@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/ui/components.dart';
 import '../../guess_person/models/gp_player.dart';
-import '../shell/local_game_shell.dart' show PauseButton, HelpButton, LeaveGameScope;
+import '../shell/local_game_shell.dart'
+    show PauseButton, HelpButton, LeaveGameScope;
 
 /// Common layout for the party games: the game top bar (pause, title, state, help) and a body.
 class PartyFrame extends StatelessWidget {
@@ -9,15 +10,24 @@ class PartyFrame extends StatelessWidget {
   final String? subtitle;
   final Widget? trailing;
   final Widget child;
-  const PartyFrame({super.key, required this.title, this.subtitle, this.trailing, required this.child});
+  const PartyFrame(
+      {super.key,
+      required this.title,
+      this.subtitle,
+      this.trailing,
+      required this.child});
 
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.fromLTRB(Space.s, Space.xs, Space.s, Space.l),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           GameTopBar(title: title, subtitle: subtitle, trailing: trailing),
           const SizedBox(height: Space.m),
-          Expanded(child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.xs), child: child)),
+          Expanded(
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Space.xs),
+                  child: child)),
         ]),
       );
 }
@@ -30,12 +40,18 @@ class GameTopBar extends StatelessWidget {
   final String? subtitle;
   final Widget? trailing;
   final bool help;
-  const GameTopBar({super.key, required this.title, this.subtitle, this.trailing, this.help = true});
+  const GameTopBar(
+      {super.key,
+      required this.title,
+      this.subtitle,
+      this.trailing,
+      this.help = true});
 
   @override
   Widget build(BuildContext context) {
     final t = context.tk;
-    LeaveGameScope.stateOf(context)?.value = subtitle == null ? null : stripEmoji(subtitle!);
+    LeaveGameScope.stateOf(context)?.value =
+        subtitle == null ? null : stripEmoji(subtitle!);
     final label = stripEmoji(title).toUpperCase();
     return Row(children: [
       const PauseButton(),
@@ -44,10 +60,19 @@ class GameTopBar extends StatelessWidget {
         child: Semantics(
           header: true,
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: t.styles.label.copyWith(color: t.flat ? t.onBg : null)),
+            Text(label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: t.styles.label.copyWith(color: t.flat ? t.onBg : null)),
             if (subtitle != null) ...[
               const SizedBox(height: 2),
-              Text(stripEmoji(subtitle!), maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: t.styles.h3.copyWith(color: t.onBg, letterSpacing: 0.4, height: 1.1)),
+              Text(stripEmoji(subtitle!),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: t.styles.h3.copyWith(
+                      color: t.onBg, letterSpacing: 0.4, height: 1.1)),
             ],
           ]),
         ),
@@ -66,10 +91,18 @@ class PassAndReveal extends StatelessWidget {
   final GpPlayer player;
   final bool revealed;
   final VoidCallback onReveal;
-  final VoidCallback? onDone; // null: not yet (e.g. a choice must be made first)
+  final VoidCallback?
+      onDone; // null: not yet (e.g. a choice must be made first)
   final Widget secret;
   final String doneLabel;
-  const PassAndReveal({super.key, required this.player, required this.revealed, required this.onReveal, required this.onDone, required this.secret, this.doneLabel = 'Hide & pass'});
+  const PassAndReveal(
+      {super.key,
+      required this.player,
+      required this.revealed,
+      required this.onReveal,
+      required this.onDone,
+      required this.secret,
+      this.doneLabel = 'Hide & pass'});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +112,10 @@ class PassAndReveal extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: Space.l),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 440),
-            child: _Handoff(player: player, holdLabel: 'Hold to see your secret', onReveal: onReveal),
+            child: _Handoff(
+                player: player,
+                holdLabel: 'Hold to see your secret',
+                onReveal: onReveal),
           ),
         ),
       );
@@ -87,13 +123,16 @@ class PassAndReveal extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Expanded(child: Center(child: SingleChildScrollView(child: secret))),
       const SizedBox(height: Space.s),
-      GoldButton(sentenceCase(doneLabel), icon: GameIcons.eye, onPressed: onDone),
+      GoldButton(sentenceCase(doneLabel),
+          icon: GameIcons.eye, onPressed: onDone),
     ]);
   }
 }
 
 /// "GOT IT · HIDE & PASS" -> "Got it · hide & pass": buttons read in sentence case.
-String sentenceCase(String s) => s == s.toUpperCase() && s.length > 1 ? s[0] + s.substring(1).toLowerCase() : s;
+String sentenceCase(String s) => s == s.toUpperCase() && s.length > 1
+    ? s[0] + s.substring(1).toLowerCase()
+    : s;
 
 /// The hand-off itself: the next player's badge and name, the look-away note, the hold button.
 class _Handoff extends StatelessWidget {
@@ -101,7 +140,11 @@ class _Handoff extends StatelessWidget {
   final String holdLabel;
   final String note;
   final VoidCallback onReveal;
-  const _Handoff({required this.player, required this.holdLabel, required this.onReveal, this.note = 'Everyone else, look away!'});
+  const _Handoff(
+      {required this.player,
+      required this.holdLabel,
+      required this.onReveal,
+      this.note = 'Everyone else, look away!'});
 
   @override
   Widget build(BuildContext context) {
@@ -113,21 +156,31 @@ class _Handoff extends StatelessWidget {
         width: 132,
         height: 132,
         alignment: Alignment.center,
-        decoration: BoxDecoration(shape: BoxShape.circle, gradient: RadialGradient(colors: [c.withValues(alpha: 0.35), c.withValues(alpha: 0)])),
-        child: PlayerBadge(index: seat, size: 88, color: c, initial: player.name),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+                colors: [c.withValues(alpha: 0.35), c.withValues(alpha: 0)])),
+        child:
+            PlayerBadge(index: seat, size: 88, color: c, initial: player.name),
       ),
       const SizedBox(height: Space.s),
-      Text('PASS THE PHONE TO', style: t.styles.label.copyWith(color: t.flat ? t.onBg : null)),
+      Text('PASS THE PHONE TO',
+          style: t.styles.label.copyWith(color: t.flat ? t.onBg : null)),
       const SizedBox(height: 2),
       Semantics(
         liveRegion: true,
         child: FittedBox(
           fit: BoxFit.scaleDown,
-          child: Text(player.name, style: t.styles.h1.copyWith(color: t.flat ? fillFor(c) : nameColor(c))),
+          child: Text(player.name,
+              style: t.styles.h1
+                  .copyWith(color: t.flat ? fillFor(c) : nameColor(c))),
         ),
       ),
       const SizedBox(height: Space.xs),
-      Text(stripEmoji(note), textAlign: TextAlign.center, style: t.styles.body.copyWith(color: t.flat ? t.onBg : NeonPalette.textMuted)),
+      Text(stripEmoji(note),
+          textAlign: TextAlign.center,
+          style: t.styles.body
+              .copyWith(color: t.flat ? t.onBg : NeonPalette.textMuted)),
       const SizedBox(height: Space.xl),
       HoldToReveal(label: holdLabel, color: c, onRevealed: onReveal),
     ]);
@@ -141,24 +194,37 @@ class PassCover extends StatelessWidget {
   final VoidCallback onReveal;
   final String holdLabel;
   final String note;
-  const PassCover({super.key, required this.player, required this.onReveal, this.holdLabel = 'Hold to see your cards', this.note = 'Everyone else, look away!'});
+  const PassCover(
+      {super.key,
+      required this.player,
+      required this.onReveal,
+      this.holdLabel = 'Hold to see your cards',
+      this.note = 'Everyone else, look away!'});
 
   @override
   Widget build(BuildContext context) {
     final t = context.tk;
     return Positioned.fill(
       child: ColoredBox(
-        color: t.bgBottom, // fully opaque: nothing of the last player's screen shows through
+        color: t
+            .bgBottom, // fully opaque: nothing of the last player's screen shows through
         child: SafeArea(
           child: Column(children: [
-            const Padding(padding: EdgeInsets.fromLTRB(Space.s, Space.xs, Space.s, 0), child: Align(alignment: Alignment.centerLeft, child: PauseButton())),
+            const Padding(
+                padding: EdgeInsets.fromLTRB(Space.s, Space.xs, Space.s, 0),
+                child: Align(
+                    alignment: Alignment.centerLeft, child: PauseButton())),
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(Space.xl),
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 420),
-                    child: _Handoff(player: player, holdLabel: sentenceCase(holdLabel), note: note, onReveal: onReveal),
+                    child: _Handoff(
+                        player: player,
+                        holdLabel: sentenceCase(holdLabel),
+                        note: note,
+                        onReveal: onReveal),
                   ),
                 ),
               ),
@@ -177,19 +243,26 @@ class HoldToReveal extends StatefulWidget {
   final Color color;
   final VoidCallback onRevealed;
   final Duration hold;
-  const HoldToReveal({super.key, required this.label, required this.color, required this.onRevealed, this.hold = const Duration(milliseconds: 650)});
+  const HoldToReveal(
+      {super.key,
+      required this.label,
+      required this.color,
+      required this.onRevealed,
+      this.hold = const Duration(milliseconds: 650)});
   @override
   State<HoldToReveal> createState() => _HoldToRevealState();
 }
 
-class _HoldToRevealState extends State<HoldToReveal> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: widget.hold)
-    ..addStatusListener((s) {
-      if (s == AnimationStatus.completed) {
-        haptic(HapticWeight.medium);
-        widget.onRevealed();
-      }
-    });
+class _HoldToRevealState extends State<HoldToReveal>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: widget.hold)
+        ..addStatusListener((s) {
+          if (s == AnimationStatus.completed) {
+            haptic(HapticWeight.medium);
+            widget.onRevealed();
+          }
+        });
 
   @override
   void dispose() {
@@ -203,7 +276,8 @@ class _HoldToRevealState extends State<HoldToReveal> with SingleTickerProviderSt
   }
 
   void _cancel() {
-    if (_c.status != AnimationStatus.completed) _c.animateBack(0, duration: Motion.fast);
+    if (_c.status != AnimationStatus.completed)
+      _c.animateBack(0, duration: Motion.fast);
   }
 
   @override
@@ -212,7 +286,8 @@ class _HoldToRevealState extends State<HoldToReveal> with SingleTickerProviderSt
     final label = sentenceCase(widget.label);
     return Semantics(
       button: true,
-      label: label.replaceFirst(RegExp('^hold to', caseSensitive: false), 'Tap to'),
+      label: label.replaceFirst(
+          RegExp('^hold to', caseSensitive: false), 'Tap to'),
       hint: 'Shows your secret',
       onTap: widget.onRevealed,
       excludeSemantics: true,
@@ -225,19 +300,35 @@ class _HoldToRevealState extends State<HoldToReveal> with SingleTickerProviderSt
           builder: (_, __) => Container(
             height: 58,
             transform: Matrix4.translationValues(0, _c.value > 0 ? 3 : 0, 0),
-            decoration: BoxDecoration(borderRadius: Radii.rButton, boxShadow: Shadows.edge(Color.lerp(fill, Colors.black, 0.45)!, depth: _c.value > 0 ? 2 : 5)),
+            decoration: BoxDecoration(
+                borderRadius: Radii.rButton,
+                boxShadow: Shadows.edge(Color.lerp(fill, Colors.black, 0.45)!,
+                    depth: _c.value > 0 ? 2 : 5)),
             child: ClipRRect(
               borderRadius: Radii.rButton,
               child: Stack(alignment: Alignment.center, children: [
-                Positioned.fill(child: ColoredBox(color: Color.lerp(fill, Colors.black, 0.3)!)),
-                Positioned.fill(child: FractionallySizedBox(alignment: Alignment.centerLeft, widthFactor: _c.value, child: ColoredBox(color: fill))),
+                Positioned.fill(
+                    child: ColoredBox(
+                        color: Color.lerp(fill, Colors.black, 0.3)!)),
+                Positioned.fill(
+                    child: FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: _c.value,
+                        child: ColoredBox(color: fill))),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Space.l),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     const GameIcon(GameIcons.eye, size: 22),
                     const SizedBox(width: 10),
                     Flexible(
-                      child: Text(label, textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontFamily: Fonts.display, fontSize: 20, color: Colors.white)),
+                      child: Text(label,
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontFamily: Fonts.display,
+                              fontSize: 20,
+                              color: Colors.white)),
                     ),
                   ]),
                 ),
@@ -256,12 +347,21 @@ class _HoldToRevealState extends State<HoldToReveal> with SingleTickerProviderSt
 class PromptCard extends StatelessWidget {
   final String header;
   final String text;
-  final String? emoji; // drawn as its icon when there is one, otherwise left out
+  final String?
+      emoji; // drawn as its icon when there is one, otherwise left out
   final GameIcons? icon;
   final String? footer;
   final Color color;
   final bool dark;
-  const PromptCard({super.key, required this.header, required this.text, this.emoji, this.icon, this.footer, this.color = const Color(0xFF7B4DFF), this.dark = false});
+  const PromptCard(
+      {super.key,
+      required this.header,
+      required this.text,
+      this.emoji,
+      this.icon,
+      this.footer,
+      this.color = const Color(0xFF7B4DFF),
+      this.dark = false});
 
   @override
   Widget build(BuildContext context) {
@@ -275,30 +375,66 @@ class PromptCard extends StatelessWidget {
       curve: Motion.pop,
       builder: (_, s, child) => Transform.scale(scale: s, child: child),
       child: Semantics(
-        label: '${stripEmoji(header)}: ${stripEmoji(text)}${footer != null ? '. ${stripEmoji(footer!)}' : ''}',
+        label:
+            '${stripEmoji(header)}: ${stripEmoji(text)}${footer != null ? '. ${stripEmoji(footer!)}' : ''}',
         excludeSemantics: true,
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: dark ? const [Color(0xFF2A2350), Color(0xFF14102E)] : const [Color(0xFFFFFDF6), Color(0xFFF5E9D2)]),
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: dark
+                    ? const [Color(0xFF2A2350), Color(0xFF14102E)]
+                    : const [Color(0xFFFFFDF6), Color(0xFFF5E9D2)]),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: band, width: 3),
-            boxShadow: const [BoxShadow(color: Color(0x59000000), offset: Offset(0, 6), blurRadius: 14)],
+            boxShadow: const [
+              BoxShadow(
+                  color: Color(0x59000000),
+                  offset: Offset(0, 6),
+                  blurRadius: 14)
+            ],
           ),
-          padding: const EdgeInsets.fromLTRB(Space.l, Space.m, Space.l, Space.l),
+          padding:
+              const EdgeInsets.fromLTRB(Space.l, Space.m, Space.l, Space.l),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-              decoration: BoxDecoration(color: band, borderRadius: BorderRadius.circular(9)),
+              decoration: BoxDecoration(
+                  color: band, borderRadius: BorderRadius.circular(9)),
               child: Text(stripEmoji(header).toUpperCase(),
-                  textAlign: TextAlign.center, style: TextStyle(fontFamily: Fonts.body, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.6, color: onColor(band))),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: Fonts.body,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.6,
+                      color: onColor(band))),
             ),
             const SizedBox(height: Space.m),
-            if (icon != null) ...[GameIcon(icon, size: 56, color: dark ? Colors.white : band), const SizedBox(height: Space.s)],
-            Text(stripEmoji(text), textAlign: TextAlign.center, style: TextStyle(fontFamily: Fonts.display, fontSize: 30, height: 1.1, color: ink)),
+            if (icon != null) ...[
+              GameIcon(icon, size: 56, color: dark ? Colors.white : band),
+              const SizedBox(height: Space.s)
+            ],
+            Text(stripEmoji(text),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontFamily: Fonts.display,
+                    fontSize: 30,
+                    height: 1.1,
+                    color: ink)),
             if (footer != null) ...[
               const SizedBox(height: Space.s),
-              Text(stripEmoji(footer!), textAlign: TextAlign.center, style: TextStyle(fontFamily: Fonts.body, color: dark ? NeonPalette.textMuted : FlatPalette.inkMuted, fontWeight: FontWeight.w800, fontSize: 13.5, height: 1.3)),
+              Text(stripEmoji(footer!),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: Fonts.body,
+                      color:
+                          dark ? NeonPalette.textMuted : FlatPalette.inkMuted,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13.5,
+                      height: 1.3)),
             ],
           ]),
         ),
@@ -317,14 +453,25 @@ class PlayerPicker extends StatelessWidget {
   final int? highlight;
   final void Function(int index)? onPick;
   final Map<int, String> notes;
-  const PlayerPicker({super.key, required this.players, this.disabled = const {}, this.counts = const {}, this.highlight, this.onPick, this.notes = const {}});
+  const PlayerPicker(
+      {super.key,
+      required this.players,
+      this.disabled = const {},
+      this.counts = const {},
+      this.highlight,
+      this.onPick,
+      this.notes = const {}});
 
   @override
   Widget build(BuildContext context) {
     final t = context.tk;
-    return Wrap(alignment: WrapAlignment.center, spacing: Space.s, runSpacing: Space.m, children: [
-      for (var i = 0; i < players.length; i++) _chip(context, t, i),
-    ]);
+    return Wrap(
+        alignment: WrapAlignment.center,
+        spacing: Space.s,
+        runSpacing: Space.m,
+        children: [
+          for (var i = 0; i < players.length; i++) _chip(context, t, i),
+        ]);
   }
 
   Widget _chip(BuildContext context, GameTokens t, int i) {
@@ -332,12 +479,14 @@ class PlayerPicker extends StatelessWidget {
     final picked = highlight == i;
     final off = disabled.contains(i);
     final seat = PlayerPalette.indexOf(p.color) ?? i;
-    final ink = picked ? onColor(fillFor(p.color)) : (t.flat ? t.text : Colors.white);
+    final ink =
+        picked ? onColor(fillFor(p.color)) : (t.flat ? t.text : Colors.white);
     return Semantics(
       button: onPick != null && !off,
       enabled: !off,
       selected: picked,
-      label: '${p.name}${notes[i] != null ? ', ${notes[i]}' : ''}${(counts[i] ?? 0) > 0 ? ', ${counts[i]} votes' : ''}',
+      label:
+          '${p.name}${notes[i] != null ? ', ${notes[i]}' : ''}${(counts[i] ?? 0) > 0 ? ', ${counts[i]} votes' : ''}',
       excludeSemantics: true,
       child: GestureDetector(
         onTap: onPick == null || off
@@ -357,13 +506,36 @@ class PlayerPicker extends StatelessWidget {
                 width: 96,
                 constraints: const BoxConstraints(minHeight: 96),
                 padding: const EdgeInsets.fromLTRB(6, Space.m, 6, Space.s),
-                decoration: Skin.surface(tint: picked ? fillFor(p.color) : p.color, ring: picked ? Colors.white : p.color.withValues(alpha: 0.8), radius: Radii.button, depth: picked ? 1 : 0.7),
+                decoration: Skin.surface(
+                    tint: picked ? fillFor(p.color) : p.color,
+                    ring:
+                        picked ? Colors.white : p.color.withValues(alpha: 0.8),
+                    radius: Radii.button,
+                    depth: picked ? 1 : 0.7),
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  PlayerBadge(index: seat, size: 40, color: p.color, initial: p.name),
+                  PlayerBadge(
+                      index: seat, size: 40, color: p.color, initial: p.name),
                   const SizedBox(height: 6),
-                  Text(p.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.body, color: ink, fontWeight: FontWeight.w900, fontSize: 13)),
+                  Text(p.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontFamily: Fonts.body,
+                          color: ink,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 13)),
                   if (notes[i] != null)
-                    Text(notes[i]!, maxLines: 1, style: TextStyle(fontFamily: Fonts.body, color: picked ? ink : (t.flat ? t.textMuted : NeonPalette.textMuted), fontWeight: FontWeight.w900, fontSize: 11)),
+                    Text(notes[i]!,
+                        maxLines: 1,
+                        style: TextStyle(
+                            fontFamily: Fonts.body,
+                            color: picked
+                                ? ink
+                                : (t.flat
+                                    ? t.textMuted
+                                    : NeonPalette.textMuted),
+                            fontWeight: FontWeight.w900,
+                            fontSize: 11)),
                 ]),
               ),
               if (picked)
@@ -374,8 +546,12 @@ class PlayerPicker extends StatelessWidget {
                     width: 24,
                     height: 24,
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: fillFor(p.color), width: 2)),
-                    child: GameIcon(GameIcons.check, size: 14, color: fillFor(p.color)),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: fillFor(p.color), width: 2)),
+                    child: GameIcon(GameIcons.check,
+                        size: 14, color: fillFor(p.color)),
                   ),
                 ),
               if ((counts[i] ?? 0) > 0)
@@ -386,8 +562,15 @@ class PlayerPicker extends StatelessWidget {
                     width: 26,
                     height: 26,
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(color: fillFor(t.danger), shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)),
-                    child: Text('${counts[i]}', style: const TextStyle(fontFamily: Fonts.display, color: Colors.white, fontSize: 14)),
+                    decoration: BoxDecoration(
+                        color: fillFor(t.danger),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2)),
+                    child: Text('${counts[i]}',
+                        style: const TextStyle(
+                            fontFamily: Fonts.display,
+                            color: Colors.white,
+                            fontSize: 14)),
                   ),
                 ),
             ]),
@@ -407,14 +590,16 @@ class TimeChip extends StatelessWidget {
     final t = context.tk;
     final s = (msLeft / 1000).ceil();
     final urgent = s <= 10;
-    final text = s >= 60 ? '${s ~/ 60}:${(s % 60).toString().padLeft(2, '0')}' : '${s}s';
+    final text =
+        s >= 60 ? '${s ~/ 60}:${(s % 60).toString().padLeft(2, '0')}' : '${s}s';
     final ink = urgent ? Colors.white : (t.flat ? t.text : Colors.white);
     return Semantics(
       label: '$s seconds left',
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.fromLTRB(8, 4, 10, 4),
-        decoration: Skin.pill(color: urgent ? fillFor(t.danger) : NeonPalette.overlay),
+        decoration:
+            Skin.pill(color: urgent ? fillFor(t.danger) : NeonPalette.overlay),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           GameIcon(GameIcons.clock, size: 16, color: ink),
           const SizedBox(width: 5),
@@ -436,9 +621,17 @@ class WaitingNote extends StatelessWidget {
       child: Semantics(
         liveRegion: true,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          SizedBox(width: 34, height: 34, child: CircularProgressIndicator(color: Brand.gold, strokeWidth: 3.5, backgroundColor: Brand.gold.withValues(alpha: 0.18))),
+          SizedBox(
+              width: 34,
+              height: 34,
+              child: CircularProgressIndicator(
+                  color: Brand.gold,
+                  strokeWidth: 3.5,
+                  backgroundColor: Brand.gold.withValues(alpha: 0.18))),
           const SizedBox(height: Space.m),
-          Text(stripEmoji(text), textAlign: TextAlign.center, style: t.styles.h3.copyWith(color: t.onBg)),
+          Text(stripEmoji(text),
+              textAlign: TextAlign.center,
+              style: t.styles.h3.copyWith(color: t.onBg)),
         ]),
       ),
     );
@@ -453,6 +646,7 @@ int voteWinner(List<int?> votes) {
   }
   if (tally.isEmpty) return -1;
   final best = tally.values.reduce((a, b) => a > b ? a : b);
-  final top = tally.entries.where((e) => e.value == best).map((e) => e.key).toList();
+  final top =
+      tally.entries.where((e) => e.value == best).map((e) => e.key).toList();
   return top.length == 1 ? top.single : -1; // tie: nobody
 }

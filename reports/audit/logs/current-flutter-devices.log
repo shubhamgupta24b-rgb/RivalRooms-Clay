@@ -1,0 +1,14 @@
+COMMAND: "C:/Program Files/Git/usr/bin/bash.exe" C:/Users/sg857/Downloads/flutter/flutter/bin/flutter devices --device-timeout 20
+STARTED_UTC: 2026-10-30T11:24:31.579214+00:00
+Found 3 connected devices:
+  Windows (desktop) • windows • windows-x64    • Microsoft Windows [Version 10.0.26300.9711]
+  Chrome (web)      • chrome  • web-javascript • Google Chrome 156.0.8078.48
+  Edge (web)        • edge    • web-javascript • Microsoft Edge 156.0.4314.50
+
+Run "flutter emulators" to list and start any available device emulators.
+
+If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. Visit https://flutter.dev/setup/ for troubleshooting tips.
+
+EXIT_CODE: 0
+TIMED_OUT: False
+FINISHED_UTC: 2026-10-30T11:24:34.697380+00:00

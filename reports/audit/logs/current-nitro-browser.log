@@ -1,0 +1,14 @@
+Command: node test/nitro_asset_smoke.cjs "C:/Program Files/Google/Chrome/Application/chrome.exe"
+UTC 2026-10-30T11:52:51.354Z | v22.20.0 | win32/x64 | Chrome/156.0.8078.48 | 15.6.75.19
+Scope: real bundled engine from file URLs; desktop headless Chrome/SwiftShader. One host page plus one guest page per seat count; CDP relays messages locally. No Flutter WebView, Socket.IO, device, network, or performance claim.
+SHA256 e495743bc40815e7956d3d0d1c6e306f102e1152a9a0d2e9044e68ad65bf83d9 assets/nitro/index.html
+SHA256 d9b75578f95029a517a3379c388d95c8ec5030332da7e96c280a2b205d85314a assets/nitro/assets/index-CejRMBG2.js
+SHA256 4bd0e39387d5e6a6b7975180fb1e8d5f08d7d57a61f41703c0aad84e25333b78 assets/nitro/assets/index-CiJwpIAO.css
+PASS file assets: offline 1 human + 7 named bots, 8-kart physics, start/pause/resume, result bridge
+PASS 2 human seats: exact host/guest names+order, no bot filling; guest seat 1 keyboard input applied, planar movement 0.511 m; 16 backend-valid live frames; knockout; terminal time=0/over=1 before finish; host finish and guest terminal scores=[0,1]
+PASS 4 human seats: exact host/guest names+order, no bot filling; guest seat 3 keyboard input applied, planar movement 0.577 m; 15 backend-valid live frames; knockout; terminal time=0/over=1 before finish; host finish and guest terminal scores=[0,1,0,0]
+PASS 8 human seats: exact host/guest names+order, no bot filling; guest seat 7 keyboard input applied, planar movement 0.511 m; 15 backend-valid live frames; knockout; terminal time=0/over=1 before finish; host finish and guest terminal scores=[0,1,0,0,0,0,0,0]
+PASS 10 human seats: exact host/guest names+order, no bot filling; guest seat 9 keyboard input applied, planar movement 1.397 m; 17 backend-valid live frames; knockout; terminal time=0/over=1 before finish; host finish and guest terminal scores=[0,1,0,0,0,0,0,0,0,0]
+PASS all requested rosters [2,4,8,10]. Matches deliberately ended through the existing debug API, not full 90-second endurance runs.
+
+Exit code: 0; elapsed seconds: 19.30

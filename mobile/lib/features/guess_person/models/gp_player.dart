@@ -15,5 +15,9 @@ class GpPlayer {
 /// has a shape (PlayerPalette.shapes) so players are never told apart by colour alone.
 const gpPlayerColors = PlayerPalette.colors;
 
-List<GpPlayer> defaultPlayers([int count = 2]) =>
-    [for (var i = 0; i < count; i++) GpPlayer(name: 'Player ${i + 1}', color: gpPlayerColors[i % gpPlayerColors.length])];
+List<GpPlayer> defaultPlayers([int count = 2]) => [
+      for (var i = 0; i < count; i++)
+        GpPlayer(
+            name: 'Player ${i + 1}',
+            color: gpPlayerColors[i % gpPlayerColors.length])
+    ];

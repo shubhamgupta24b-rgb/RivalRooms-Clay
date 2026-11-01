@@ -10,7 +10,8 @@ class GameSessionManager extends ChangeNotifier {
   late final StreamSubscription<SocketEvent> _sub;
   Map<String, dynamic>? state;
   Map<String, dynamic>? result;
-  int _offsetMs = 0; // serverTime - localTime, to render server countdowns accurately
+  int _offsetMs =
+      0; // serverTime - localTime, to render server countdowns accurately
   int _seq = 0;
 
   GameSessionManager(this._socket) {
@@ -28,7 +29,8 @@ class GameSessionManager extends ChangeNotifier {
       case 'game_state':
         state = Map<String, dynamic>.from(e.data as Map);
         final sn = state!['serverNow'];
-        if (sn is num) _offsetMs = sn.toInt() - DateTime.now().millisecondsSinceEpoch;
+        if (sn is num)
+          _offsetMs = sn.toInt() - DateTime.now().millisecondsSinceEpoch;
         notifyListeners();
       case 'game_finished':
         result = Map<String, dynamic>.from(e.data as Map);
@@ -37,10 +39,12 @@ class GameSessionManager extends ChangeNotifier {
   }
 
   /// Returns the server ack: {ok, response?} or {ok:false, error}.
-  Future<Map<String, dynamic>> action(String type, Map<String, dynamic> payload) {
+  Future<Map<String, dynamic>> action(
+      String type, Map<String, dynamic> payload) {
     // Time-based, strictly increasing: stays valid even if the app restarts mid-game.
     _seq = max(_seq + 1, DateTime.now().millisecondsSinceEpoch);
-    return _socket.request('game_action', {'type': type, 'payload': payload, 'seq': _seq});
+    return _socket.request(
+        'game_action', {'type': type, 'payload': payload, 'seq': _seq});
   }
 
   @override

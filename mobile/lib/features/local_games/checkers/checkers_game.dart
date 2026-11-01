@@ -14,7 +14,8 @@ import '../shell/ticking_play.dart';
 /// A move: from square, the squares landed on, and the pieces jumped.
 class CheckersMove {
   final int from;
-  final List<int> path; // landing squares in order (one for a step, several for a multi-jump)
+  final List<int>
+      path; // landing squares in order (one for a step, several for a multi-jump)
   final List<int> captured;
   const CheckersMove(this.from, this.path, this.captured);
   int get to => path.last;
@@ -49,19 +50,23 @@ class CheckersLogic extends LocalGameLogic {
     }
   }
 
-  static int ownerOf(int piece) => piece == 0 ? -1 : (piece == 1 || piece == 3 ? 0 : 1);
+  static int ownerOf(int piece) =>
+      piece == 0 ? -1 : (piece == 1 || piece == 3 ? 0 : 1);
   static bool isKing(int piece) => piece >= 3;
   int pieces(int player) => board.where((x) => ownerOf(x) == player).length;
 
   List<(int, int)> _dirs(int piece) {
     if (isKing(piece)) return const [(-1, -1), (-1, 1), (1, -1), (1, 1)];
-    return ownerOf(piece) == 0 ? const [(-1, -1), (-1, 1)] : const [(1, -1), (1, 1)];
+    return ownerOf(piece) == 0
+        ? const [(-1, -1), (-1, 1)]
+        : const [(1, -1), (1, 1)];
   }
 
   bool _on(int r, int c) => r >= 0 && r < 8 && c >= 0 && c < 8;
 
   /// Every multi-jump from [sq] for [piece], given the pieces already [taken].
-  List<CheckersMove> _jumps(int start, int sq, int piece, List<int> path, List<int> taken) {
+  List<CheckersMove> _jumps(
+      int start, int sq, int piece, List<int> path, List<int> taken) {
     final out = <CheckersMove>[];
     final r = sq ~/ 8, c = sq % 8;
     for (final (dr, dc) in _dirs(piece)) {
@@ -69,13 +74,17 @@ class CheckersLogic extends LocalGameLogic {
       if (!_on(lr, lc)) continue;
       final mid = mr * 8 + mc, land = lr * 8 + lc;
       final midPiece = board[mid];
-      if (ownerOf(midPiece) != 1 - ownerOf(piece) || taken.contains(mid)) continue;
+      if (ownerOf(midPiece) != 1 - ownerOf(piece) || taken.contains(mid))
+        continue;
       if (board[land] != 0 && land != start) continue;
       final nextPath = [...path, land], nextTaken = [...taken, mid];
       // A man that reaches the far row is crowned and the move ends there.
       final crowned = !isKing(piece) && (lr == 0 || lr == 7);
-      final more = crowned ? const <CheckersMove>[] : _jumps(start, land, piece, nextPath, nextTaken);
-      out.addAll(more.isEmpty ? [CheckersMove(start, nextPath, nextTaken)] : more);
+      final more = crowned
+          ? const <CheckersMove>[]
+          : _jumps(start, land, piece, nextPath, nextTaken);
+      out.addAll(
+          more.isEmpty ? [CheckersMove(start, nextPath, nextTaken)] : more);
     }
     return out;
   }
@@ -89,7 +98,8 @@ class CheckersLogic extends LocalGameLogic {
       jumps.addAll(_jumps(sq, sq, p, const [], const []));
       final r = sq ~/ 8, c = sq % 8;
       for (final (dr, dc) in _dirs(p)) {
-        if (_on(r + dr, c + dc) && board[(r + dr) * 8 + c + dc] == 0) steps.add(CheckersMove(sq, [(r + dr) * 8 + c + dc], const []));
+        if (_on(r + dr, c + dc) && board[(r + dr) * 8 + c + dc] == 0)
+          steps.add(CheckersMove(sq, [(r + dr) * 8 + c + dc], const []));
       }
     }
     return jumps.isNotEmpty ? jumps : steps;
@@ -99,7 +109,8 @@ class CheckersLogic extends LocalGameLogic {
 
   @override
   bool get finished => draw || legal.isEmpty;
-  int? get winner => draw || !finished ? null : 1 - turn; // whoever can't move loses
+  int? get winner =>
+      draw || !finished ? null : 1 - turn; // whoever can't move loses
   @override
   List<int> get scores => [for (var p = 0; p < 2; p++) winner == p ? 1 : 0];
   @override
@@ -131,7 +142,9 @@ class CheckersLogic extends LocalGameLogic {
       board[c] = 0;
     }
     final row = m.to ~/ 8;
-    if (!isKing(piece) && ((ownerOf(piece) == 0 && row == 0) || (ownerOf(piece) == 1 && row == 7))) piece += 2;
+    if (!isKing(piece) &&
+        ((ownerOf(piece) == 0 && row == 0) ||
+            (ownerOf(piece) == 1 && row == 7))) piece += 2;
     board[m.to] = piece;
     quietMoves = m.captured.isEmpty ? quietMoves + 1 : 0;
     if (quietMoves >= drawAfter) draw = true;
@@ -157,10 +170,18 @@ CheckersMove checkersBotPick(CheckersLogic g, Random rng) {
     final r = row, c = m.to % 8;
     for (final (dr, dc) in const [(-1, -1), (-1, 1), (1, -1), (1, 1)]) {
       final ar = r + dr, ac = c + dc, br = r - dr, bc = c - dc;
-      if (ar < 0 || ar > 7 || ac < 0 || ac > 7 || br < 0 || br > 7 || bc < 0 || bc > 7) continue;
+      if (ar < 0 ||
+          ar > 7 ||
+          ac < 0 ||
+          ac > 7 ||
+          br < 0 ||
+          br > 7 ||
+          bc < 0 ||
+          bc > 7) continue;
       final attacker = g.board[ar * 8 + ac];
       final behind = br * 8 + bc;
-      if (CheckersLogic.ownerOf(attacker) == 1 - g.turn && (g.board[behind] == 0 || behind == m.from)) v -= 5;
+      if (CheckersLogic.ownerOf(attacker) == 1 - g.turn &&
+          (g.board[behind] == 0 || behind == m.from)) v -= 5;
     }
     if (c == 0 || c == 7) v += 1; // edges are safe
     return v;
@@ -185,7 +206,8 @@ final checkersInfo = LocalGameInfo(
   splitScreen: false,
   bot: botFor<CheckersLogic>((g, b, now) {
     if (g.finished || g.turn != b.seat) return;
-    if (!b.thinkFirst((g.turn, g.lastMove), now, 1300, 2000)) return; // slow enough to watch the previous move finish
+    if (!b.thinkFirst((g.turn, g.lastMove), now, 1300, 2000))
+      return; // slow enough to watch the previous move finish
     g.play(checkersBotPick(g, b.rng));
   }),
   online: RelaySpec<CheckersLogic>(
@@ -211,12 +233,15 @@ final checkersInfo = LocalGameInfo(
       g.moveNo = asInt(s['no']);
       g.lastPath = ints(s['path']);
       g.lastCaptured = ints(s['caps']);
-      g.selected = g.turn == me ? nInt(s['sel']) : null; // a picked piece is only shown to its player
+      g.selected = g.turn == me
+          ? nInt(s['sel'])
+          : null; // a picked piece is only shown to its player
     },
     apply: (g, from, name, a) {
       if (name == 'tap' && from == g.turn) g.tap(asInt(a[0]));
     },
-    view: (context, g, players, me) => _CheckersTable(g: g, players: players, flipped: me == 1),
+    view: (context, g, players, me) =>
+        _CheckersTable(g: g, players: players, flipped: me == 1),
   ),
   play: (players, onFinished) => TickingPlay<CheckersLogic>(
     create: () => CheckersLogic(),
@@ -229,7 +254,8 @@ class _CheckersTable extends StatelessWidget {
   final CheckersLogic g;
   final List<GpPlayer> players;
   final bool flipped; // online player 2 sees their own pieces at the bottom
-  const _CheckersTable({required this.g, required this.players, this.flipped = false});
+  const _CheckersTable(
+      {required this.g, required this.players, this.flipped = false});
 
   int get _kings => g.board.where(CheckersLogic.isKing).length;
 
@@ -238,16 +264,22 @@ class _CheckersTable extends StatelessWidget {
     final current = players[g.turn];
     final mustCapture = !g.finished && g.legal.first.captured.isNotEmpty;
     ResultScope.of(context)
-      ?..subtitle = g.draw ? 'Draw: 80 moves without a capture' : (g.winner == null ? null : '${g.pieces(g.winner!)} pieces left')
-      ..detail = (context, i) => _Captured(count: 12 - g.pieces(1 - i), color: players[1 - i].color);
+      ?..subtitle = g.draw
+          ? 'Draw: 80 moves without a capture'
+          : (g.winner == null ? null : '${g.pieces(g.winner!)} pieces left')
+      ..detail = (context, i) =>
+          _Captured(count: 12 - g.pieces(1 - i), color: players[1 - i].color);
     Widget card(int p) => PlayerScoreCard(
           seat: PlayerPalette.indexOf(players[p].color) ?? p,
           color: players[p].color,
           name: players[p].name,
           score: '${g.pieces(p)}',
           active: !g.finished && g.turn == p,
-          tag: !g.finished && g.turn == p ? (mustCapture ? 'MUST CAPTURE' : 'YOUR TURN') : null,
-          detail: _Captured(count: 12 - g.pieces(1 - p), color: players[1 - p].color),
+          tag: !g.finished && g.turn == p
+              ? (mustCapture ? 'MUST CAPTURE' : 'YOUR TURN')
+              : null,
+          detail: _Captured(
+              count: 12 - g.pieces(1 - p), color: players[1 - p].color),
         );
     // Player 2 sits at the far end: their card faces them (not when online: each phone is its own).
     final far = flipped ? 0 : 1, near = flipped ? 1 : 0;
@@ -256,9 +288,17 @@ class _CheckersTable extends StatelessWidget {
       onChange: (fx, before, now) {
         if (now.$1 == before.$1) return;
         if (now.$2 > before.$2) {
-          keyMoment(fx, 'KING!', sub: '${players[1 - g.turn].name} is crowned', sound: 'coin', confetti: true);
+          keyMoment(fx, 'KING!',
+              sub: '${players[1 - g.turn].name} is crowned',
+              sound: 'coin',
+              confetti: true);
         } else if (g.lastCaptured.length > 1) {
-          keyMoment(fx, '${g.lastCaptured.length == 2 ? 'DOUBLE' : 'MULTI'} JUMP!', sub: '${g.lastCaptured.length} pieces taken', sound: 'boom', buzz: HapticWeight.heavy, shake: true);
+          keyMoment(
+              fx, '${g.lastCaptured.length == 2 ? 'DOUBLE' : 'MULTI'} JUMP!',
+              sub: '${g.lastCaptured.length} pieces taken',
+              sound: 'boom',
+              buzz: HapticWeight.heavy,
+              shake: true);
         } else if (g.lastCaptured.isNotEmpty) {
           fx?.pop('CAPTURE!');
           GameAudio.sfx('hit');
@@ -270,17 +310,31 @@ class _CheckersTable extends StatelessWidget {
         child: Column(children: [
           GameTopBar(
             title: 'Checkers',
-            subtitle: g.draw ? 'Draw' : (g.finished ? '${players[g.winner!].name} wins' : (mustCapture ? '${current.name}: must capture' : '${possessive(current.name)} turn')),
+            subtitle: g.draw
+                ? 'Draw'
+                : (g.finished
+                    ? '${players[g.winner!].name} wins'
+                    : (mustCapture
+                        ? '${current.name}: must capture'
+                        : '${possessive(current.name)} turn')),
           ),
           const SizedBox(height: Space.s),
-          if (flipped) card(far) else RotatedBox(quarterTurns: 2, child: Padding(padding: const EdgeInsets.only(bottom: 10), child: card(far))),
+          if (flipped)
+            card(far)
+          else
+            RotatedBox(
+                quarterTurns: 2,
+                child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: card(far))),
           const SizedBox(height: Space.s),
           Expanded(
             child: Center(
               child: AspectRatio(
                 aspectRatio: 1,
                 child: Semantics(
-                  label: 'Checkers board. ${current.name} to move${mustCapture ? ', must capture' : ''}. ${players[0].name} ${g.pieces(0)} pieces, ${players[1].name} ${g.pieces(1)}.',
+                  label:
+                      'Checkers board. ${current.name} to move${mustCapture ? ', must capture' : ''}. ${players[0].name} ${g.pieces(0)} pieces, ${players[1].name} ${g.pieces(1)}.',
                   child: _Board(g: g, players: players, flipped: flipped),
                 ),
               ),
@@ -303,7 +357,16 @@ class _Captured extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
         height: 14,
         child: count == 0
-            ? Align(alignment: Alignment.centerLeft, child: Text('No captures yet', style: TextStyle(fontFamily: Fonts.body, fontSize: 11, fontWeight: FontWeight.w800, color: context.tk.flat ? FlatPalette.inkMuted : NeonPalette.label)))
+            ? Align(
+                alignment: Alignment.centerLeft,
+                child: Text('No captures yet',
+                    style: TextStyle(
+                        fontFamily: Fonts.body,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: context.tk.flat
+                            ? FlatPalette.inkMuted
+                            : NeonPalette.label)))
             : Stack(children: [
                 for (var i = 0; i < count; i++)
                   Positioned(
@@ -311,7 +374,16 @@ class _Captured extends StatelessWidget {
                     child: Container(
                       width: 14,
                       height: 14,
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: color, border: Border.all(color: Colors.white.withValues(alpha: 0.8), width: 1.2), boxShadow: const [BoxShadow(color: Color(0x66000000), offset: Offset(0, 1))]),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: color,
+                          border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.8),
+                              width: 1.2),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Color(0x66000000), offset: Offset(0, 1))
+                          ]),
                     ),
                   ),
               ]),
@@ -339,16 +411,23 @@ class _SquaresPainter extends CustomPainter {
       final sq = flipped ? 63 - i : i;
       final dark = (sq ~/ 8 + sq % 8).isOdd;
       final r = Rect.fromLTWH((i % 8) * cell, (i ~/ 8) * cell, cell, cell);
-      canvas.drawRect(r, Paint()..color = dark ? ((sq == from || sq == to) ? _lastSq : _darkSq) : _lightSq);
+      canvas.drawRect(
+          r,
+          Paint()
+            ..color = dark
+                ? ((sq == from || sq == to) ? _lastSq : _darkSq)
+                : _lightSq);
       for (var k = 1; k < 4; k++) {
         final y = r.top + r.height * k / 4 + sin(i + k) * 2;
-        canvas.drawLine(Offset(r.left, y), Offset(r.right, y + cos(i * 1.3 + k) * 2), grain);
+        canvas.drawLine(Offset(r.left, y),
+            Offset(r.right, y + cos(i * 1.3 + k) * 2), grain);
       }
     }
   }
 
   @override
-  bool shouldRepaint(_SquaresPainter old) => old.flipped != flipped || old.from != from || old.to != to;
+  bool shouldRepaint(_SquaresPainter old) =>
+      old.flipped != flipped || old.from != from || old.to != to;
 }
 
 /// A checker: a stacked disc with a darker side band, grooved rings on top and the
@@ -357,45 +436,85 @@ class _PiecePainter extends CustomPainter {
   final Color color;
   final int seat;
   final bool king, lifted, ring, mustCapture;
-  _PiecePainter(this.color, this.seat, {this.king = false, this.lifted = false, this.ring = false, this.mustCapture = false});
+  _PiecePainter(this.color, this.seat,
+      {this.king = false,
+      this.lifted = false,
+      this.ring = false,
+      this.mustCapture = false});
 
   @override
   void paint(Canvas canvas, Size size) {
     final c = size.center(Offset.zero);
     final r = size.width / 2;
     final lift = lifted ? r * 0.12 : 0.0;
-    canvas.drawOval(Rect.fromCenter(center: c + Offset(0, r * 0.22 + lift), width: r * 1.9 + lift, height: r * 1.5), Paint()
-      ..color = Color.fromRGBO(0, 0, 0, lifted ? 0.35 : 0.5)
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, lifted ? 5 : 2));
+    canvas.drawOval(
+        Rect.fromCenter(
+            center: c + Offset(0, r * 0.22 + lift),
+            width: r * 1.9 + lift,
+            height: r * 1.5),
+        Paint()
+          ..color = Color.fromRGBO(0, 0, 0, lifted ? 0.35 : 0.5)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, lifted ? 5 : 2));
     final top = c - Offset(0, r * 0.12 + lift);
-    canvas.drawCircle(top + Offset(0, r * 0.16), r * 0.88, Paint()..color = Color.lerp(color, Colors.black, 0.45)!); // side band
-    canvas.drawCircle(top, r * 0.88, Paint()..shader = RadialGradient(center: const Alignment(-0.3, -0.35), colors: [Color.lerp(color, Colors.white, 0.3)!, color, Color.lerp(color, Colors.black, 0.2)!]).createShader(Rect.fromCircle(center: top, radius: r)));
+    canvas.drawCircle(top + Offset(0, r * 0.16), r * 0.88,
+        Paint()..color = Color.lerp(color, Colors.black, 0.45)!); // side band
+    canvas.drawCircle(
+        top,
+        r * 0.88,
+        Paint()
+          ..shader =
+              RadialGradient(center: const Alignment(-0.3, -0.35), colors: [
+            Color.lerp(color, Colors.white, 0.3)!,
+            color,
+            Color.lerp(color, Colors.black, 0.2)!
+          ]).createShader(Rect.fromCircle(center: top, radius: r)));
     final groove = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = r * 0.05;
     for (final k in [0.7, 0.52]) {
-      canvas.drawCircle(top, r * k, groove..color = Color.lerp(color, Colors.black, 0.3)!.withValues(alpha: 0.7));
-      canvas.drawCircle(top + Offset(0, r * 0.03), r * k, groove..color = Colors.white.withValues(alpha: 0.25));
+      canvas.drawCircle(
+          top,
+          r * k,
+          groove
+            ..color =
+                Color.lerp(color, Colors.black, 0.3)!.withValues(alpha: 0.7));
+      canvas.drawCircle(top + Offset(0, r * 0.03), r * k,
+          groove..color = Colors.white.withValues(alpha: 0.25));
     }
     if (king) {
-      paintIcon(canvas, GameIcons.crownKing, Rect.fromCircle(center: top, radius: r * 0.5), color: Colors.white);
+      paintIcon(canvas, GameIcons.crownKing,
+          Rect.fromCircle(center: top, radius: r * 0.5),
+          color: Colors.white);
     } else {
       final m = r * 0.5;
       canvas.save();
       canvas.translate(top.dx - m / 2, top.dy - m / 2);
-      PlayerShapePainter(PlayerPalette.shape(seat), Colors.white.withValues(alpha: 0.5)).paint(canvas, Size(m, m));
+      PlayerShapePainter(
+              PlayerPalette.shape(seat), Colors.white.withValues(alpha: 0.5))
+          .paint(canvas, Size(m, m));
       canvas.restore();
     }
     if (ring || lifted || mustCapture) {
-      canvas.drawCircle(top, r * 0.92, Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = lifted ? r * 0.14 : r * 0.08
-        ..color = lifted || mustCapture ? Brand.gold : Colors.white.withValues(alpha: 0.85));
+      canvas.drawCircle(
+          top,
+          r * 0.92,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = lifted ? r * 0.14 : r * 0.08
+            ..color = lifted || mustCapture
+                ? Brand.gold
+                : Colors.white.withValues(alpha: 0.85));
     }
   }
 
   @override
-  bool shouldRepaint(_PiecePainter o) => o.color != color || o.king != king || o.lifted != lifted || o.ring != ring || o.mustCapture != mustCapture || o.seat != seat;
+  bool shouldRepaint(_PiecePainter o) =>
+      o.color != color ||
+      o.king != king ||
+      o.lifted != lifted ||
+      o.ring != ring ||
+      o.mustCapture != mustCapture ||
+      o.seat != seat;
 }
 
 /// The board. Pieces sit in a layer above the squares so a move can be shown: the piece
@@ -461,7 +580,12 @@ class _BoardState extends State<_Board> {
     _maybeAnimate();
     final legal = g.finished ? const <CheckersMove>[] : g.legal;
     final movable = {for (final m in legal) m.from};
-    final targets = g.selected == null ? const <int>{} : {for (final m in legal) if (m.from == g.selected) m.to};
+    final targets = g.selected == null
+        ? const <int>{}
+        : {
+            for (final m in legal)
+              if (m.from == g.selected) m.to
+          };
     final showing = _step != null && g.lastMove != null;
     final from = g.lastMove?.$1, to = g.lastMove?.$2;
 
@@ -476,7 +600,10 @@ class _BoardState extends State<_Board> {
             padding: EdgeInsets.all(cell * 0.06),
             child: CustomPaint(
               painter: _PiecePainter(col, PlayerPalette.indexOf(col) ?? owner,
-                  king: CheckersLogic.isKing(value), lifted: selected, ring: canMove, mustCapture: canMove && capturing && !selected),
+                  king: CheckersLogic.isKing(value),
+                  lifted: selected,
+                  ring: canMove,
+                  mustCapture: canMove && capturing && !selected),
             ),
           );
         }
@@ -484,7 +611,8 @@ class _BoardState extends State<_Board> {
         final pieces = <Widget>[];
         for (var sq = 0; sq < 64; sq++) {
           final v = g.board[sq];
-          if (v == 0 || (showing && sq == to)) continue; // the moving piece is drawn on its way
+          if (v == 0 || (showing && sq == to))
+            continue; // the moving piece is drawn on its way
           final at = _cell(sq, cell);
           pieces.add(Positioned(
             key: ValueKey('p$sq'),
@@ -492,7 +620,11 @@ class _BoardState extends State<_Board> {
             top: at.dy,
             width: cell,
             height: cell,
-            child: IgnorePointer(child: piece(v, selected: g.selected == sq, canMove: movable.contains(sq) && CheckersLogic.ownerOf(v) == g.turn)),
+            child: IgnorePointer(
+                child: piece(v,
+                    selected: g.selected == sq,
+                    canMove: movable.contains(sq) &&
+                        CheckersLogic.ownerOf(v) == g.turn)),
           ));
         }
         if (showing) {
@@ -515,7 +647,9 @@ class _BoardState extends State<_Board> {
               ),
             ));
           }
-          final where = _step == 0 ? from! : g.lastPath[min(_step!, g.lastPath.length) - 1];
+          final where = _step == 0
+              ? from!
+              : g.lastPath[min(_step!, g.lastPath.length) - 1];
           final at = _cell(where, cell);
           pieces.add(AnimatedPositioned(
             key: const ValueKey('mover'),
@@ -530,7 +664,11 @@ class _BoardState extends State<_Board> {
         }
 
         return Stack(children: [
-          Positioned.fill(child: RepaintBoundary(child: CustomPaint(painter: _SquaresPainter(widget.flipped, showing ? null : from, showing ? null : to)))),
+          Positioned.fill(
+              child: RepaintBoundary(
+                  child: CustomPaint(
+                      painter: _SquaresPainter(widget.flipped,
+                          showing ? null : from, showing ? null : to)))),
           GridView.count(
             crossAxisCount: 8,
             physics: const NeverScrollableScrollPhysics(),
@@ -553,7 +691,12 @@ class _BoardState extends State<_Board> {
                                 decoration: BoxDecoration(
                                   color: Brand.gold.withValues(alpha: 0.75),
                                   shape: BoxShape.circle,
-                                  boxShadow: [BoxShadow(color: Brand.gold.withValues(alpha: 0.6), blurRadius: 8)],
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color:
+                                            Brand.gold.withValues(alpha: 0.6),
+                                        blurRadius: 8)
+                                  ],
                                 ),
                               ),
                             )

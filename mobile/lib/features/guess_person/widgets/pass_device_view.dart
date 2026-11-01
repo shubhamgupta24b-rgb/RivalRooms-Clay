@@ -11,7 +11,8 @@ class PassDeviceView extends StatelessWidget {
   final String message;
   final String buttonLabel;
   final VoidCallback onReady;
-  final IconData icon; // kept for callers; the hand-off shows the player's badge
+  final IconData
+      icon; // kept for callers; the hand-off shows the player's badge
   const PassDeviceView({
     super.key,
     required this.title,
@@ -30,23 +31,61 @@ class PassDeviceView extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 440),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Text(stripEmoji(title), textAlign: TextAlign.center, style: const TextStyle(fontFamily: Fonts.body, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 1.8, color: Brand.gold)),
+            Text(stripEmoji(title),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontFamily: Fonts.body,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.8,
+                    color: Brand.gold)),
             const SizedBox(height: 14),
             Container(
               width: 132,
               height: 132,
               alignment: Alignment.center,
-              decoration: BoxDecoration(shape: BoxShape.circle, gradient: RadialGradient(colors: [to.color.withValues(alpha: 0.35), to.color.withValues(alpha: 0)])),
-              child: PlayerBadge(index: PlayerPalette.indexOf(to.color) ?? 0, size: 88, color: to.color, initial: to.name),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(colors: [
+                    to.color.withValues(alpha: 0.35),
+                    to.color.withValues(alpha: 0)
+                  ])),
+              child: PlayerBadge(
+                  index: PlayerPalette.indexOf(to.color) ?? 0,
+                  size: 88,
+                  color: to.color,
+                  initial: to.name),
             ),
             const SizedBox(height: 8),
-            const Text('PASS THE PHONE TO', style: TextStyle(fontFamily: Fonts.body, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.76, color: NeonPalette.label)),
+            const Text('PASS THE PHONE TO',
+                style: TextStyle(
+                    fontFamily: Fonts.body,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.76,
+                    color: NeonPalette.label)),
             const SizedBox(height: 2),
-            Semantics(liveRegion: true, child: FittedBox(fit: BoxFit.scaleDown, child: Text(to.name, style: TextStyle(fontFamily: Fonts.display, fontSize: 38, color: nameColor(to.color))))),
+            Semantics(
+                liveRegion: true,
+                child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(to.name,
+                        style: TextStyle(
+                            fontFamily: Fonts.display,
+                            fontSize: 38,
+                            color: nameColor(to.color))))),
             const SizedBox(height: 8),
-            Text(message, textAlign: TextAlign.center, style: const TextStyle(fontFamily: Fonts.body, color: NeonPalette.textMuted, fontWeight: FontWeight.w800, fontSize: 15)),
+            Text(message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontFamily: Fonts.body,
+                    color: NeonPalette.textMuted,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15)),
             const SizedBox(height: 28),
-            SizedBox(width: double.infinity, child: GpButton(buttonLabel, onPressed: onReady)),
+            SizedBox(
+                width: double.infinity,
+                child: GpButton(buttonLabel, onPressed: onReady)),
           ]),
         ),
       ),

@@ -17,11 +17,20 @@ enum SpyPhase { reveal, discuss, vote, spyGuess, result, done }
 class FindSpyLogic extends LocalGameLogic {
   static const discussMs = 180000;
   static const places = [
-    ('Beach', '🏖️'), ('School', '🏫'), ('Hospital', '🏥'), ('Airport', '✈️'), ('Cinema', '🎬'), ('Restaurant', '🍽️'), //
-    ('Space Station', '🚀'), ('Cricket Stadium', '🏏'), ('Railway Station', '🚉'), ('Wedding', '💒'), ('Bank', '🏦'), ('Zoo', '🦁'), //
-    ('Hostel', '🛏️'), ('Temple', '🛕'), ('Shopping Mall', '🛍️'), ('Police Station', '🚓'), ('Pirate Ship', '🏴‍☠️'), ('Submarine', '🌊'), //
-    ('Circus', '🎪'), ('Gym', '🏋️'), ('Library', '📚'), ('Hotel', '🏨'), ('Vegetable Market', '🧺'), ('Office', '💼'), //
-    ('Farm', '🚜'), ('Museum', '🏛️'), ('Concert', '🎤'), ('Hill Station', '⛰️'), ('Metro', '🚇'), ('College Canteen', '🍛'),
+    ('Beach', '🏖️'), ('School', '🏫'), ('Hospital', '🏥'), ('Airport', '✈️'),
+    ('Cinema', '🎬'), ('Restaurant', '🍽️'), //
+    ('Space Station', '🚀'),
+    ('Cricket Stadium', '🏏'),
+    ('Railway Station', '🚉'),
+    ('Wedding', '💒'),
+    ('Bank', '🏦'),
+    ('Zoo', '🦁'), //
+    ('Hostel', '🛏️'), ('Temple', '🛕'), ('Shopping Mall', '🛍️'),
+    ('Police Station', '🚓'), ('Pirate Ship', '🏴‍☠️'), ('Submarine', '🌊'), //
+    ('Circus', '🎪'), ('Gym', '🏋️'), ('Library', '📚'), ('Hotel', '🏨'),
+    ('Vegetable Market', '🧺'), ('Office', '💼'), //
+    ('Farm', '🚜'), ('Museum', '🏛️'), ('Concert', '🎤'),
+    ('Hill Station', '⛰️'), ('Metro', '🚇'), ('College Canteen', '🍛'),
   ];
 
   final int players;
@@ -41,19 +50,30 @@ class FindSpyLogic extends LocalGameLogic {
   FindSpyLogic({this.players = 3, Random? random}) : _rng = random ?? Random() {
     place = _rng.nextInt(places.length);
     spy = _rng.nextInt(players);
-    final others = [for (var i = 0; i < places.length; i++) if (i != place) i]..shuffle(_rng);
+    final others = [
+      for (var i = 0; i < places.length; i++)
+        if (i != place) i
+    ]..shuffle(_rng);
     options = [place, ...others.take(7)]..shuffle(_rng);
   }
 
   /// Next player to see their card when passing one phone round.
-  int get revealTurn => [for (var i = 0; i < players; i++) if (!seen.contains(i)) i].firstOrNull ?? 0;
+  int get revealTurn =>
+      [
+        for (var i = 0; i < players; i++)
+          if (!seen.contains(i)) i
+      ].firstOrNull ??
+      0;
   int get msLeft => max(0, deadline - now);
   int get votesIn => votes.where((v) => v != null).length;
 
   @override
   bool get finished => phase == SpyPhase.done;
   @override
-  List<int> get scores => [for (var i = 0; i < players; i++) spyWins ? (i == spy ? 2 : 0) : (i == spy ? 0 : 1)];
+  List<int> get scores => [
+        for (var i = 0; i < players; i++)
+          spyWins ? (i == spy ? 2 : 0) : (i == spy ? 0 : 1)
+      ];
 
   @override
   void update(int elapsedMs) {
@@ -92,7 +112,11 @@ class FindSpyLogic extends LocalGameLogic {
   /// Online: everyone votes; the most-voted player is accused (a tie accuses nobody).
   void vote(int voter, int target) {
     if (forward('vote', [voter, target])) return;
-    if (phase != SpyPhase.vote || voter == target || target < 0 || target >= players) return;
+    if (phase != SpyPhase.vote ||
+        voter == target ||
+        target < 0 ||
+        target >= players ||
+        votes[voter] != null) return;
     votes[voter] = target;
     if (votesIn == players) {
       _resolve(voteWinner(votes));
@@ -148,13 +172,47 @@ final findSpyInfo = LocalGameInfo(
   online: RelaySpec<FindSpyLogic>(
     create: (n) => FindSpyLogic(players: n),
     save: (g) => {
-      'place': g.place, 'spy': g.spy, 'options': g.options, 'phase': g.phase.index, 'seen': g.seen.toList(), //
-      'left': g.msLeft, 'votes': g.votes, 'accused': g.accused, 'guess': g.spyGuess, 'spyWins': g.spyWins,
+      'place': g.place, 'spy': g.spy, 'options': g.options,
+      'phase': g.phase.index, 'seen': g.seen.toList(), //
+      'left': g.msLeft, 'votes': g.votes, 'accused': g.accused,
+      'guess': g.spyGuess, 'spyWins': g.spyWins,
     },
+    wire: (g) {
+      final open = g.phase.index >= SpyPhase.result.index;
+      return {
+        if (open) 'place': g.place,
+        if (open) 'spy': g.spy,
+        if (open) 'options': g.options,
+        'phase': g.phase.index,
+        'seen': g.seen.toList(),
+        'left': g.msLeft,
+        'votes': g.votes,
+        'accused': g.accused,
+        'guess': g.spyGuess,
+        'spyWins': g.spyWins,
+      };
+    },
+    views: (g) => [
+      for (var i = 0; i < g.players; i++)
+        i == g.spy
+            ? {'spy': true, 'options': g.options}
+            : {'spy': false, 'place': g.place}
+    ],
     load: (g, s, me) {
-      g.place = asInt(s['place']);
-      g.spy = asInt(s['spy']);
-      g.options = ints(s['options']);
+      if (s['place'] != null) g.place = asInt(s['place']);
+      if (s['spy'] != null) g.spy = asInt(s['spy']);
+      if (s['options'] != null) g.options = ints(s['options']);
+      final seat = s['_seat'];
+      if (seat is Map && s['spy'] == null) {
+        if (seat['spy'] == true) {
+          g.spy = me;
+          g.place = -1;
+          if (seat['options'] != null) g.options = ints(seat['options']);
+        } else {
+          g.spy = -1;
+          if (seat['place'] != null) g.place = asInt(seat['place']);
+        }
+      }
       g.phase = SpyPhase.values[asInt(s['phase'])];
       g.seen
         ..clear()
@@ -189,7 +247,6 @@ final findSpyInfo = LocalGameInfo(
   ),
 );
 
-
 class _SpyView extends StatefulWidget {
   final List<GpPlayer> players;
   final FindSpyLogic g;
@@ -201,13 +258,19 @@ class _SpyView extends StatefulWidget {
 
 /// A drawn icon for each location (the logic keeps its emoji keys).
 const _placeIcons = [
-  GameIcons.sun, GameIcons.pencil, GameIcons.medical, GameIcons.arrowUp, GameIcons.clapper, GameIcons.cherry, //
-  GameIcons.rocket, GameIcons.bat, GameIcons.clock, GameIcons.heart, GameIcons.coin, GameIcons.rabbit, //
-  GameIcons.home, GameIcons.star, GameIcons.mysteryBox, GameIcons.shield, GameIcons.flag, GameIcons.drop, //
-  GameIcons.target, GameIcons.hammer, GameIcons.scroll, GameIcons.home, GameIcons.apple, GameIcons.pencil, //
-  GameIcons.pig, GameIcons.crown, GameIcons.sound, GameIcons.moon, GameIcons.arrowRight, GameIcons.cherry,
+  GameIcons.sun, GameIcons.pencil, GameIcons.medical, GameIcons.arrowUp,
+  GameIcons.clapper, GameIcons.cherry, //
+  GameIcons.rocket, GameIcons.bat, GameIcons.clock, GameIcons.heart,
+  GameIcons.coin, GameIcons.rabbit, //
+  GameIcons.home, GameIcons.star, GameIcons.mysteryBox, GameIcons.shield,
+  GameIcons.flag, GameIcons.drop, //
+  GameIcons.target, GameIcons.hammer, GameIcons.scroll, GameIcons.home,
+  GameIcons.apple, GameIcons.pencil, //
+  GameIcons.pig, GameIcons.crown, GameIcons.sound, GameIcons.moon,
+  GameIcons.arrowRight, GameIcons.cherry,
 ];
-GameIcons _placeIcon(int i) => i < _placeIcons.length ? _placeIcons[i] : GameIcons.flag;
+GameIcons _placeIcon(int i) =>
+    i < _placeIcons.length ? _placeIcons[i] : GameIcons.flag;
 
 /// A small location card: drawn icon and name on paper.
 class _PlaceChip extends StatelessWidget {
@@ -231,14 +294,29 @@ class _PlaceChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.fromLTRB(8, 6, 10, 6),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFFFFFDF6), Color(0xFFF5E9D2)]),
+            gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFFFFFDF6), Color(0xFFF5E9D2)]),
             borderRadius: Radii.rCard,
-            boxShadow: const [BoxShadow(color: Color(0x40000000), offset: Offset(0, 2), blurRadius: 3)],
+            boxShadow: const [
+              BoxShadow(
+                  color: Color(0x40000000), offset: Offset(0, 2), blurRadius: 3)
+            ],
           ),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            GameIcon(_placeIcon(place), size: onTap == null ? 16 : 22, color: const Color(0xFF7B4DFF)),
+            GameIcon(_placeIcon(place),
+                size: onTap == null ? 16 : 22, color: const Color(0xFF7B4DFF)),
             const SizedBox(width: 6),
-            Flexible(child: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.body, fontWeight: FontWeight.w900, fontSize: onTap == null ? 12.5 : 14, color: Brand.onGold))),
+            Flexible(
+                child: Text(name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontFamily: Fonts.body,
+                        fontWeight: FontWeight.w900,
+                        fontSize: onTap == null ? 12.5 : 14,
+                        color: Brand.onGold))),
           ]),
         ),
       ),
@@ -256,23 +334,47 @@ class _SpyViewState extends State<_SpyView> {
   List<int> get options => g.options;
 
   Widget _secret(int p) => p == spy
-      ? const PromptCard(header: 'You are the', text: 'SPY', icon: GameIcons.magnifier, dark: true, footer: "You don't know the location. Listen, blend in, and work out where you are!", color: Color(0xFFFF5E5B))
-      : PromptCard(header: 'Location', text: FindSpyLogic.places[place].$1, icon: _placeIcon(place), footer: 'One of you is the spy. Ask questions to find them, without giving the place away!');
+      ? const PromptCard(
+          header: 'You are the',
+          text: 'SPY',
+          icon: GameIcons.magnifier,
+          dark: true,
+          footer:
+              "You don't know the location. Listen, blend in, and work out where you are!",
+          color: Color(0xFFFF5E5B))
+      : PromptCard(
+          header: 'Location',
+          text: FindSpyLogic.places[place].$1,
+          icon: _placeIcon(place),
+          footer:
+              'One of you is the spy. Ask questions to find them, without giving the place away!');
 
   @override
   Widget build(BuildContext context) {
     final me = widget.me;
-    ResultScope.of(context)?.subtitle = g.phase.index >= SpyPhase.result.index ? (g.spyWins ? 'The spy wins' : 'The town wins') : null;
+    ResultScope.of(context)?.subtitle = g.phase.index >= SpyPhase.result.index
+        ? (g.spyWins ? 'The spy wins' : 'The town wins')
+        : null;
     final Widget view = _phase(context, me);
     return MomentWatcher<SpyPhase>(
       value: g.phase,
       onChange: (fx, _, now) {
-        if (now == SpyPhase.spyGuess) keyMoment(fx, 'SPY CAUGHT!', sub: '${players[spy].name} gets one last guess', sound: 'hit');
+        if (now == SpyPhase.spyGuess)
+          keyMoment(fx, 'SPY CAUGHT!',
+              sub: '${players[spy].name} gets one last guess', sound: 'hit');
         if (now == SpyPhase.result) {
           if (g.spyWins) {
-            keyMoment(fx, 'SPY WINS!', sub: g.accused == spy ? 'They guessed the place' : 'Nobody caught them', sound: 'lose', color: const Color(0xFFFF8E8B));
+            keyMoment(fx, 'SPY WINS!',
+                sub: g.accused == spy
+                    ? 'They guessed the place'
+                    : 'Nobody caught them',
+                sound: 'lose',
+                color: const Color(0xFFFF8E8B));
           } else {
-            keyMoment(fx, 'TOWN WINS!', sub: '${players[spy].name} was the spy', sound: 'win', confetti: true);
+            keyMoment(fx, 'TOWN WINS!',
+                sub: '${players[spy].name} was the spy',
+                sound: 'win',
+                confetti: true);
           }
         }
       },
@@ -288,11 +390,20 @@ class _SpyViewState extends State<_SpyView> {
           final ready = g.seen.contains(me);
           return PartyFrame(
             title: 'Find the Spy',
-            subtitle: ready ? 'Waiting for the others (${g.seen.length}/${players.length})' : 'Remember it, then tap Ready',
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              Expanded(child: Center(child: SingleChildScrollView(child: _secret(me)))),
-              GoldButton(ready ? 'Ready' : "I'm ready", icon: ready ? GameIcons.check : null, height: 58, onPressed: ready ? null : () => g.seenCard(me)),
-            ]),
+            subtitle: ready
+                ? 'Waiting for the others (${g.seen.length}/${players.length})'
+                : 'Remember it, then tap Ready',
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                      child: Center(
+                          child: SingleChildScrollView(child: _secret(me)))),
+                  GoldButton(ready ? 'Ready' : "I'm ready",
+                      icon: ready ? GameIcons.check : null,
+                      height: 58,
+                      onPressed: ready ? null : () => g.seenCard(me)),
+                ]),
           );
         }
         final p = g.revealTurn;
@@ -315,18 +426,29 @@ class _SpyViewState extends State<_SpyView> {
           title: 'Find the Spy',
           subtitle: 'Ask questions!',
           trailing: TimeChip(g.msLeft),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            TurnBanner(text: 'Take turns asking', sub: 'Ask anyone a question about the place', color: Brand.gold, kind: TurnBannerKind.info, icon: GameIcons.speech, compact: true),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            TurnBanner(
+                text: 'Take turns asking',
+                sub: 'Ask anyone a question about the place',
+                color: Brand.gold,
+                kind: TurnBannerKind.info,
+                icon: GameIcons.speech,
+                compact: true),
             const SizedBox(height: 10),
             Text('POSSIBLE LOCATIONS', style: t.styles.label),
             const SizedBox(height: 6),
             Expanded(
               child: SingleChildScrollView(
-                child: Wrap(spacing: 6, runSpacing: 6, children: [for (var i = 0; i < FindSpyLogic.places.length; i++) _PlaceChip(i)]),
+                child: Wrap(spacing: 6, runSpacing: 6, children: [
+                  for (var i = 0; i < FindSpyLogic.places.length; i++)
+                    _PlaceChip(i)
+                ]),
               ),
             ),
             const SizedBox(height: 10),
-            GoldButton("We're ready to vote", icon: GameIcons.people, height: 58, onPressed: g.startVote),
+            GoldButton("We're ready to vote",
+                icon: GameIcons.people, height: 58, onPressed: g.startVote),
           ]),
         );
       case SpyPhase.vote:
@@ -336,7 +458,11 @@ class _SpyViewState extends State<_SpyView> {
             subtitle: 'Your vote · ${g.votesIn}/${players.length} voted',
             child: Center(
               child: SingleChildScrollView(
-                child: PlayerPicker(players: players, disabled: {me}, highlight: g.votes[me], onPick: (i) => g.vote(me, i)),
+                child: PlayerPicker(
+                    players: players,
+                    disabled: {me},
+                    highlight: g.votes[me],
+                    onPick: (i) => g.vote(me, i)),
               ),
             ),
           );
@@ -344,20 +470,27 @@ class _SpyViewState extends State<_SpyView> {
         return PartyFrame(
           title: 'Who is the spy?',
           subtitle: 'Agree, then tap who you accuse',
-          child: Center(child: SingleChildScrollView(child: PlayerPicker(players: players, onPick: g.accuse))),
+          child: Center(
+              child: SingleChildScrollView(
+                  child: PlayerPicker(players: players, onPick: g.accuse))),
         );
       case SpyPhase.spyGuess:
         final canGuess = me == null || me == spy;
         return PartyFrame(
           title: 'Spy caught: ${players[spy].name}!',
-          subtitle: canGuess ? 'One last chance: guess the place' : '${players[spy].name} is guessing…',
+          subtitle: canGuess
+              ? 'One last chance: guess the place'
+              : '${players[spy].name} is guessing…',
           child: canGuess
               ? GridView.count(
                   crossAxisCount: 2,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
                   childAspectRatio: 2.6,
-                  children: [for (final o in options) _PlaceChip(o, onTap: () => g.guess(o))],
+                  children: [
+                    for (final o in options)
+                      _PlaceChip(o, onTap: () => g.guess(o))
+                  ],
                 )
               : const WaitingNote('The spy is guessing…'),
         );
@@ -365,30 +498,44 @@ class _SpyViewState extends State<_SpyView> {
       case SpyPhase.done:
         final caught = g.accused == spy;
         final (String head, String sub) = !caught
-            ? (g.accused < 0 ? ('Tie vote', 'The spy escapes!') : ('Wrong!', '${players[g.accused].name} was innocent'))
-            : (g.spyWins ? ('The spy guessed it!', 'The place was found out') : ('Spy caught!', 'The town wins'));
+            ? (g.accused < 0
+                ? ('Tie vote', 'The spy escapes!')
+                : ('Wrong!', '${players[g.accused].name} was innocent'))
+            : (g.spyWins
+                ? ('The spy guessed it!', 'The place was found out')
+                : ('Spy caught!', 'The town wins'));
         return PartyFrame(
           title: g.spyWins ? 'Spy wins' : 'Town wins',
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
                   child: Column(children: [
-                    TurnBanner(text: head, sub: sub, color: Brand.gold, kind: g.spyWins ? TurnBannerKind.miss : TurnBannerKind.success, icon: g.spyWins ? GameIcons.cross : GameIcons.check),
+                    TurnBanner(
+                        text: head,
+                        sub: sub,
+                        color: Brand.gold,
+                        kind: g.spyWins
+                            ? TurnBannerKind.miss
+                            : TurnBannerKind.success,
+                        icon: g.spyWins ? GameIcons.cross : GameIcons.check),
                     const SizedBox(height: 16),
                     PromptCard(
                       header: 'The spy was',
                       text: players[spy].name,
                       icon: GameIcons.magnifier,
                       dark: true,
-                      footer: 'Location: ${FindSpyLogic.places[place].$1}${g.spyGuess != null ? '\nSpy guessed: ${FindSpyLogic.places[g.spyGuess!].$1}' : ''}',
+                      footer:
+                          'Location: ${FindSpyLogic.places[place].$1}${g.spyGuess != null ? '\nSpy guessed: ${FindSpyLogic.places[g.spyGuess!].$1}' : ''}',
                       color: players[spy].color,
                     ),
                   ]),
                 ),
               ),
             ),
-            GoldButton('See scores', icon: GameIcons.trophy, height: 58, onPressed: g.finish),
+            GoldButton('See scores',
+                icon: GameIcons.trophy, height: 58, onPressed: g.finish),
           ]),
         );
     }

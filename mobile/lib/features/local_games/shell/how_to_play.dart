@@ -34,13 +34,22 @@ class RuleStep extends StatelessWidget {
         decoration: Skin.surface(tint: tile, radius: Radii.card, depth: 0.45),
         child: icon != null
             ? GameIcon(icon, size: 20, color: ink)
-            : Text('${index + 1}', style: TextStyle(fontFamily: Fonts.display, fontSize: 17, color: ink)),
+            : Text('${index + 1}',
+                style: TextStyle(
+                    fontFamily: Fonts.display, fontSize: 17, color: ink)),
       ),
       const SizedBox(width: 12),
       Expanded(
         child: Text.rich(
-          icon == null ? TextSpan(text: text) : ruleSpan(text, const TextStyle()),
-          style: const TextStyle(fontFamily: Fonts.body, fontSize: 14, fontWeight: FontWeight.w800, height: 1.3, color: Colors.white),
+          icon == null
+              ? TextSpan(text: text)
+              : ruleSpan(text, const TextStyle()),
+          style: const TextStyle(
+              fontFamily: Fonts.body,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              height: 1.3,
+              color: Colors.white),
         ),
       ),
     ]);
@@ -58,14 +67,18 @@ String _dropFirstEmoji(String s) {
 }
 
 /// Opens How to play for [game] (spec 2.11): game art, every rule as an icon step, Got it.
-Future<void> showHowToPlay(BuildContext context, LocalGameInfo game) => Navigator.of(context).push(PageRouteBuilder<void>(
+Future<void> showHowToPlay(BuildContext context, LocalGameInfo game) =>
+    Navigator.of(context).push(PageRouteBuilder<void>(
       opaque: true,
       transitionDuration: Motion.of(context, Motion.normal),
       reverseTransitionDuration: Motion.of(context, Motion.fast),
       pageBuilder: (_, __, ___) => HowToPlay(game: game),
       transitionsBuilder: (_, a, __, child) => FadeTransition(
         opacity: a,
-        child: SlideTransition(position: Tween(begin: const Offset(0, 0.04), end: Offset.zero).animate(CurvedAnimation(parent: a, curve: Motion.standard)), child: child),
+        child: SlideTransition(
+            position: Tween(begin: const Offset(0, 0.04), end: Offset.zero)
+                .animate(CurvedAnimation(parent: a, curve: Motion.standard)),
+            child: child),
       ),
     ));
 
@@ -82,7 +95,20 @@ class HowToPlay extends StatelessWidget {
         return Scaffold(
           backgroundColor: t.bg,
           body: DecoratedBox(
-            decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [NeonPalette.bgTop, NeonPalette.bg, NeonPalette.bgBottom], stops: [0, 0.45, 1])),
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                  NeonPalette.bgTop,
+                  NeonPalette.bg,
+                  NeonPalette.bgBottom
+                ],
+                    stops: [
+                  0,
+                  0.45,
+                  1
+                ])),
             child: Column(children: [
               Expanded(
                 child: ListView(padding: EdgeInsets.zero, children: [
@@ -93,7 +119,11 @@ class HowToPlay extends StatelessWidget {
                       Positioned(
                         left: 16,
                         top: MediaQuery.paddingOf(context).top + 14,
-                        child: RoundButton(icon: GameIcons.close, label: 'Close', dark: true, onPressed: () => Navigator.maybePop(context)),
+                        child: RoundButton(
+                            icon: GameIcons.close,
+                            label: 'Close',
+                            dark: true,
+                            onPressed: () => Navigator.maybePop(context)),
                       ),
                     ]),
                   ),
@@ -101,21 +131,34 @@ class HowToPlay extends StatelessWidget {
                     offset: const Offset(0, -26),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                        Text('HOW TO PLAY', style: t.styles.label),
-                        const SizedBox(height: 2),
-                        Semantics(header: true, child: Text(game.title, style: t.styles.h1)),
-                        const SizedBox(height: 2),
-                        Text(stripEmoji(game.tagline), style: const TextStyle(fontFamily: Fonts.body, fontSize: 15, fontWeight: FontWeight.w800, color: Color(0xFFD6DAF7))),
-                        const SizedBox(height: 14),
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: Skin.surface(radius: Radii.button, depth: 0.85),
-                          child: Column(children: [
-                            for (var i = 0; i < game.rules.length; i++) ...[if (i > 0) const SizedBox(height: 10), RuleStep(index: i, rule: game.rules[i])],
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text('HOW TO PLAY', style: t.styles.label),
+                            const SizedBox(height: 2),
+                            Semantics(
+                                header: true,
+                                child: Text(game.title, style: t.styles.h1)),
+                            const SizedBox(height: 2),
+                            Text(stripEmoji(game.tagline),
+                                style: const TextStyle(
+                                    fontFamily: Fonts.body,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFFD6DAF7))),
+                            const SizedBox(height: 14),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: Skin.surface(
+                                  radius: Radii.button, depth: 0.85),
+                              child: Column(children: [
+                                for (var i = 0; i < game.rules.length; i++) ...[
+                                  if (i > 0) const SizedBox(height: 10),
+                                  RuleStep(index: i, rule: game.rules[i])
+                                ],
+                              ]),
+                            ),
                           ]),
-                        ),
-                      ]),
                     ),
                   ),
                 ]),
@@ -124,7 +167,10 @@ class HowToPlay extends StatelessWidget {
                 top: false,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 22),
-                  child: GoldButton('Got it', height: 58, fontSize: 24, onPressed: () => Navigator.maybePop(context)),
+                  child: GoldButton('Got it',
+                      height: 58,
+                      fontSize: 24,
+                      onPressed: () => Navigator.maybePop(context)),
                 ),
               ),
             ]),

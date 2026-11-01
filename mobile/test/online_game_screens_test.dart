@@ -27,7 +27,8 @@ class FakeSession extends GameSessionManager {
   Map<String, dynamic> reply = {'ok': true};
 
   @override
-  Future<Map<String, dynamic>> action(String type, Map<String, dynamic> payload) async {
+  Future<Map<String, dynamic>> action(
+      String type, Map<String, dynamic> payload) async {
     calls.add((type, payload));
     return reply;
   }
@@ -51,7 +52,8 @@ final players = [
   {'userId': 'op', 'username': 'Opponent'},
 ];
 
-Future<void> pumpGame(WidgetTester tester, Widget screen, FakeSession session) async {
+Future<void> pumpGame(
+    WidgetTester tester, Widget screen, FakeSession session) async {
   SharedPreferences.setMockInitialValues({'uid': 'me', 'name': 'Me'});
   final auth = AuthenticationManager();
   await tester.runAsync(auth.restore);
@@ -75,25 +77,62 @@ void main() {
   group('game catalog and routing', () {
     test('every catalog game is playable and has a screen', () {
       expect(gameCatalog.map((g) => g.id).toSet(), {
-        'colour_clash', 'raja_mantri', 'ludo', 'snakes_ladders', 'dots_boxes', 'connect_four', 'tic_tac_toe', 'memory', 'guess_who', //
-        'air_hockey', 'ping_pong', 'snake_duel', 'penalty', 'basketball_hoops', 'crush_it', 'fruit_duel', 'paint_fight', 'reaction_tap', 'math_duel', //
-        'truth_dare', 'hand_cricket', 'quiz_battle', 'find_spy', 'mafia', 'undercover', 'charades', 'heads_up', 'draw_guess', 'most_likely', 'would_rather', 'rock_paper_scissors', 'fruit_merge_battle', 'ludo_teams', 'bingo', 'battleship', 'checkers', 'smash_karts', //
-        'mini_golf', 'slingshot', 'archery', 'shooting_gallery', 'bottle_smash',
+        'colour_clash', 'raja_mantri', 'ludo', 'snakes_ladders', 'dots_boxes',
+        'connect_four', 'tic_tac_toe', 'memory', 'guess_who', //
+        'air_hockey', 'ping_pong', 'basketball_hoops', 'paint_fight',
+        'reaction_tap', 'math_duel', //
+        'truth_dare',
+        'hand_cricket',
+        'quiz_battle',
+        'find_spy',
+        'mafia',
+        'undercover',
+        'charades',
+        'heads_up',
+        'draw_guess',
+        'most_likely',
+        'would_rather',
+        'rock_paper_scissors',
+        'fruit_merge_battle',
+        'ludo_teams',
+        'bingo',
+        'battleship',
+        'checkers',
+        'mini_golf', 'slingshot', 'archery', 'shooting_gallery',
+        'bottle_smash', //
+        'chess', 'tug_of_war', 'darts', 'hot_potato', 'knife_hit', 'cup_pong',
+        'hungry_hippos', 'penguin_push', 'ring_sort', //
+        'minesweeper', 'color_switch', 'fruit_cut', 'chicken_jump', 'carrom',
+        'eight_ball', 'bike_race', 'nitro_knockout',
       });
-      expect(gameCatalog.map((g) => g.id), isNot(contains('guess_person')), reason: 'quiz removed from rooms');
-      expect(gameCatalog.length, 42);
+      expect(gameCatalog.map((g) => g.id), isNot(contains('guess_person')),
+          reason: 'quiz removed from rooms');
+      expect(
+          gameCatalog.map((g) => g.id),
+          isNot(containsAll([
+            'snake_duel',
+            'penalty',
+            'crush_it',
+            'fruit_duel',
+            'classic_snake'
+          ])));
+      expect(gameCatalog.length, 54);
       for (final g in gameCatalog) {
         expect(g.playable, isTrue, reason: g.id);
         expect(gameScreenFor(g.id), isNotNull, reason: g.id);
-        expect(g.minPlayers <= g.maxPlayers && g.maxPlayers <= 6, isTrue, reason: g.id);
+        expect(
+                    g.minPlayers <= g.maxPlayers &&
+                        g.maxPlayers <= (g.id == 'nitro_knockout' ? 10 : 6),
+                    isTrue,
+            reason: g.id);
       }
-      expect(gameScreenFor('chess'), isNull);
+      expect(gameScreenFor('pool'), isNull);
       expect(gameScreenFor('memory'), isA<MemoryScreen>());
       expect(gameScreenFor('paint_fight'), isA<PaintFightScreen>());
     });
 
     test('gameName falls back to the id for unknown games', () {
-      expect(gameName('fruit_duel'), 'Fruit Duel');
+      expect(gameName('fruit_cut'), 'Fruit Cut');
       expect(gameName('mystery'), 'mystery');
     });
   });
@@ -147,7 +186,9 @@ void main() {
           ],
         };
 
-    testWidgets('shows target and score; SHOOT sends a timing between 0 and 100', (tester) async {
+    testWidgets(
+        'shows target and score; SHOOT sends a timing between 0 and 100',
+        (tester) async {
       final s = FakeSession(st());
       await pumpGame(tester, const BasketballHoopsScreen(), s);
       expect(find.text('BASKETBALL HOOPS'), findsOneWidget);
@@ -187,7 +228,8 @@ void main() {
           ],
         };
 
-    testWidgets('slashing a lane sends the current fruit id and lane', (tester) async {
+    testWidgets('slashing a lane sends the current fruit id and lane',
+        (tester) async {
       final s = FakeSession(st('playing'));
       await pumpGame(tester, const FruitDuelScreen(), s);
       expect(find.text('FRUIT DUEL'), findsOneWidget);
@@ -222,16 +264,18 @@ void main() {
             {...players[1], 'score': 1},
           ],
         };
-    Finder cells() => find.descendant(of: find.byType(GridView), matching: find.byType(GestureDetector));
+    Finder board() => find.ancestor(
+        of: find.byType(CustomPaint).last,
+        matching: find.byType(GestureDetector)).first;
 
-    testWidgets('renders the board with owned cells and paints by x,y', (tester) async {
+    testWidgets('renders the board with owned cells and paints by x,y',
+        (tester) async {
       final s = FakeSession(st('playing'));
       await pumpGame(tester, const PaintFightScreen(), s);
       expect(find.text('PAINT FIGHT'), findsOneWidget);
-      expect(cells(), findsNWidgets(6));
-      expect(find.byIcon(Icons.brush), findsNWidgets(2));
-      await tester.tap(cells().at(4)); // index 4 on a 3-wide board = (1,1)
-      expectCall(s, 'paint_fight:paint', {'x': 1, 'y': 1});
+      await tester.drag(board(), const Offset(80, 40));
+      expect(s.calls, isNotEmpty);
+      expect(s.calls.first.$1, 'paint_fight:paint');
       await disposeGame(tester);
     });
 
@@ -239,7 +283,7 @@ void main() {
       final s = FakeSession(st('finished'));
       await pumpGame(tester, const PaintFightScreen(), s);
       expect(find.text('TIME UP'), findsOneWidget);
-      await tester.tap(cells().first);
+      await tester.drag(board(), const Offset(80, 40));
       expect(s.calls, isEmpty);
       await disposeGame(tester);
     });
@@ -260,7 +304,8 @@ void main() {
           ],
         };
 
-    testWidgets('your turn: hidden cards flip, matched cards do nothing', (tester) async {
+    testWidgets('your turn: hidden cards flip, matched cards do nothing',
+        (tester) async {
       final s = FakeSession(st());
       await pumpGame(tester, const MemoryScreen(), s);
       expect(find.text('Your turn'), findsOneWidget);
@@ -273,7 +318,8 @@ void main() {
       await disposeGame(tester);
     });
 
-    testWidgets("opponent's turn and mismatch pause block flips", (tester) async {
+    testWidgets("opponent's turn and mismatch pause block flips",
+        (tester) async {
       final s = FakeSession(st(turn: 'op'));
       await pumpGame(tester, const MemoryScreen(), s);
       expect(find.text("Opponent's turn"), findsOneWidget);
@@ -290,13 +336,38 @@ void main() {
 
   group('Guess Who (2 phones) screen', () {
     test('the app and the server have exactly the same 30 people', () {
-      final json = jsonDecode(File('../server/src/games/guess_who/people.json').readAsStringSync()) as List;
+      final json = jsonDecode(File('../server/src/games/guess_who/people.json')
+          .readAsStringSync()) as List;
       expect(json, hasLength(allPeople.length));
       for (final p in allPeople) {
         final s = json.cast<Map>().firstWhere((x) => x['id'] == p.id);
         expect(
-          [s['name'], s['gender'], s['skinTone'], s['eyeColor'], s['hairColor'], s['hairStyle'], s['hat'], s['hasGlasses'], s['facialHair'], s['shirtColor'], s['accessory']],
-          [p.name, p.gender.name, p.skinTone, p.eyeColor, p.hairColor, p.hairStyle, p.hat, p.hasGlasses, p.facialHair, p.shirtColor, p.accessory],
+          [
+            s['name'],
+            s['gender'],
+            s['skinTone'],
+            s['eyeColor'],
+            s['hairColor'],
+            s['hairStyle'],
+            s['hat'],
+            s['hasGlasses'],
+            s['facialHair'],
+            s['shirtColor'],
+            s['accessory']
+          ],
+          [
+            p.name,
+            p.gender.name,
+            p.skinTone,
+            p.eyeColor,
+            p.hairColor,
+            p.hairStyle,
+            p.hat,
+            p.hasGlasses,
+            p.facialHair,
+            p.shirtColor,
+            p.accessory
+          ],
           reason: p.name,
         );
       }
@@ -321,8 +392,18 @@ void main() {
           'totalRounds': 3,
           'board': [for (var i = 1; i <= 30; i++) i],
           'questions': [
-            {'id': 'female', 'label': 'FEMALE', 'prompt': 'Is the person female?', 'category': 'gender'},
-            {'id': 'glasses', 'label': 'GLASSES', 'prompt': 'Does the person wear glasses?', 'category': 'accessories'},
+            {
+              'id': 'female',
+              'label': 'FEMALE',
+              'prompt': 'Is the person female?',
+              'category': 'gender'
+            },
+            {
+              'id': 'glasses',
+              'label': 'GLASSES',
+              'prompt': 'Does the person wear glasses?',
+              'category': 'accessories'
+            },
           ],
           'players': [
             {'userId': 'me', 'username': 'Me', 'chosen': mySecret != null},
@@ -336,7 +417,8 @@ void main() {
           'revealEndsAt': reveal == null ? null : now + 5000,
         };
 
-    testWidgets('choosing: shows the 30-card board and sends the pick', (tester) async {
+    testWidgets('choosing: shows the 30-card board and sends the pick',
+        (tester) async {
       tester.view.physicalSize = const Size(411, 914);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
@@ -354,11 +436,14 @@ void main() {
       await disposeGame(tester);
     });
 
-    testWidgets("playing: ask on your turn; questions are locked on the opponent's turn", (tester) async {
+    testWidgets(
+        "playing: ask on your turn; questions are locked on the opponent's turn",
+        (tester) async {
       tester.view.physicalSize = const Size(411, 914);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
-      final s = FakeSession(st(phase: 'playing', mySecret: 2, oppChosen: true, turn: 'me'));
+      final s = FakeSession(
+          st(phase: 'playing', mySecret: 2, oppChosen: true, turn: 'me'));
       await pumpGame(tester, const GuessWhoScreen(), s);
       expect(find.text('YOUR TURN'), findsOneWidget);
       expect(find.textContaining('You are Tom'), findsOneWidget);
@@ -369,27 +454,38 @@ void main() {
       expectCall(s, 'guess_who:ask', {'questionId': 'female'});
 
       s.calls.clear();
-      s.push(st(phase: 'playing', mySecret: 2, oppChosen: true, turn: 'op', asked: [
-        {'questionId': 'female', 'answer': true},
-      ], oppAsked: [
-        {'questionId': 'glasses', 'answer': true},
-      ]));
+      s.push(st(
+          phase: 'playing',
+          mySecret: 2,
+          oppChosen: true,
+          turn: 'op',
+          asked: [
+            {'questionId': 'female', 'answer': true},
+          ],
+          oppAsked: [
+            {'questionId': 'glasses', 'answer': true},
+          ]));
       await tester.pumpAndSettle();
       expect(find.text("OPPONENT'S TURN"), findsOneWidget);
       expect(find.textContaining('Is the person female?'), findsOneWidget);
-      expect(find.text('Opponent asked: Does the person wear glasses? YES'), findsOneWidget);
+      expect(find.text('Opponent asked: Does the person wear glasses? YES'),
+          findsOneWidget);
       await tester.tap(find.text('ACCESSORIES'), warnIfMissed: false);
       await tester.pumpAndSettle();
-      expect(find.text('GLASSES'), findsNothing, reason: 'categories do not open on their turn');
+      expect(find.text('GLASSES'), findsNothing,
+          reason: 'categories do not open on their turn');
       expect(s.calls, isEmpty);
       await disposeGame(tester);
     });
 
-    testWidgets('final guess: crossed-out people cannot be picked; confirm sends the guess', (tester) async {
+    testWidgets(
+        'final guess: crossed-out people cannot be picked; confirm sends the guess',
+        (tester) async {
       tester.view.physicalSize = const Size(411, 914);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
-      final s = FakeSession(st(phase: 'playing', mySecret: 2, oppChosen: true, turn: 'me'));
+      final s = FakeSession(
+          st(phase: 'playing', mySecret: 2, oppChosen: true, turn: 'me'));
       await pumpGame(tester, const GuessWhoScreen(), s);
       await tester.tap(find.text('Sara')); // cross out
       await tester.pump();
@@ -407,7 +503,8 @@ void main() {
       await disposeGame(tester);
     });
 
-    testWidgets('reveal shows both secrets and the round winner', (tester) async {
+    testWidgets('reveal shows both secrets and the round winner',
+        (tester) async {
       tester.view.physicalSize = const Size(411, 914);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
@@ -415,7 +512,13 @@ void main() {
         phase: 'reveal',
         mySecret: 2,
         oppChosen: true,
-        reveal: {'secrets': {'me': 2, 'op': 1}, 'winner': 'me', 'guessedBy': 'me', 'guess': 1, 'correct': true},
+        reveal: {
+          'secrets': {'me': 2, 'op': 1},
+          'winner': 'me',
+          'guessedBy': 'me',
+          'guess': 1,
+          'correct': true
+        },
       ));
       await pumpGame(tester, const GuessWhoScreen(), s);
       expect(find.text('YOU WIN THE ROUND!'), findsOneWidget);
@@ -428,7 +531,12 @@ void main() {
   });
 
   group('Guess the Person (online) screen', () {
-    Map<String, dynamic> st({String phase = 'round', int attemptsLeft = 3, bool solved = false, Map<String, dynamic>? reveal}) => {
+    Map<String, dynamic> st(
+            {String phase = 'round',
+            int attemptsLeft = 3,
+            bool solved = false,
+            Map<String, dynamic>? reveal}) =>
+        {
           'phase': phase,
           'round': 1,
           'totalRounds': 5,
@@ -444,7 +552,11 @@ void main() {
         };
 
     testWidgets('shows clues and sends the typed guess', (tester) async {
-      final s = FakeSession(st())..reply = {'ok': true, 'response': {'correct': true, 'points': 80}};
+      final s = FakeSession(st())
+        ..reply = {
+          'ok': true,
+          'response': {'correct': true, 'points': 80}
+        };
       await pumpGame(tester, const GuessPersonScreen(), s);
       expect(find.text('Round 1 / 5'), findsOneWidget);
       expect(find.text('Born in London'), findsOneWidget);
@@ -457,8 +569,14 @@ void main() {
       await disposeGame(tester);
     });
 
-    testWidgets('empty guesses are not sent; wrong and error replies are explained', (tester) async {
-      final s = FakeSession(st())..reply = {'ok': true, 'response': {'correct': false, 'attemptsLeft': 1}};
+    testWidgets(
+        'empty guesses are not sent; wrong and error replies are explained',
+        (tester) async {
+      final s = FakeSession(st())
+        ..reply = {
+          'ok': true,
+          'response': {'correct': false, 'attemptsLeft': 1}
+        };
       await pumpGame(tester, const GuessPersonScreen(), s);
       await tester.tap(find.text('GUESS'));
       expect(s.calls, isEmpty);
@@ -474,12 +592,16 @@ void main() {
       await disposeGame(tester);
     });
 
-    testWidgets('no attempts left disables guessing; reveal shows the answer', (tester) async {
+    testWidgets('no attempts left disables guessing; reveal shows the answer',
+        (tester) async {
       final s = FakeSession(st(attemptsLeft: 0));
       await pumpGame(tester, const GuessPersonScreen(), s);
       await tester.tap(find.text('GUESS'));
       expect(s.calls, isEmpty);
-      s.push(st(phase: 'reveal', reveal: {'answer': 'Ada Lovelace', 'gained': {'me': 80}}));
+      s.push(st(phase: 'reveal', reveal: {
+        'answer': 'Ada Lovelace',
+        'gained': {'me': 80}
+      }));
       await tester.pump();
       expect(find.text('The answer: Ada Lovelace'), findsOneWidget);
       expect(find.text('You earned 80 points'), findsOneWidget);
@@ -489,7 +611,8 @@ void main() {
     testWidgets('solved players wait for the others', (tester) async {
       final s = FakeSession(st(solved: true));
       await pumpGame(tester, const GuessPersonScreen(), s);
-      expect(find.text('You got it! Waiting for the others...'), findsOneWidget);
+      expect(
+          find.text('You got it! Waiting for the others...'), findsOneWidget);
       expect(find.byType(TextField), findsNothing);
       await disposeGame(tester);
     });

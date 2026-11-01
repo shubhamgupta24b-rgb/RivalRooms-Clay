@@ -23,7 +23,8 @@ void main() {
     expect(LanDiscovery.candidates('10.0.2.16').first, '10.0.2.2');
   });
 
-  test('probe recognises a Party Games server and ignores other web servers', () async {
+  test('probe recognises a Party Games server and ignores other web servers',
+      () async {
     Future<HttpServer> serve(Object body) async {
       final s = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
       s.listen((r) => r.response
@@ -39,15 +40,23 @@ void main() {
       // probe() always uses the game port, so check the parsing through a stand-in.
       Future<bool> check(HttpServer s) async {
         final c = HttpClient();
-        final res = await (await c.getUrl(Uri.parse('http://127.0.0.1:${s.port}/health'))).close();
+        final res = await (await c
+                .getUrl(Uri.parse('http://127.0.0.1:${s.port}/health')))
+            .close();
         final json = jsonDecode(await res.transform(utf8.decoder).join());
         c.close();
-        return json is Map && json['ok'] == true && json['app'] == 'party-games';
+        return json is Map &&
+            json['ok'] == true &&
+            json['app'] == 'party-games';
       }
 
       expect(await check(ours), isTrue);
       expect(await check(other), isFalse);
-      expect(await LanDiscovery.probe('127.0.0.1', timeout: const Duration(milliseconds: 300)), isFalse, reason: 'nothing on the game port here');
+      expect(
+          await LanDiscovery.probe('127.0.0.1',
+              timeout: const Duration(milliseconds: 300)),
+          isFalse,
+          reason: 'nothing on the game port here');
     } finally {
       await ours.close(force: true);
       await other.close(force: true);

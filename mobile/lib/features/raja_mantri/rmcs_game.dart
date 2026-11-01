@@ -27,7 +27,12 @@ class RmcsGame extends ChangeNotifier {
   int? accused;
   bool timedOut = false;
 
-  RmcsGame({List<GpPlayer>? players, this.totalRounds = 20, this.guessMs = 10000, Random? random, int Function()? now})
+  RmcsGame(
+      {List<GpPlayer>? players,
+      this.totalRounds = 20,
+      this.guessMs = 10000,
+      Random? random,
+      int Function()? now})
       : players = players ?? defaultPlayers(playerCount),
         _random = random ?? Random(),
         _now = now ?? (() => DateTime.now().millisecondsSinceEpoch) {
@@ -51,7 +56,10 @@ class RmcsGame extends ChangeNotifier {
   int get chor => holder(RmcsRole.chor);
 
   /// The two players the Mantri chooses between, in seat order.
-  List<int> get suspects => [for (var i = 0; i < playerCount; i++) if (roles[i] == RmcsRole.chor || roles[i] == RmcsRole.sipahi) i];
+  List<int> get suspects => [
+        for (var i = 0; i < playerCount; i++)
+          if (roles[i] == RmcsRole.chor || roles[i] == RmcsRole.sipahi) i
+      ];
 
   bool get caught => accused != null && accused == chor;
   bool get isLastRound => round >= totalRounds;
@@ -86,7 +94,9 @@ class RmcsGame extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get guessMsLeft => phase == RmcsPhase.guessing ? max(0, guessMs - (_now() - _guessStartedAt)) : 0;
+  int get guessMsLeft => phase == RmcsPhase.guessing
+      ? max(0, guessMs - (_now() - _guessStartedAt))
+      : 0;
   int get guessSecondsLeft => (guessMsLeft / 1000).ceil();
 
   /// The Mantri accuses [player]. Returns whether the Chor was caught, or null if not allowed.
@@ -130,7 +140,8 @@ class RmcsGame extends ChangeNotifier {
   }
 
   /// Player indexes, best score first.
-  List<int> get standings => [for (var i = 0; i < playerCount; i++) i]..sort((a, b) => scores[b] - scores[a]);
+  List<int> get standings => [for (var i = 0; i < playerCount; i++) i]
+    ..sort((a, b) => scores[b] - scores[a]);
 
   void restart() {
     round = 1;

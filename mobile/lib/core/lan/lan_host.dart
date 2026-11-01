@@ -9,12 +9,13 @@ class LanHost {
   LanHost._();
   static LanServer? _server;
 
-  /// Games a phone can host: everything in rooms except the two whose rules live on the
-  /// internet server (Guess Who, Raja Mantri).
-  static const internetOnly = {'guess_who', 'raja_mantri'};
+  /// Nitro's dedicated stream protocol, like Guess Who and Raja Mantri's rules,
+  /// requires the internet server rather than the generic phone-hosted relay.
+  static const internetOnly = {'guess_who', 'raja_mantri', 'nitro_knockout'};
   static List<LanGame> get games => [
         for (final g in gameCatalog)
-          if (!internetOnly.contains(g.id)) LanGame(g.id, g.minPlayers, g.maxPlayers),
+          if (!internetOnly.contains(g.id))
+            LanGame(g.id, g.minPlayers, g.maxPlayers),
       ];
 
   static bool get running => _server?.running ?? false;
@@ -36,5 +37,6 @@ class LanHost {
   }
 
   /// This phone's addresses others can reach (hotspot / Wi-Fi), to show on screen.
-  static Future<List<String>> addresses() async => [for (final a in await LanDiscovery.localAddresses()) a.address];
+  static Future<List<String>> addresses() async =>
+      [for (final a in await LanDiscovery.localAddresses()) a.address];
 }

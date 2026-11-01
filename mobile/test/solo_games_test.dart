@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:multiplayer_game/features/local_games/rps/rps_game.dart';
 import 'package:multiplayer_game/features/local_games/solo/brick_breaker.dart';
 import 'package:multiplayer_game/features/local_games/solo/classic_snake.dart';
@@ -13,8 +14,11 @@ import 'package:multiplayer_game/features/local_games/solo/whack_mole.dart';
 import 'package:multiplayer_game/features/local_games/solo/word_scramble.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
   group('Rock Paper Scissors', () {
-    test('rock > scissors > paper > rock; a point for each player you beat', () {
+    test('rock > scissors > paper > rock; a point for each player you beat',
+        () {
       expect(RpsLogic.beats(0, 2), isTrue);
       expect(RpsLogic.beats(2, 1), isTrue);
       expect(RpsLogic.beats(1, 0), isTrue);
@@ -49,7 +53,9 @@ void main() {
 
   group('2048', () {
     test('slides, merges once per move, scores the merged value', () {
-      final g = Game2048Logic(random: Random(1), start: [2, 2, 2, 2, 4, 0, 4, 8, 0, 0, 0, 0, 0, 0, 0, 0]);
+      final g = Game2048Logic(
+          random: Random(1),
+          start: [2, 2, 2, 2, 4, 0, 4, 8, 0, 0, 0, 0, 0, 0, 0, 0]);
       expect(g.move(3), isTrue); // left
       expect(g.grid.sublist(0, 2), [4, 4]);
       expect(g.grid.sublist(4, 6), [8, 8]);
@@ -58,11 +64,15 @@ void main() {
     });
 
     test('no move = nothing spawns; a stuck board ends the game', () {
-      final g = Game2048Logic(random: Random(2), start: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      final g = Game2048Logic(
+          random: Random(2),
+          start: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
       expect(g.move(3), isFalse);
       expect(g.move(0), isFalse);
       // A full board with no equal neighbours: nothing can move.
-      final stuck = Game2048Logic(random: Random(3), start: [2, 4, 2, 4, 4, 2, 4, 2, 2, 4, 2, 4, 4, 2, 4, 2]);
+      final stuck = Game2048Logic(
+          random: Random(3),
+          start: [2, 4, 2, 4, 4, 2, 4, 2, 2, 4, 2, 4, 4, 2, 4, 2]);
       expect(stuck.canMove, isFalse);
       for (var d = 0; d < 4; d++) {
         expect(stuck.move(d), isFalse);
@@ -80,7 +90,8 @@ void main() {
   });
 
   group('Classic Snake', () {
-    test('moves on its own, can\'t reverse, eats and grows, dies at the wall', () {
+    test('moves on its own, can\'t reverse, eats and grows, dies at the wall',
+        () {
       final g = ClassicSnakeLogic(random: Random(1));
       final head = g.body.first;
       g.turn(2); // straight back into itself: ignored
@@ -111,7 +122,9 @@ void main() {
       // Flap through a pipe by steering to its gap.
       final h = FlappyLogic(random: Random(2))..flap();
       for (var t = 0; t < 8000 && !h.over; t += 16) {
-        final p = h.pipes.where((p) => p.x + FlappyLogic.pipeW > FlappyLogic.birdX - 0.1).firstOrNull;
+        final p = h.pipes
+            .where((p) => p.x + FlappyLogic.pipeW > FlappyLogic.birdX - 0.1)
+            .firstOrNull;
         final targetY = p?.gapY ?? FlappyLogic.height / 2;
         if (h.birdY > targetY + 0.04 && h.vy > -0.2) h.flap();
         h.update(t);
@@ -128,7 +141,8 @@ void main() {
         expect(g.over, isFalse, reason: 'seed $seed');
         expect(g.mines, hasLength(MinesweeperLogic.mineCount));
         expect(g.mines.contains(40), isFalse);
-        expect(g.open.length, greaterThan(1), reason: 'opened at least the 3x3 around');
+        expect(g.open.length, greaterThan(1),
+            reason: 'opened at least the 3x3 around');
       }
       final g = MinesweeperLogic(fixedMines: {0});
       g.toggleFlag(0);
@@ -168,7 +182,8 @@ void main() {
   });
 
   group('Whack-a-Mole', () {
-    test('moles pop up; whacks score; bombs cost 5 (not below 0); 30 seconds', () {
+    test('moles pop up; whacks score; bombs cost 5 (not below 0); 30 seconds',
+        () {
       final g = WhackLogic(random: Random(1));
       var whacked = 0;
       for (var t = 0; t <= 31000; t += 50) {
@@ -191,7 +206,9 @@ void main() {
   });
 
   group('Piano Tiles', () {
-    test('tap the lowest black tile; wrong lane ends it; stray taps before start are ignored', () {
+    test(
+        'tap the lowest black tile; wrong lane ends it; stray taps before start are ignored',
+        () {
       final g = PianoLogic(random: Random(1));
       final first = g.next!;
       g.tap((first.lane + 1) % 4, first.y + 0.1);
@@ -215,14 +232,19 @@ void main() {
   });
 
   group('Word Scramble', () {
-    test('letters are a shuffle of the word; solving scores its length; wrong resets', () {
+    test(
+        'letters are a shuffle of the word; solving scores its length; wrong resets',
+        () {
       final g = WordScrambleLogic(random: Random(1));
       expect([...g.letters]..sort(), [...g.word.split('')]..sort());
       // Tap the letters in the right order.
       final word = g.word;
       final used = <int>{};
       for (final ch in word.split('')) {
-        final i = [for (var k = 0; k < g.letters.length; k++) if (g.letters[k] == ch && !used.contains(k)) k].first;
+        final i = [
+          for (var k = 0; k < g.letters.length; k++)
+            if (g.letters[k] == ch && !used.contains(k)) k
+        ].first;
         used.add(i);
         g.tapLetter(i);
       }
@@ -256,7 +278,9 @@ void main() {
   });
 
   group('Simon Says', () {
-    test('shows the pattern, then you repeat it; each round adds one; a wrong pad ends it', () {
+    test(
+        'shows the pattern, then you repeat it; each round adds one; a wrong pad ends it',
+        () {
       final g = SimonLogic(random: Random(1));
       expect(g.phase, SimonPhase.pause);
       g.press(g.sequence.first);

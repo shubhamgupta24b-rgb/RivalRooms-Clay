@@ -15,7 +15,8 @@ class PaintFightLogic extends TimedDuel {
   final List<int> owner; // -1 = empty
   final List<int> cells;
 
-  PaintFightLogic({int durationMs = 25000, this.cols = 8, this.rows = 12, int players = 2})
+  PaintFightLogic(
+      {int durationMs = 25000, this.cols = 8, this.rows = 12, int players = 2})
       : owner = List.filled(cols * rows, -1),
         cells = List.filled(players, 0),
         super(durationMs);
@@ -25,7 +26,8 @@ class PaintFightLogic extends TimedDuel {
 
   /// Returns true if the cell changed hands.
   bool paint(int player, int col, int row) {
-    if (finished || col < 0 || col >= cols || row < 0 || row >= rows) return false;
+    if (finished || col < 0 || col >= cols || row < 0 || row >= rows)
+      return false;
     final i = row * cols + col;
     final prev = owner[i];
     if (prev == player) return false;
@@ -53,13 +55,18 @@ final paintFightInfo = LocalGameInfo(
   bot: botFor<PaintFightLogic>((g, b, now) {
     if (g.finished || !b.due(now)) return;
     b.wait(now, 45, 90); // a fast but human-ish brush
-    var (c, r) = (b.memory['pos'] as (int, int)?) ?? (g.cols ~/ 2, b.seat == 0 ? g.rows - 2 : 1);
+    var (c, r) = (b.memory['pos'] as (int, int)?) ??
+        (g.cols ~/ 2, b.seat == 0 ? g.rows - 2 : 1);
     g.paint(b.seat, c, r);
     // Step to a neighbouring cell, preferring ones that aren't ours yet.
-    final steps = [for (final (dc, dr) in const [(1, 0), (-1, 0), (0, 1), (0, -1)]) (c + dc, r + dr)]
+    final steps = [
+      for (final (dc, dr) in const [(1, 0), (-1, 0), (0, 1), (0, -1)])
+        (c + dc, r + dr)
+    ]
         .where((p) => p.$1 >= 0 && p.$1 < g.cols && p.$2 >= 0 && p.$2 < g.rows)
         .toList();
-    final fresh = steps.where((p) => g.owner[p.$2 * g.cols + p.$1] != b.seat).toList();
+    final fresh =
+        steps.where((p) => g.owner[p.$2 * g.cols + p.$1] != b.seat).toList();
     (c, r) = fresh.isNotEmpty && b.chance(0.85) ? b.pick(fresh) : b.pick(steps);
     b.memory['pos'] = (c, r);
   }),
@@ -67,10 +74,23 @@ final paintFightInfo = LocalGameInfo(
     create: () => PaintFightLogic(),
     onFinished: onFinished,
     builder: (context, g) => Column(children: [
-      RotatedBox(quarterTurns: 2, child: _Hud(player: players[1], seat: 1, cells: g.cells[1], total: g.owner.length)),
-      _Coverage(cells: g.cells, total: g.owner.length, colors: [for (final p in players) p.color]),
+      RotatedBox(
+          quarterTurns: 2,
+          child: _Hud(
+              player: players[1],
+              seat: 1,
+              cells: g.cells[1],
+              total: g.owner.length)),
+      _Coverage(
+          cells: g.cells,
+          total: g.owner.length,
+          colors: [for (final p in players) p.color]),
       Expanded(child: _PaintBoard(players: players, g: g)),
-      DuelMiddleBar(players: players, scores: g.scores, secondsLeft: g.secondsLeft, progress: g.progress),
+      DuelMiddleBar(
+          players: players,
+          scores: g.scores,
+          secondsLeft: g.secondsLeft,
+          progress: g.progress),
     ]),
   ),
 );
@@ -80,15 +100,37 @@ class _Hud extends StatelessWidget {
   final int seat;
   final int cells;
   final int total;
-  const _Hud({required this.player, required this.seat, required this.cells, required this.total});
+  const _Hud(
+      {required this.player,
+      required this.seat,
+      required this.cells,
+      required this.total});
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.fromLTRB(14, 8, 14, 6),
         child: Row(children: [
-          PlayerBadge(index: PlayerPalette.indexOf(player.color) ?? seat, size: 24, color: player.color, initial: player.name),
+          PlayerBadge(
+              index: PlayerPalette.indexOf(player.color) ?? seat,
+              size: 24,
+              color: player.color,
+              initial: player.name),
           const SizedBox(width: 8),
-          Expanded(child: Text(player.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.body, color: nameColor(player.color), fontWeight: FontWeight.w900, fontSize: 15))),
-          Text('${(cells * 100 / total).round()}%', style: const TextStyle(fontFamily: Fonts.display, color: Colors.white, fontSize: 26, height: 1, fontFeatures: [FontFeature.tabularFigures()])),
+          Expanded(
+              child: Text(player.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontFamily: Fonts.body,
+                      color: nameColor(player.color),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15))),
+          Text('${(cells * 100 / total).round()}%',
+              style: const TextStyle(
+                  fontFamily: Fonts.display,
+                  color: Colors.white,
+                  fontSize: 26,
+                  height: 1,
+                  fontFeatures: [FontFeature.tabularFigures()])),
         ]),
       );
 }
@@ -98,22 +140,37 @@ class _Coverage extends StatelessWidget {
   final List<int> cells;
   final int total;
   final List<Color> colors;
-  const _Coverage({required this.cells, required this.total, required this.colors});
+  const _Coverage(
+      {required this.cells, required this.total, required this.colors});
   @override
   Widget build(BuildContext context) {
     final int empty = max(0, total - cells.fold<int>(0, (a, b) => a + b));
     return Semantics(
-      label: 'Board covered: ${[for (var i = 0; i < cells.length; i++) '${(cells[i] * 100 / total).round()}%'].join(' vs ')}',
+      label: 'Board covered: ${[
+        for (var i = 0; i < cells.length; i++)
+          '${(cells[i] * 100 / total).round()}%'
+      ].join(' vs ')}',
       excludeSemantics: true,
       child: Container(
         height: 10,
         margin: const EdgeInsets.fromLTRB(14, 0, 14, 8),
-        decoration: BoxDecoration(borderRadius: Radii.rChip, border: Border.all(color: Colors.white.withValues(alpha: 0.25))),
+        decoration: BoxDecoration(
+            borderRadius: Radii.rChip,
+            border: Border.all(color: Colors.white.withValues(alpha: 0.25))),
         clipBehavior: Clip.antiAlias,
         child: Row(children: [
           // Player 2 (top of the screen) on the left so it reads like the board.
-          for (final (flex, color) in [if (cells.length > 1) (cells[1], colors[1]), (empty, const Color(0xFFE6DDCC)), (cells[0], colors[0])])
-            if (flex > 0) Expanded(flex: flex, child: AnimatedContainer(duration: const Duration(milliseconds: 200), color: color)),
+          for (final (flex, color) in [
+            if (cells.length > 1) (cells[1], colors[1]),
+            (empty, const Color(0xFFE6DDCC)),
+            (cells[0], colors[0])
+          ])
+            if (flex > 0)
+              Expanded(
+                  flex: flex,
+                  child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      color: color)),
         ]),
       ),
     );
@@ -135,7 +192,8 @@ class _PaintBoardState extends State<_PaintBoard> {
   Offset _origin = Offset.zero;
 
   PaintFightLogic get g => widget.g;
-  double get _cell => min(_boardSize.width / g.cols, _boardSize.height / g.rows);
+  double get _cell =>
+      min(_boardSize.width / g.cols, _boardSize.height / g.rows);
 
   void _paintAt(int player, Offset p) {
     final c = _cell;
@@ -182,7 +240,10 @@ class _PaintBoardState extends State<_PaintBoard> {
             top: _origin.dy,
             width: w,
             height: h,
-            child: RepaintBoundary(child: CustomPaint(painter: _BoardPainter(g, widget.players.map((p) => p.color).toList(), cell))),
+            child: RepaintBoundary(
+                child: CustomPaint(
+                    painter: _BoardPainter(
+                        g, widget.players.map((p) => p.color).toList(), cell))),
           ),
         ]),
       );
@@ -202,21 +263,29 @@ class _BoardPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final w = g.cols * cell, h = g.rows * cell;
     // A cream canvas; each half lightly tinted in its painter's colour (player 2 on top).
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, w, h), Radius.circular(cell * 0.3)), Paint()..color = const Color(0xFFF6F0E4));
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(0, 0, w, h), Radius.circular(cell * 0.3)),
+        Paint()..color = const Color(0xFFF6F0E4));
     if (colors.length >= 2) {
-      canvas.drawRect(Rect.fromLTWH(0, 0, w, h / 2), Paint()..color = colors[1].withValues(alpha: 0.07));
-      canvas.drawRect(Rect.fromLTWH(0, h / 2, w, h / 2), Paint()..color = colors[0].withValues(alpha: 0.07));
+      canvas.drawRect(Rect.fromLTWH(0, 0, w, h / 2),
+          Paint()..color = colors[1].withValues(alpha: 0.07));
+      canvas.drawRect(Rect.fromLTWH(0, h / 2, w, h / 2),
+          Paint()..color = colors[0].withValues(alpha: 0.07));
     }
     // Paper texture: faint grid dots where nobody has painted yet.
     final dot = Paint()..color = const Color(0xFFE2D8C4);
     for (var r = 0; r < g.rows; r++) {
       for (var c = 0; c < g.cols; c++) {
-        if (_owners[r * g.cols + c] < 0) canvas.drawCircle(Offset((c + 0.5) * cell, (r + 0.5) * cell), cell * 0.08, dot);
+        if (_owners[r * g.cols + c] < 0)
+          canvas.drawCircle(
+              Offset((c + 0.5) * cell, (r + 0.5) * cell), cell * 0.08, dot);
       }
     }
     // Painted cells are overlapping blobs with a few drips, so the board looks splattered.
     canvas.save();
-    canvas.clipRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, w, h), Radius.circular(cell * 0.3)));
+    canvas.clipRRect(RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, 0, w, h), Radius.circular(cell * 0.3)));
     final gloss = Paint()..color = Colors.white.withValues(alpha: 0.22);
     for (var r = 0; r < g.rows; r++) {
       for (var c = 0; c < g.cols; c++) {
@@ -228,14 +297,19 @@ class _BoardPainter extends CustomPainter {
         canvas.drawCircle(ctr, cell * 0.64, paint);
         // Two small drops per cell, placed by its index so they never jump around.
         final a1 = (i * 2.399) % (2 * pi), a2 = a1 + 2.2;
-        canvas.drawCircle(ctr + Offset(cos(a1), sin(a1)) * cell * 0.62, cell * 0.14, paint);
-        canvas.drawCircle(ctr + Offset(cos(a2), sin(a2)) * cell * 0.58, cell * 0.1, paint);
+        canvas.drawCircle(
+            ctr + Offset(cos(a1), sin(a1)) * cell * 0.62, cell * 0.14, paint);
+        canvas.drawCircle(
+            ctr + Offset(cos(a2), sin(a2)) * cell * 0.58, cell * 0.1, paint);
       }
     }
     for (var r = 0; r < g.rows; r++) {
       for (var c = 0; c < g.cols; c++) {
         if (_owners[r * g.cols + c] < 0) continue;
-        canvas.drawOval(Rect.fromLTWH((c + 0.18) * cell, (r + 0.14) * cell, cell * 0.34, cell * 0.2), gloss);
+        canvas.drawOval(
+            Rect.fromLTWH(
+                (c + 0.18) * cell, (r + 0.14) * cell, cell * 0.34, cell * 0.2),
+            gloss);
       }
     }
     canvas.restore();
@@ -250,7 +324,8 @@ class _BoardPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_BoardPainter old) => cell != old.cell || !_listEquals(_owners, old._owners);
+  bool shouldRepaint(_BoardPainter old) =>
+      cell != old.cell || !_listEquals(_owners, old._owners);
 
   static bool _listEquals(List<int> a, List<int> b) {
     if (a.length != b.length) return false;

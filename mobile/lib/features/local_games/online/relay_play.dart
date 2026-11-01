@@ -24,11 +24,13 @@ class RelayPlay extends StatefulWidget {
   State<RelayPlay> createState() => _RelayPlayState();
 }
 
-class _RelayPlayState extends State<RelayPlay> with SingleTickerProviderStateMixin {
+class _RelayPlayState extends State<RelayPlay>
+    with SingleTickerProviderStateMixin {
   static const _sendEvery = Duration(milliseconds: 50);
 
   late final GameSessionManager _session = context.read<GameSessionManager>();
-  late final String _myId = context.read<AuthenticationManager>().token.split(':')[1];
+  late final String _myId =
+      context.read<AuthenticationManager>().token.split(':')[1];
   RelayGame get _spec => widget.game.online!;
 
   LocalGameLogic? _g;
@@ -64,7 +66,12 @@ class _RelayPlayState extends State<RelayPlay> with SingleTickerProviderStateMix
   void _setUp(Map<String, dynamic> st) {
     final players = (st['players'] as List).cast<Map>();
     _ids = [for (final p in players) p['userId'] as String];
-    _players = [for (var i = 0; i < players.length; i++) GpPlayer(name: '${players[i]['username']}', color: gpPlayerColors[i % gpPlayerColors.length])];
+    _players = [
+      for (var i = 0; i < players.length; i++)
+        GpPlayer(
+            name: '${players[i]['username']}',
+            color: gpPlayerColors[i % gpPlayerColors.length])
+    ];
     _me = _ids.indexOf(_myId).clamp(0, _ids.length - 1);
     _host = st['host'] == _myId;
     final g = _spec.create(_ids.length);
@@ -99,7 +106,9 @@ class _RelayPlayState extends State<RelayPlay> with SingleTickerProviderStateMix
         if (seq <= _acked) continue;
         _acked = seq;
         final from = _ids.indexOf(i['from'] as String);
-        if (from >= 0) _applyAs(from, i['name'] as String, List<Object?>.from(i['args'] as List));
+        if (from >= 0)
+          _applyAs(
+              from, i['name'] as String, List<Object?>.from(i['args'] as List));
       }
     } else {
       final v = (st['version'] as num?)?.toInt() ?? 0;
@@ -109,7 +118,8 @@ class _RelayPlayState extends State<RelayPlay> with SingleTickerProviderStateMix
         _version = v;
         _spec.load(g, Map<String, dynamic>.from(s), _me);
         g.changed();
-        if (first && _ready && mounted) setState(() {}); // leave the waiting screen
+        if (first && _ready && mounted)
+          setState(() {}); // leave the waiting screen
       }
     }
   }
@@ -168,7 +178,13 @@ class _RelayPlayState extends State<RelayPlay> with SingleTickerProviderStateMix
     _dirty = false;
     _sentAck = _acked;
     _lastSent = DateTime.now();
-    _session.action('relay:state', {'state': _spec.save(g), 'ack': _acked}).ignore();
+    final payload = <String, dynamic>{
+      'state': _spec.wireState(g),
+      'ack': _acked
+    };
+    final views = _spec.seatViews(g);
+    if (views != null) payload['views'] = views;
+    _session.action('relay:state', payload).ignore();
   }
 
   void _sendInput(String name, List<Object?> args) {
@@ -178,7 +194,8 @@ class _RelayPlayState extends State<RelayPlay> with SingleTickerProviderStateMix
         _flush = null;
         final batch = Map.of(_pending);
         _pending.clear();
-        batch.forEach((n, a) => _session.action('relay:input', {'name': n, 'args': a}).ignore());
+        batch.forEach((n, a) =>
+            _session.action('relay:input', {'name': n, 'args': a}).ignore());
       });
     } else {
       _session.action('relay:input', {'name': name, 'args': args}).ignore();
@@ -220,28 +237,49 @@ class _RelayPlayState extends State<RelayPlay> with SingleTickerProviderStateMix
               child: Semantics(
                 label: 'You are ${me.name}${_host ? ', the host' : ''}',
                 excludeSemantics: true,
-                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   if (PlayerPalette.indexOf(me.color) case final s?) ...[
-                    SizedBox(width: 12, height: 12, child: CustomPaint(painter: PlayerShapePainter(PlayerPalette.shape(s), Colors.white))),
+                    SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CustomPaint(
+                            painter: PlayerShapePainter(
+                                PlayerPalette.shape(s), Colors.white))),
                     const SizedBox(width: 6),
                   ],
                   Flexible(
-                    child: Text('YOU: ${me.name.toUpperCase()}${_host ? ' · HOST' : ''}',
-                        maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 12.5, letterSpacing: 1)),
+                    child: Text(
+                        'YOU: ${me.name.toUpperCase()}${_host ? ' · HOST' : ''}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 12.5,
+                            letterSpacing: 1)),
                   ),
                 ]),
               ),
             ),
             IconButton(
               tooltip: 'Sound and settings',
-              constraints: const BoxConstraints(minWidth: kTouchTarget, minHeight: 40),
-              onPressed: () => showAppSheet<void>(context, title: 'Settings', builder: (_) => SettingsPanel(color: widget.game.color)),
-              icon: const Icon(Icons.tune_rounded, color: Colors.white, size: 20),
+              constraints:
+                  const BoxConstraints(minWidth: kTouchTarget, minHeight: 40),
+              onPressed: () => showAppSheet<void>(context,
+                  title: 'Settings',
+                  builder: (_) => SettingsPanel(color: widget.game.color)),
+              icon:
+                  const Icon(Icons.tune_rounded, color: Colors.white, size: 20),
             ),
           ]),
         ),
         _OnlineBanners(myId: _myId),
-        Expanded(child: ListenableBuilder(listenable: g, builder: (context, _) => _spec.view(context, g, _players, _me))),
+        Expanded(
+            child: ListenableBuilder(
+                listenable: g,
+                builder: (context, _) =>
+                    _spec.view(context, g, _players, _me))),
       ]),
     );
   }
@@ -257,23 +295,39 @@ class _OnlineBanners extends StatelessWidget {
   Widget build(BuildContext context) {
     final socket = context.read<SocketManager?>();
     final room = context.watch<RoomManager?>()?.room;
-    final away = room?.players.where((p) => !p.connected && p.userId != myId).toList() ?? const <RoomPlayer>[];
+    final away =
+        room?.players.where((p) => !p.connected && p.userId != myId).toList() ??
+            const <RoomPlayer>[];
     final hostAway = room != null && away.any((p) => p.userId == room.hostId);
     Widget banners(bool online) {
       final list = <Widget>[
-        if (!online) const AppBanner(text: 'Connection lost · reconnecting…', tone: Tone.warn),
-        if (online && hostAway) AppBanner(text: 'The host lost connection. The game continues when they are back…', tone: Tone.info),
-        if (online && !hostAway && away.isNotEmpty) AppBanner(text: '${away.map((p) => p.username).join(', ')} lost connection. Waiting for them…', tone: Tone.info),
+        if (!online)
+          const AppBanner(
+              text: 'Connection lost · reconnecting…', tone: Tone.warn),
+        if (online && hostAway)
+          AppBanner(
+              text:
+                  'The host lost connection. The game continues when they are back…',
+              tone: Tone.info),
+        if (online && !hostAway && away.isNotEmpty)
+          AppBanner(
+              text:
+                  '${away.map((p) => p.username).join(', ')} lost connection. Waiting for them…',
+              tone: Tone.info),
       ];
       return AnimatedSize(
         duration: Motion.of(context, Motion.normal),
         child: list.isEmpty
             ? const SizedBox(width: double.infinity)
-            : Padding(padding: const EdgeInsets.fromLTRB(Space.s, Space.s, Space.s, 0), child: Column(children: list)),
+            : Padding(
+                padding:
+                    const EdgeInsets.fromLTRB(Space.s, Space.s, Space.s, 0),
+                child: Column(children: list)),
       );
     }
 
     if (socket == null) return banners(true);
-    return ValueListenableBuilder<bool>(valueListenable: socket.connected, builder: (_, on, __) => banners(on));
+    return ValueListenableBuilder<bool>(
+        valueListenable: socket.connected, builder: (_, on, __) => banners(on));
   }
 }

@@ -26,15 +26,18 @@ class LanServer {
         final r = rooms.get(code);
         if (r != null) _toRoom(r, 'room_state', rooms.publicRoom(r));
       }
-      ..onPlayerDisconnected = ((code, uid) => _toCode(code, 'player_disconnected', {'userId': uid}))
-      ..onPlayerReconnected = ((code, uid) => _toCode(code, 'player_reconnected', {'userId': uid}))
+      ..onPlayerDisconnected =
+          ((code, uid) => _toCode(code, 'player_disconnected', {'userId': uid}))
+      ..onPlayerReconnected =
+          ((code, uid) => _toCode(code, 'player_reconnected', {'userId': uid}))
       ..onGameUpdated = (code, result) {
         final r = rooms.get(code);
         if (r == null) return;
         _sendGameState(r);
         if (result != null) _toRoom(r, 'game_finished', result);
       }
-      ..onGameAborted = ((code) => _toCode(code, 'error', {'code': 'GAME_ABORTED'}));
+      ..onGameAborted =
+          ((code) => _toCode(code, 'error', {'code': 'GAME_ABORTED'}));
   }
 
   bool get running => _http != null;
@@ -42,7 +45,8 @@ class LanServer {
 
   Future<int> start({int port = defaultPort}) async {
     if (_http != null) return _http!.port;
-    final http = await HttpServer.bind(InternetAddress.anyIPv4, port, shared: true);
+    final http =
+        await HttpServer.bind(InternetAddress.anyIPv4, port, shared: true);
     _http = http;
     http.listen(_handle, onError: (_) {});
     return http.port;
@@ -64,11 +68,13 @@ class LanServer {
       if (path == '/health') {
         req.response
           ..headers.contentType = ContentType.json
-          ..write(jsonEncode({'ok': true, 'app': 'party-games', 'host': 'phone'}));
+          ..write(
+              jsonEncode({'ok': true, 'app': 'party-games', 'host': 'phone'}));
         await req.response.close();
         return;
       }
-      if (path.startsWith('/socket.io') && WebSocketTransformer.isUpgradeRequest(req)) {
+      if (path.startsWith('/socket.io') &&
+          WebSocketTransformer.isUpgradeRequest(req)) {
         final ws = await WebSocketTransformer.upgrade(req);
         _Conn(this, ws, _sid()).open();
         return;
@@ -80,7 +86,8 @@ class LanServer {
     }
   }
 
-  String _sid() => base64Url.encode(List.generate(15, (_) => _rng.nextInt(256)));
+  String _sid() =>
+      base64Url.encode(List.generate(15, (_) => _rng.nextInt(256)));
 
   void _toCode(String code, String event, Object? data) {
     final r = rooms.get(code);
@@ -98,7 +105,10 @@ class LanServer {
     if (room.status == 'lobby' || g == null) return;
     for (final p in room.players) {
       if (only != null && only != p.userId) continue;
-      _byUser[p.userId]?.emit('game_state', {...g.publicState(p.userId), 'serverNow': DateTime.now().millisecondsSinceEpoch});
+      _byUser[p.userId]?.emit('game_state', {
+        ...g.publicState(p.userId),
+        'serverNow': DateTime.now().millisecondsSinceEpoch
+      });
     }
   }
 
@@ -117,7 +127,8 @@ class LanServer {
 
   void _disconnected(_Conn c) {
     final uid = c.userId;
-    if (uid == null || _byUser[uid] != c) return; // replaced by a newer connection
+    if (uid == null || _byUser[uid] != c)
+      return; // replaced by a newer connection
     _byUser.remove(uid);
     rooms.markDisconnected(uid);
   }
@@ -134,13 +145,18 @@ class LanServer {
 
     switch (event) {
       case 'create_room':
-        return room(rooms.createRoom(uid, name, gameType: '${p['gameType']}', maxPlayers: p['maxPlayers']));
+        return room(rooms.createRoom(uid, name,
+            gameType: '${p['gameType']}', maxPlayers: p['maxPlayers']));
       case 'quick_play':
         final g = p['gameType'];
-        return room(rooms.quickPlay(uid, name, gameType: g == null ? null : '$g'));
+        return room(
+            rooms.quickPlay(uid, name, gameType: g == null ? null : '$g'));
       case 'join_room':
-        final code = p['code'] is String ? (p['code'] as String).trim().toUpperCase() : '';
-        if (!_codeRe.hasMatch(code)) throw const LanError('INVALID_PAYLOAD', 'bad room code');
+        final code = p['code'] is String
+            ? (p['code'] as String).trim().toUpperCase()
+            : '';
+        if (!_codeRe.hasMatch(code))
+          throw const LanError('INVALID_PAYLOAD', 'bad room code');
         return room(rooms.joinRoom(uid, name, code));
       case 'leave_room':
         rooms.leave(uid);
@@ -156,8 +172,16 @@ class LanServer {
         return {};
       case 'game_action':
         final type = p['type'], seq = p['seq'], payload = p['payload'];
-        if (type is! String || type.length > 40 || seq is! int || seq < 0 || (payload != null && payload is! Map)) throw const LanError('INVALID_PAYLOAD');
-        return {'response': rooms.gameAction(uid, type, (payload as Map?) ?? const {}, seq)};
+        if (type is! String ||
+            type.length > 40 ||
+            seq is! int ||
+            seq < 0 ||
+            (payload != null && payload is! Map))
+          throw const LanError('INVALID_PAYLOAD');
+        return {
+          'response':
+              rooms.gameAction(uid, type, (payload as Map?) ?? const {}, seq)
+        };
       case 'return_to_lobby':
         rooms.returnToLobby(uid);
         return {};
@@ -189,9 +213,16 @@ class _Conn {
   _Conn(this.server, this.ws, this.sid);
 
   void open() {
-    _send('0${jsonEncode({'sid': sid, 'upgrades': const [], 'pingInterval': 25000, 'pingTimeout': 20000, 'maxPayload': 1000000})}');
+    _send('0${jsonEncode({
+          'sid': sid,
+          'upgrades': const [],
+          'pingInterval': 25000,
+          'pingTimeout': 20000,
+          'maxPayload': 1000000
+        })}');
     _ping = Timer.periodic(const Duration(seconds: 25), (_) => _send('2'));
-    ws.listen((m) => m is String ? _onMessage(m) : null, onDone: _gone, onError: (_) => _gone(), cancelOnError: true);
+    ws.listen((m) => m is String ? _onMessage(m) : null,
+        onDone: _gone, onError: (_) => _gone(), cancelOnError: true);
   }
 
   void _send(String s) {
@@ -203,7 +234,8 @@ class _Conn {
     }
   }
 
-  void emit(String event, Object? data) => _send('42${jsonEncode([event, data])}');
+  void emit(String event, Object? data) =>
+      _send('42${jsonEncode([event, data])}');
 
   void close() {
     _send('41');
@@ -249,7 +281,8 @@ class _Conn {
           return;
         }
         userId = m.group(1);
-        username = m.group(2) ?? 'Guest-${userId!.substring(0, min(4, userId!.length))}';
+        username = m.group(2) ??
+            'Guest-${userId!.substring(0, min(4, userId!.length))}';
         _send('40${jsonEncode({'sid': sid})}');
         server._connected(this);
       case '1': // DISCONNECT
@@ -257,7 +290,9 @@ class _Conn {
       case '2': // EVENT [ackId][event, payload]
         if (userId == null) return;
         var i = 0;
-        while (i < rest.length && rest.codeUnitAt(i) >= 48 && rest.codeUnitAt(i) <= 57) {
+        while (i < rest.length &&
+            rest.codeUnitAt(i) >= 48 &&
+            rest.codeUnitAt(i) <= 57) {
           i++;
         }
         final ackId = i > 0 ? rest.substring(0, i) : null;
@@ -269,12 +304,17 @@ class _Conn {
         }
         if (body is! List || body.isEmpty || body.first is! String) return;
         final event = body.first as String;
-        final payload = body.length > 1 && body[1] is Map ? body[1] as Map : const {};
+        final payload =
+            body.length > 1 && body[1] is Map ? body[1] as Map : const {};
         Map<String, Object?> reply;
         try {
           reply = {'ok': true, ...server._request(this, event, payload)};
         } on LanError catch (e) {
-          reply = {'ok': false, 'error': e.code, 'message': e.message ?? e.code};
+          reply = {
+            'ok': false,
+            'error': e.code,
+            'message': e.message ?? e.code
+          };
         } catch (_) {
           reply = {'ok': false, 'error': 'INTERNAL'};
         }

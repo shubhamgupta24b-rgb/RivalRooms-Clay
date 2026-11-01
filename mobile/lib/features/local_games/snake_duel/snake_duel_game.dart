@@ -26,13 +26,19 @@ class SnakeDuelLogic extends LocalGameLogic {
   int _nextStep = 700; // a moment to get ready before the first move
   int? _nextRoundAt;
 
-  SnakeDuelLogic({this.cols = 18, this.rows = 26, this.stepMs = 130, this.target = 3, this.pauseMs = 1400}) {
+  SnakeDuelLogic(
+      {this.cols = 18,
+      this.rows = 26,
+      this.stepMs = 130,
+      this.target = 3,
+      this.pauseMs = 1400}) {
     _reset();
   }
 
   void _reset() {
     owner = List.filled(cols * rows, -1);
-    head[0] = (rows - 3) * cols + cols ~/ 2; // player 1 starts at the bottom going up
+    head[0] =
+        (rows - 3) * cols + cols ~/ 2; // player 1 starts at the bottom going up
     head[1] = 2 * cols + cols ~/ 2 - 1; // player 2 at the top going down
     dir[0] = 0;
     dir[1] = 2;
@@ -96,7 +102,8 @@ class SnakeDuelLogic extends LocalGameLogic {
         if (owner[next[p]] >= 0) crashed[p] = true;
       }
     }
-    if (!crashed[0] && !crashed[1] && next[0] == next[1]) crashed[0] = crashed[1] = true; // head-on
+    if (!crashed[0] && !crashed[1] && next[0] == next[1])
+      crashed[0] = crashed[1] = true; // head-on
     for (var p = 0; p < 2; p++) {
       if (!crashed[p]) {
         head[p] = next[p];
@@ -129,7 +136,12 @@ final snakeDuelInfo = LocalGameInfo(
     b.wait(now, 60, 110);
     const dx = [0, 1, 0, -1], dy = [-1, 0, 1, 0];
     final h = g.head[b.seat];
-    bool free(int x, int y) => x >= 0 && x < g.cols && y >= 0 && y < g.rows && g.owner[y * g.cols + x] < 0;
+    bool free(int x, int y) =>
+        x >= 0 &&
+        x < g.cols &&
+        y >= 0 &&
+        y < g.rows &&
+        g.owner[y * g.cols + x] < 0;
     // How much room is in a direction (a few steps of look-ahead).
     int room(int dir) {
       var x = h % g.cols, y = h ~/ g.cols, n = 0;
@@ -173,16 +185,20 @@ final snakeDuelInfo = LocalGameInfo(
     },
     apply: (g, from, name, a) {
       final side = asInt(a[1]);
-      if (name == 'turn' && asInt(a[0]) == from && (side == 1 || side == -1)) g.turn(from, side);
+      if (name == 'turn' && asInt(a[0]) == from && (side == 1 || side == -1))
+        g.turn(from, side);
     },
     view: (context, g, players, me) => Column(children: [
       Expanded(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: RotatedBox(quarterTurns: me == 1 ? 2 : 0, child: _Arena(players: players, g: g)),
+          child: RotatedBox(
+              quarterTurns: me == 1 ? 2 : 0,
+              child: _Arena(players: players, g: g)),
         ),
       ),
-      ScoreMiddleBar(players: players, scores: g.scores, label: 'First to ${g.target}'),
+      ScoreMiddleBar(
+          players: players, scores: g.scores, label: 'First to ${g.target}'),
       _Controls(player: players[me], index: me, g: g),
     ]),
   ),
@@ -190,9 +206,15 @@ final snakeDuelInfo = LocalGameInfo(
     create: () => SnakeDuelLogic(),
     onFinished: onFinished,
     builder: (context, g) => Column(children: [
-      RotatedBox(quarterTurns: 2, child: _Controls(player: players[1], index: 1, g: g)),
-      Expanded(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 10), child: _Arena(players: players, g: g))),
-      ScoreMiddleBar(players: players, scores: g.scores, label: 'First to ${g.target}'),
+      RotatedBox(
+          quarterTurns: 2,
+          child: _Controls(player: players[1], index: 1, g: g)),
+      Expanded(
+          child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: _Arena(players: players, g: g))),
+      ScoreMiddleBar(
+          players: players, scores: g.scores, label: 'First to ${g.target}'),
       _Controls(player: players[0], index: 0, g: g),
     ]),
   ),
@@ -221,9 +243,17 @@ class _Controls extends StatelessWidget {
                 margin: const EdgeInsets.fromLTRB(6, 4, 6, 10),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color.lerp(player.color, Colors.white, 0.18)!, player.color]),
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color.lerp(player.color, Colors.white, 0.18)!,
+                        player.color
+                      ]),
                   borderRadius: Radii.rButton,
-                  boxShadow: Shadows.edge(Color.lerp(player.color, Colors.black, 0.45)!, depth: 5),
+                  boxShadow: Shadows.edge(
+                      Color.lerp(player.color, Colors.black, 0.45)!,
+                      depth: 5),
                 ),
                 child: GameIcon(icon, size: 36, color: Colors.white),
               ),
@@ -236,8 +266,18 @@ class _Controls extends StatelessWidget {
             ? 'Tie!'
             : (g.roundWinner == index ? 'You win the round!' : 'Crash!');
     return Column(children: [
-      Text(status, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.display, color: g.roundWinner == index ? Brand.gold : nameColor(player.color), fontSize: 18)),
-      Row(children: [btn(GameIcons.arrowLeft, 'turn left', -1), btn(GameIcons.arrowRight, 'turn right', 1)]),
+      Text(status,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+              fontFamily: Fonts.display,
+              color:
+                  g.roundWinner == index ? Brand.gold : nameColor(player.color),
+              fontSize: 18)),
+      Row(children: [
+        btn(GameIcons.arrowLeft, 'turn left', -1),
+        btn(GameIcons.arrowRight, 'turn right', 1)
+      ]),
     ]);
   }
 }
@@ -251,8 +291,14 @@ class _Arena extends StatelessWidget {
         child: AspectRatio(
           aspectRatio: g.cols / g.rows,
           child: Container(
-            decoration: BoxDecoration(color: const Color(0xFF141B30), borderRadius: Radii.rBoard, border: Border.all(color: Colors.white24, width: 2), boxShadow: Shadows.large),
-            child: CustomPaint(painter: _ArenaPainter(g, players.map((p) => p.color).toList(), List.of(g.owner), List.of(g.head))),
+            decoration: BoxDecoration(
+                color: const Color(0xFF141B30),
+                borderRadius: Radii.rBoard,
+                border: Border.all(color: Colors.white24, width: 2),
+                boxShadow: Shadows.large),
+            child: CustomPaint(
+                painter: _ArenaPainter(g, players.map((p) => p.color).toList(),
+                    List.of(g.owner), List.of(g.head))),
           ),
         ),
       );
@@ -276,17 +322,28 @@ class _ArenaPainter extends CustomPainter {
     for (var r = 0; r < g.rows; r++) {
       for (var c = 0; c < g.cols; c++) {
         floor.color = (r + c).isEven ? _floorA : _floorB;
-        canvas.drawRect(Rect.fromLTWH(c * cw, r * ch, cw + 0.5, ch + 0.5), floor);
+        canvas.drawRect(
+            Rect.fromLTWH(c * cw, r * ch, cw + 0.5, ch + 0.5), floor);
       }
     }
     for (var i = 0; i < owners.length; i++) {
       final o = owners[i];
       if (o < 0) continue;
-      final rect = Rect.fromLTWH((i % g.cols) * cw + 1, (i ~/ g.cols) * ch + 1, cw - 2, ch - 2);
+      final rect = Rect.fromLTWH(
+          (i % g.cols) * cw + 1, (i ~/ g.cols) * ch + 1, cw - 2, ch - 2);
       final isHead = heads[o] == i;
-      final body = RRect.fromRectAndRadius(rect, Radius.circular(cw * (isHead ? 0.45 : 0.3)));
-      canvas.drawRRect(body.shift(const Offset(0, 1.5)), Paint()..color = Colors.black38);
-      canvas.drawRRect(body, Paint()..shader = LinearGradient(colors: [Color.lerp(colors[o], Colors.white, isHead ? 0.25 : 0.12)!, colors[o]], begin: Alignment.topLeft, end: Alignment.bottomRight).createShader(rect));
+      final body = RRect.fromRectAndRadius(
+          rect, Radius.circular(cw * (isHead ? 0.45 : 0.3)));
+      canvas.drawRRect(
+          body.shift(const Offset(0, 1.5)), Paint()..color = Colors.black38);
+      canvas.drawRRect(
+          body,
+          Paint()
+            ..shader = LinearGradient(colors: [
+              Color.lerp(colors[o], Colors.white, isHead ? 0.25 : 0.12)!,
+              colors[o]
+            ], begin: Alignment.topLeft, end: Alignment.bottomRight)
+                .createShader(rect));
       if (isHead) {
         // Two eyes, so the head reads at a glance.
         for (final dx in [-0.2, 0.2]) {
@@ -297,6 +354,7 @@ class _ArenaPainter extends CustomPainter {
       }
     }
   }
+
   @override
   bool shouldRepaint(_ArenaPainter old) => true;
 }

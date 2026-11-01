@@ -36,7 +36,8 @@ class AirHockeyLogic extends TimedDuel {
   int _last = 0;
   int? _resumeAt;
 
-  AirHockeyLogic({this.target = 5, int durationMs = 120000}) : super(durationMs);
+  AirHockeyLogic({this.target = 5, int durationMs = 120000})
+      : super(durationMs);
 
   @override
   List<int> get scores => goals;
@@ -54,7 +55,8 @@ class AirHockeyLogic extends TimedDuel {
       changed();
       return;
     }
-    _malletVel[p] = (clamped - mallet[p]) * 60; // roughly per-frame movement -> per second
+    _malletVel[p] =
+        (clamped - mallet[p]) * 60; // roughly per-frame movement -> per second
     mallet[p] = clamped;
   }
 
@@ -73,7 +75,8 @@ class AirHockeyLogic extends TimedDuel {
       if (paused) break;
     }
     for (var p = 0; p < 2; p++) {
-      _malletVel[p] = _malletVel[p] * 0.6; // stop "pushing" when the finger stops
+      _malletVel[p] =
+          _malletVel[p] * 0.6; // stop "pushing" when the finger stops
     }
   }
 
@@ -81,14 +84,16 @@ class AirHockeyLogic extends TimedDuel {
     puck = puck + vel * dt;
     vel = vel * (1 - 0.35 * dt); // table friction
     // Side walls.
-    if (puck.x < puckR && vel.x < 0 || puck.x > 1 - puckR && vel.x > 0) vel = V(-vel.x * 0.95, vel.y);
+    if (puck.x < puckR && vel.x < 0 || puck.x > 1 - puckR && vel.x > 0)
+      vel = V(-vel.x * 0.95, vel.y);
     puck = V(puck.x.clamp(puckR, 1 - puckR), puck.y);
     // End walls and goals.
     final inGoalMouth = (puck.x - 0.5).abs() < goalHalf;
     if (puck.y < -puckR && inGoalMouth) return _goal(0);
     if (puck.y > length + puckR && inGoalMouth) return _goal(1);
     if (!inGoalMouth) {
-      if (puck.y < puckR && vel.y < 0 || puck.y > length - puckR && vel.y > 0) vel = V(vel.x, -vel.y * 0.95);
+      if (puck.y < puckR && vel.y < 0 || puck.y > length - puckR && vel.y > 0)
+        vel = V(vel.x, -vel.y * 0.95);
       puck = V(puck.x, puck.y.clamp(puckR, length - puckR));
     }
     // Mallets.
@@ -104,7 +109,8 @@ class AirHockeyLogic extends TimedDuel {
         vel = vel + n * 0.15; // always a little kick away from the mallet
         // A mallet must never shove the puck through a wall (only into a goal mouth).
         final mouth = (puck.x - 0.5).abs() < goalHalf;
-        puck = V(puck.x.clamp(puckR, 1 - puckR), mouth ? puck.y : puck.y.clamp(puckR, length - puckR));
+        puck = V(puck.x.clamp(puckR, 1 - puckR),
+            mouth ? puck.y : puck.y.clamp(puckR, length - puckR));
       }
     }
     final speed = vel.length;
@@ -143,7 +149,8 @@ final airHockeyInfo = LocalGameInfo(
     final me = g.mallet[b.seat];
     // Go for the puck in its half, or a slow one sitting on the centre line within reach.
     final slow = g.vel.length < 0.3;
-    final inMyHalf = g.puck.y < AirHockeyLogic.length / 2 + (slow ? AirHockeyLogic.puckR + 0.02 : 0);
+    final inMyHalf = g.puck.y <
+        AirHockeyLogic.length / 2 + (slow ? AirHockeyLogic.puckR + 0.02 : 0);
     // Strike the puck a little off-centre so shots angle off the walls instead of straight at the keeper.
     if (!inMyHalf) b.memory['side'] = b.chance(0.5) ? -1.0 : 1.0;
     final side = (b.memory['side'] as double?) ?? 1.0;
@@ -176,21 +183,30 @@ final airHockeyInfo = LocalGameInfo(
       final p = doubles(s['puck']), m = doubles(s['m']);
       g.puck = V(p[0], p[1]);
       for (var i = 0; i < 2; i++) {
-        if (i != me) g.mallet[i] = V(m[i * 2], m[i * 2 + 1]); // keep my own, it's ahead
+        if (i != me)
+          g.mallet[i] = V(m[i * 2], m[i * 2 + 1]); // keep my own, it's ahead
       }
       g.lastGoalBy = nInt(s['last']);
       g._resumeAt = s['paused'] == true ? 1 << 40 : null;
     },
     apply: (g, from, name, a) {
-      if (name == 'mallet' && asInt(a[0]) == from) g.moveMallet(from, V(asDouble(a[1]), asDouble(a[2])));
+      if (name == 'mallet' && asInt(a[0]) == from)
+        g.moveMallet(from, V(asDouble(a[1]), asDouble(a[2])));
     },
     continuous: const {'mallet'},
     // Player 2 sees the table turned round, so their goal is at the bottom too.
     view: (context, g, players, me) => RotatedBox(
       quarterTurns: me == 1 ? 2 : 0,
       child: Column(children: [
-        Expanded(child: Padding(padding: const EdgeInsets.all(8), child: TableView(players: players, logic: g))),
-        DuelMiddleBar(players: players, scores: g.scores, secondsLeft: g.secondsLeft, progress: g.progress),
+        Expanded(
+            child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: TableView(players: players, logic: g))),
+        DuelMiddleBar(
+            players: players,
+            scores: g.scores,
+            secondsLeft: g.secondsLeft,
+            progress: g.progress),
       ]),
     ),
   ),
@@ -198,8 +214,15 @@ final airHockeyInfo = LocalGameInfo(
     create: () => AirHockeyLogic(),
     onFinished: onFinished,
     builder: (context, g) => Column(children: [
-      Expanded(child: Padding(padding: const EdgeInsets.all(8), child: TableView(players: players, logic: g))),
-      DuelMiddleBar(players: players, scores: g.scores, secondsLeft: g.secondsLeft, progress: g.progress),
+      Expanded(
+          child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: TableView(players: players, logic: g))),
+      DuelMiddleBar(
+          players: players,
+          scores: g.scores,
+          secondsLeft: g.secondsLeft,
+          progress: g.progress),
     ]),
   ),
 );
@@ -218,14 +241,16 @@ class _TableViewState extends State<TableView> {
   final _fingers = <int, int>{}; // pointer -> player
   Rect _table = Rect.zero;
 
-  V _toTable(Offset p) => V((p.dx - _table.left) / _table.width, (p.dy - _table.top) / _table.width);
+  V _toTable(Offset p) => V(
+      (p.dx - _table.left) / _table.width, (p.dy - _table.top) / _table.width);
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, c) {
       // Fit a 1 x length table into the space.
       // Leave room for the rail drawn around the ice (3.5% of the width each side).
-      final w = min(c.maxWidth / 1.07, c.maxHeight / (AirHockeyLogic.length + 0.07));
+      final w =
+          min(c.maxWidth / 1.07, c.maxHeight / (AirHockeyLogic.length + 0.07));
       final h = w * AirHockeyLogic.length;
       _table = Rect.fromLTWH((c.maxWidth - w) / 2, (c.maxHeight - h) / 2, w, h);
       void move(PointerEvent e) {
@@ -242,7 +267,10 @@ class _TableViewState extends State<TableView> {
         onPointerMove: move,
         onPointerUp: (e) => _fingers.remove(e.pointer),
         onPointerCancel: (e) => _fingers.remove(e.pointer),
-        child: CustomPaint(size: c.biggest, painter: _TablePainter(widget.logic, _table, widget.players.map((p) => p.color).toList())),
+        child: CustomPaint(
+            size: c.biggest,
+            painter: _TablePainter(widget.logic, _table,
+                widget.players.map((p) => p.color).toList())),
       );
     });
   }
@@ -269,11 +297,27 @@ class _TablePainter extends CustomPainter {
     final s = table.width;
     Offset at(V v) => Offset(table.left + v.x * s, table.top + v.y * s);
     // Rail, then the ice inside it.
-    final outer = RRect.fromRectAndRadius(table.inflate(s * 0.035), Radius.circular(s * 0.11));
-    canvas.drawRRect(outer.shift(const Offset(0, 6)), Paint()..color = Colors.black54);
-    canvas.drawRRect(outer, Paint()..shader = const LinearGradient(colors: _rail, begin: Alignment.topCenter, end: Alignment.bottomCenter).createShader(outer.outerRect));
+    final outer = RRect.fromRectAndRadius(
+        table.inflate(s * 0.035), Radius.circular(s * 0.11));
+    canvas.drawRRect(
+        outer.shift(const Offset(0, 6)), Paint()..color = Colors.black54);
+    canvas.drawRRect(
+        outer,
+        Paint()
+          ..shader = const LinearGradient(
+                  colors: _rail,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter)
+              .createShader(outer.outerRect));
     final ice = RRect.fromRectAndRadius(table, Radius.circular(s * 0.08));
-    canvas.drawRRect(ice, Paint()..shader = const LinearGradient(colors: _ice, begin: Alignment.topCenter, end: Alignment.bottomCenter).createShader(table));
+    canvas.drawRRect(
+        ice,
+        Paint()
+          ..shader = const LinearGradient(
+                  colors: _ice,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter)
+              .createShader(table));
     canvas.save();
     canvas.clipRRect(ice);
     // Air holes.
@@ -288,53 +332,105 @@ class _TablePainter extends CustomPainter {
       ..color = _marking.withValues(alpha: 0.75)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3;
-    canvas.drawLine(at(const V(0, AirHockeyLogic.length / 2)), at(const V(1, AirHockeyLogic.length / 2)), line);
-    canvas.drawCircle(at(const V(0.5, AirHockeyLogic.length / 2)), s * 0.15, line);
-    for (final (y, c) in [(0.0, colors[1]), (AirHockeyLogic.length, colors[0])]) {
-      canvas.drawArc(Rect.fromCircle(center: at(V(0.5, y)), radius: s * 0.24), y == 0 ? 0 : 3.1416, 3.1416, false, Paint()
-        ..color = c.withValues(alpha: 0.6)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3);
+    canvas.drawLine(at(const V(0, AirHockeyLogic.length / 2)),
+        at(const V(1, AirHockeyLogic.length / 2)), line);
+    canvas.drawCircle(
+        at(const V(0.5, AirHockeyLogic.length / 2)), s * 0.15, line);
+    for (final (y, c) in [
+      (0.0, colors[1]),
+      (AirHockeyLogic.length, colors[0])
+    ]) {
+      canvas.drawArc(
+          Rect.fromCircle(center: at(V(0.5, y)), radius: s * 0.24),
+          y == 0 ? 0 : 3.1416,
+          3.1416,
+          false,
+          Paint()
+            ..color = c.withValues(alpha: 0.6)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 3);
     }
     canvas.restore();
     // Goal slots in the rail.
-    for (final (y, c) in [(0.0, colors[1]), (AirHockeyLogic.length, colors[0])]) {
-      canvas.drawLine(at(V(0.5 - AirHockeyLogic.goalHalf, y)), at(V(0.5 + AirHockeyLogic.goalHalf, y)), Paint()
-        ..color = const Color(0xFF0A0C10)
-        ..strokeWidth = 12
-        ..strokeCap = StrokeCap.round);
-      canvas.drawLine(at(V(0.5 - AirHockeyLogic.goalHalf, y)), at(V(0.5 + AirHockeyLogic.goalHalf, y)), Paint()
-        ..color = c
-        ..strokeWidth = 4
-        ..strokeCap = StrokeCap.round);
+    for (final (y, c) in [
+      (0.0, colors[1]),
+      (AirHockeyLogic.length, colors[0])
+    ]) {
+      canvas.drawLine(
+          at(V(0.5 - AirHockeyLogic.goalHalf, y)),
+          at(V(0.5 + AirHockeyLogic.goalHalf, y)),
+          Paint()
+            ..color = const Color(0xFF0A0C10)
+            ..strokeWidth = 12
+            ..strokeCap = StrokeCap.round);
+      canvas.drawLine(
+          at(V(0.5 - AirHockeyLogic.goalHalf, y)),
+          at(V(0.5 + AirHockeyLogic.goalHalf, y)),
+          Paint()
+            ..color = c
+            ..strokeWidth = 4
+            ..strokeCap = StrokeCap.round);
     }
     // Puck (with shadow), then the mallets on top.
     final pc = at(puck), pr = AirHockeyLogic.puckR * s;
-    canvas.drawCircle(pc + const Offset(2, 3), pr, Paint()..color = Colors.black26);
-    canvas.drawCircle(pc, pr, Paint()..shader = RadialGradient(center: const Alignment(-0.3, -0.4), colors: [const Color(0xFF4A5060), _puck]).createShader(Rect.fromCircle(center: pc, radius: pr)));
-    canvas.drawCircle(pc, pr * 0.62, Paint()
-      ..color = Colors.white24
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5);
+    canvas.drawCircle(
+        pc + const Offset(2, 3), pr, Paint()..color = Colors.black26);
+    canvas.drawCircle(
+        pc,
+        pr,
+        Paint()
+          ..shader = RadialGradient(
+                  center: const Alignment(-0.3, -0.4),
+                  colors: [const Color(0xFF4A5060), _puck])
+              .createShader(Rect.fromCircle(center: pc, radius: pr)));
+    canvas.drawCircle(
+        pc,
+        pr * 0.62,
+        Paint()
+          ..color = Colors.white24
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5);
     for (var p = 0; p < 2; p++) {
       final m = at(mallets[p]), mr = AirHockeyLogic.malletR * s;
-      canvas.drawCircle(m + const Offset(3, 5), mr, Paint()..color = Colors.black38);
-      canvas.drawCircle(m, mr, Paint()..shader = RadialGradient(center: const Alignment(-0.35, -0.4), colors: [Color.lerp(colors[p], Colors.white, 0.35)!, colors[p], Color.lerp(colors[p], Colors.black, 0.35)!]).createShader(Rect.fromCircle(center: m, radius: mr)));
+      canvas.drawCircle(
+          m + const Offset(3, 5), mr, Paint()..color = Colors.black38);
+      canvas.drawCircle(
+          m,
+          mr,
+          Paint()
+            ..shader =
+                RadialGradient(center: const Alignment(-0.35, -0.4), colors: [
+              Color.lerp(colors[p], Colors.white, 0.35)!,
+              colors[p],
+              Color.lerp(colors[p], Colors.black, 0.35)!
+            ]).createShader(Rect.fromCircle(center: m, radius: mr)));
       // The handle knob.
-      canvas.drawCircle(m, mr * 0.42, Paint()..color = Color.lerp(colors[p], Colors.black, 0.25)!);
-      canvas.drawCircle(m - Offset(mr * 0.1, mr * 0.12), mr * 0.3, Paint()..color = Color.lerp(colors[p], Colors.white, 0.45)!);
+      canvas.drawCircle(m, mr * 0.42,
+          Paint()..color = Color.lerp(colors[p], Colors.black, 0.25)!);
+      canvas.drawCircle(m - Offset(mr * 0.1, mr * 0.12), mr * 0.3,
+          Paint()..color = Color.lerp(colors[p], Colors.white, 0.45)!);
     }
     if (g.paused && g.lastGoalBy != null) {
       final tp = TextPainter(
         text: TextSpan(
           text: 'GOAL!',
-          style: TextStyle(fontFamily: Fonts.display, color: colors[g.lastGoalBy!], fontSize: s * 0.16, shadows: const [Shadow(color: Color(0x99000000), blurRadius: 8, offset: Offset(0, 4))]),
+          style: TextStyle(
+              fontFamily: Fonts.display,
+              color: colors[g.lastGoalBy!],
+              fontSize: s * 0.16,
+              shadows: const [
+                Shadow(
+                    color: Color(0x99000000),
+                    blurRadius: 8,
+                    offset: Offset(0, 4))
+              ]),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
       tp.paint(canvas, table.center - Offset(tp.width / 2, tp.height / 2));
     }
   }
+
   @override
   bool shouldRepaint(_TablePainter old) => true;
 }

@@ -1,0 +1,55 @@
+{
+  "command": [
+    "C:/Users/sg857/Downloads/flutter/flutter/bin/flutter",
+    "build",
+    "apk",
+    "--release",
+    "--no-pub",
+    "--dart-define=ADMOB_USE_TEST_ADS=true",
+    "--dart-define=ADMOB_APP_ID=ca-app-pub-3940256099942544~3347511713"
+  ],
+  "launcher": "C:/Program Files/Git/usr/bin/bash.exe",
+  "cwd": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile",
+  "started_utc": "2026-10-30T11:24:31.391856+00:00",
+  "timeout_seconds": 590,
+  "artifacts_before": [
+    {
+      "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\flutter-apk\\app-release.apk",
+      "relative_path": "mobile/build/app/outputs/flutter-apk/app-release.apk",
+      "size_bytes": 62320600,
+      "sha256": "e34a3290689274c71b35a5f07b50d7019b02b96053df6cf70b9a009c4cbc6368",
+      "modified_utc": "2026-10-13T20:22:06.017072+00:00",
+      "created_utc": "2026-10-10T21:16:49.991988+00:00"
+    },
+    {
+      "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\apk\\release\\app-release.apk",
+      "relative_path": "mobile/build/app/outputs/apk/release/app-release.apk",
+      "size_bytes": 62320600,
+      "sha256": "e34a3290689274c71b35a5f07b50d7019b02b96053df6cf70b9a009c4cbc6368",
+      "modified_utc": "2026-10-13T20:22:04.737369+00:00",
+      "created_utc": "2026-10-10T21:16:48.391963+00:00"
+    }
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "finished_utc": "2026-10-30T11:28:24.056145+00:00",
+  "elapsed_seconds": 232.453,
+  "artifacts_after": [
+    {
+      "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\flutter-apk\\app-release.apk",
+      "relative_path": "mobile/build/app/outputs/flutter-apk/app-release.apk",
+      "size_bytes": 67256124,
+      "sha256": "32a1764d64b7982936bc321faaa2ac11bc9dae3f6452927e19eb8cd58f34691f",
+      "modified_utc": "2026-10-30T11:28:21.246496+00:00",
+      "created_utc": "2026-10-10T21:16:49.991988+00:00"
+    },
+    {
+      "absolute_path": "C:\\Users\\sg857\\Desktop\\RivalRoom\\RivalRoom-Clay\\mobile\\build\\app\\outputs\\apk\\release\\app-release.apk",
+      "relative_path": "mobile/build/app/outputs/apk/release/app-release.apk",
+      "size_bytes": 67256124,
+      "sha256": "32a1764d64b7982936bc321faaa2ac11bc9dae3f6452927e19eb8cd58f34691f",
+      "modified_utc": "2026-10-30T11:28:20.764491+00:00",
+      "created_utc": "2026-10-10T21:16:48.391963+00:00"
+    }
+  ]
+}

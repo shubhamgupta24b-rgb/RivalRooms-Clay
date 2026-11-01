@@ -16,10 +16,14 @@ enum DrawPhase { ready, drawing, turnEnd, done }
 /// a point, and so does the artist. 75 seconds per drawing.
 class DrawGuessLogic extends LocalGameLogic {
   static const words = [
-    'Sun', 'House', 'Tree', 'Cat', 'Car', 'Fish', 'Pizza', 'Phone', 'Guitar', 'Rainbow', 'Rocket', 'Umbrella', 'Kite', 'Cricket bat', //
-    'Ice cream', 'Clock', 'Glasses', 'Train', 'Flower', 'Star', 'Heart', 'Snowman', 'Elephant', 'Ladder', 'Balloon', 'Book', 'Bicycle', //
-    'Chair', 'Moon', 'Apple', 'Banana', 'Spider', 'Mountain', 'Boat', 'Crown', 'Fire', 'Key', 'Lamp', 'Snake', 'Shoe', 'Hat', 'Cake', //
-    'Camera', 'Bridge', 'Bird', 'Ghost', 'Butterfly', 'Candle', 'Football', 'Robot', 'Laptop', 'Mango', 'Pencil', 'Cloud', 'Tiger', //
+    'Sun', 'House', 'Tree', 'Cat', 'Car', 'Fish', 'Pizza', 'Phone', 'Guitar',
+    'Rainbow', 'Rocket', 'Umbrella', 'Kite', 'Cricket bat', //
+    'Ice cream', 'Clock', 'Glasses', 'Train', 'Flower', 'Star', 'Heart',
+    'Snowman', 'Elephant', 'Ladder', 'Balloon', 'Book', 'Bicycle', //
+    'Chair', 'Moon', 'Apple', 'Banana', 'Spider', 'Mountain', 'Boat', 'Crown',
+    'Fire', 'Key', 'Lamp', 'Snake', 'Shoe', 'Hat', 'Cake', //
+    'Camera', 'Bridge', 'Bird', 'Ghost', 'Butterfly', 'Candle', 'Football',
+    'Robot', 'Laptop', 'Mango', 'Pencil', 'Cloud', 'Tiger', //
     'Rain', 'Sword', 'Castle', 'Dinosaur', 'Trophy',
   ];
   static const turnMs = 75000;
@@ -31,10 +35,12 @@ class DrawGuessLogic extends LocalGameLogic {
   DrawPhase phase = DrawPhase.ready;
   int turn = 0;
   int now = 0, deadline = 0;
-  final List<List<double>> strokes = []; // each stroke: x0, y0, x1, y1, ... in 0..1
+  final List<List<double>> strokes =
+      []; // each stroke: x0, y0, x1, y1, ... in 0..1
   late final List<int> score = List.filled(players, 0);
   int guessedBy = -1;
-  final List<String> wrongGuesses = []; // online: the latest wrong guesses, newest last
+  final List<String> wrongGuesses =
+      []; // online: the latest wrong guesses, newest last
   final List<double> _pending = []; // online drawer: points not sent yet
   bool _pendingNew = false;
 
@@ -95,7 +101,10 @@ class DrawGuessLogic extends LocalGameLogic {
   /// Online: sends the points drawn since the last batch.
   void flushInk() {
     if (_pending.isEmpty) return;
-    final encoded = [for (var i = 0; i < _pending.length; i += 2) '${_pending[i].toStringAsFixed(3)},${_pending[i + 1].toStringAsFixed(3)}'].join(';');
+    final encoded = [
+      for (var i = 0; i < _pending.length; i += 2)
+        '${_pending[i].toStringAsFixed(3)},${_pending[i + 1].toStringAsFixed(3)}'
+    ].join(';');
     final isNew = _pendingNew;
     _pending.clear();
     _pendingNew = false;
@@ -104,7 +113,9 @@ class DrawGuessLogic extends LocalGameLogic {
 
   /// Host: applies a batch of points from the drawer's phone.
   void inkBatch(bool newStroke, String encoded) {
-    final pts = [for (final p in encoded.split(';')) ...p.split(',').map(double.parse)];
+    final pts = [
+      for (final p in encoded.split(';')) ...p.split(',').map(double.parse)
+    ];
     for (var i = 0; i + 1 < pts.length; i += 2) {
       addPoint(pts[i], pts[i + 1], newStroke: newStroke && i == 0);
     }
@@ -120,7 +131,10 @@ class DrawGuessLogic extends LocalGameLogic {
   /// One phone: the artist taps who shouted the right answer.
   void correct(int guesser) {
     if (forward('correct', [guesser])) return;
-    if (phase != DrawPhase.drawing || guesser == drawer || guesser < 0 || guesser >= players) return;
+    if (phase != DrawPhase.drawing ||
+        guesser == drawer ||
+        guesser < 0 ||
+        guesser >= players) return;
     score[drawer]++;
     score[guesser]++;
     guessedBy = guesser;
@@ -132,7 +146,8 @@ class DrawGuessLogic extends LocalGameLogic {
   void guess(int guesser, String text) {
     if (forward('guess', [guesser, text])) return;
     if (phase != DrawPhase.drawing || guesser == drawer) return;
-    String norm(String s) => s.toLowerCase().replaceAll(RegExp('[^a-z0-9]'), '');
+    String norm(String s) =>
+        s.toLowerCase().replaceAll(RegExp('[^a-z0-9]'), '');
     if (norm(text) == norm(word)) {
       correct(guesser);
     } else {
@@ -158,8 +173,13 @@ class DrawGuessLogic extends LocalGameLogic {
   }
 }
 
-String _encode(List<double> s) => [for (var i = 0; i + 1 < s.length; i += 2) '${s[i].toStringAsFixed(3)},${s[i + 1].toStringAsFixed(3)}'].join(';');
-List<double> _decode(String s) => s.isEmpty ? [] : [for (final p in s.split(';')) ...p.split(',').map(double.parse)];
+String _encode(List<double> s) => [
+      for (var i = 0; i + 1 < s.length; i += 2)
+        '${s[i].toStringAsFixed(3)},${s[i + 1].toStringAsFixed(3)}'
+    ].join(';');
+List<double> _decode(String s) => s.isEmpty
+    ? []
+    : [for (final p in s.split(';')) ...p.split(',').map(double.parse)];
 
 final drawGuessInfo = LocalGameInfo(
   id: 'draw_guess',
@@ -178,16 +198,23 @@ final drawGuessInfo = LocalGameInfo(
   online: RelaySpec<DrawGuessLogic>(
     create: (n) => DrawGuessLogic(players: n),
     save: (g) => {
-      'phase': g.phase.index, 'turn': g.turn, 'left': g.msLeft, 'score': g.score, 'by': g.guessedBy, 'deck': g.deck, //
-      'strokes': [for (final s in g.strokes) _encode(s)], 'wrong': g.wrongGuesses,
+      'phase': g.phase.index, 'turn': g.turn, 'left': g.msLeft,
+      'score': g.score, 'by': g.guessedBy, 'deck': g.deck, //
+      'strokes': [for (final s in g.strokes) _encode(s)],
+      'wrong': g.wrongGuesses,
     },
     load: (g, s, me) {
       final turn = asInt(s['turn']);
       final phase = DrawPhase.values[asInt(s['phase'])];
-      final hostStrokes = [for (final e in (s['strokes'] as List).cast<String>()) _decode(e)];
-      final hostPoints = hostStrokes.fold<int>(0, (n, st) => n + st.length ~/ 2);
+      final hostStrokes = [
+        for (final e in (s['strokes'] as List).cast<String>()) _decode(e)
+      ];
+      final hostPoints =
+          hostStrokes.fold<int>(0, (n, st) => n + st.length ~/ 2);
       // The artist's own drawing is ahead of the host's copy: keep it unless the host has caught up.
-      final mine = me == turn % g.players && phase == DrawPhase.drawing && turn == g.turn;
+      final mine = me == turn % g.players &&
+          phase == DrawPhase.drawing &&
+          turn == g.turn;
       if (!mine || hostPoints >= g.pointCount) {
         g.strokes
           ..clear()
@@ -220,7 +247,8 @@ final drawGuessInfo = LocalGameInfo(
           g.next();
       }
     },
-    view: (context, g, players, me) => _DrawView(players: players, g: g, me: me),
+    view: (context, g, players, me) =>
+        _DrawView(players: players, g: g, me: me),
   ),
   play: (players, onFinished) => TickingPlay<DrawGuessLogic>(
     create: () => DrawGuessLogic(players: players.length),
@@ -257,9 +285,13 @@ class _DrawViewState extends State<_DrawView> {
       onChange: (fx, _, now) {
         if (now != DrawPhase.turnEnd && now != DrawPhase.done) return;
         if (g.guessedBy >= 0) {
-          keyMoment(fx, 'GOT IT!', sub: '${players[g.guessedBy].name} guessed "${g.word}"', sound: 'coin', confetti: true);
+          keyMoment(fx, 'GOT IT!',
+              sub: '${players[g.guessedBy].name} guessed "${g.word}"',
+              sound: 'coin',
+              confetti: true);
         } else {
-          fx?.announce('NOBODY GOT IT', sub: 'It was "${g.word}"', color: Colors.white);
+          fx?.announce('NOBODY GOT IT',
+              sub: 'It was "${g.word}"', color: Colors.white);
         }
       },
       child: _phase(context),
@@ -271,26 +303,38 @@ class _DrawViewState extends State<_DrawView> {
     final t = context.tk;
     final artist = players[g.drawer];
     final isArtist = me == null || me == g.drawer;
-    final turnLabel = 'Turn ${min(g.turn + 1, g.totalTurns)} of ${g.totalTurns}';
+    final turnLabel =
+        'Turn ${min(g.turn + 1, g.totalTurns)} of ${g.totalTurns}';
     switch (g.phase) {
       case DrawPhase.ready:
         return PartyFrame(
           title: 'Draw & Guess',
           subtitle: turnLabel,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
                   child: Column(children: [
-                    PlayerBadge(index: PlayerPalette.indexOf(artist.color) ?? g.drawer, size: 72, color: artist.color, initial: artist.name),
+                    PlayerBadge(
+                        index: PlayerPalette.indexOf(artist.color) ?? g.drawer,
+                        size: 72,
+                        color: artist.color,
+                        initial: artist.name),
                     const SizedBox(height: 10),
-                    Text('${possessive(artist.name)} turn to draw', textAlign: TextAlign.center, style: t.styles.h2.copyWith(color: nameColor(artist.color))),
+                    Text('${possessive(artist.name)} turn to draw',
+                        textAlign: TextAlign.center,
+                        style: t.styles.h2
+                            .copyWith(color: nameColor(artist.color))),
                     const SizedBox(height: 14),
                     PromptCard(
                       header: isArtist ? 'You draw' : 'You guess',
-                      text: isArtist ? 'Take the phone!' : 'Get ready to guess!',
+                      text:
+                          isArtist ? 'Take the phone!' : 'Get ready to guess!',
                       icon: GameIcons.pencil,
-                      footer: isArtist ? 'Only you may see the word: hold the eye button to peek.' : '${artist.name} is about to draw.',
+                      footer: isArtist
+                          ? 'Only you may see the word: hold the eye button to peek.'
+                          : '${artist.name} is about to draw.',
                       color: artist.color,
                     ),
                   ]),
@@ -298,7 +342,11 @@ class _DrawViewState extends State<_DrawView> {
               ),
             ),
             const SizedBox(height: 10),
-            if (isArtist) GoldButton('Start drawing', icon: GameIcons.paintBrush, height: 58, onPressed: g.start) else const WaitingNote('Waiting for the artist…'),
+            if (isArtist)
+              GoldButton('Start drawing',
+                  icon: GameIcons.paintBrush, height: 58, onPressed: g.start)
+            else
+              const WaitingNote('Waiting for the artist…'),
           ]),
         );
       case DrawPhase.drawing:
@@ -308,13 +356,15 @@ class _DrawViewState extends State<_DrawView> {
           title: '${artist.name} is drawing',
           subtitle: turnLabel,
           trailing: TimeChip(g.msLeft),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             if (isArtist)
               Row(children: [
                 Expanded(
                   child: Semantics(
                     button: true,
-                    label: showWord ? 'Draw: ${g.word}' : 'Hold to see the word',
+                    label:
+                        showWord ? 'Draw: ${g.word}' : 'Hold to see the word',
                     excludeSemantics: true,
                     child: GestureDetector(
                       onTapDown: (_) => setState(() => _peek = true),
@@ -324,17 +374,42 @@ class _DrawViewState extends State<_DrawView> {
                         height: 48,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          gradient: showWord ? const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFFFFFDF6), Color(0xFFF5E9D2)]) : null,
-                          color: showWord ? null : Colors.white.withValues(alpha: 0.10),
+                          gradient: showWord
+                              ? const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                      Color(0xFFFFFDF6),
+                                      Color(0xFFF5E9D2)
+                                    ])
+                              : null,
+                          color: showWord
+                              ? null
+                              : Colors.white.withValues(alpha: 0.10),
                           borderRadius: Radii.rChip,
-                          border: Border.all(color: showWord ? Brand.gold : Colors.white.withValues(alpha: 0.18)),
+                          border: Border.all(
+                              color: showWord
+                                  ? Brand.gold
+                                  : Colors.white.withValues(alpha: 0.18)),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          GameIcon(GameIcons.eye, size: 20, color: showWord ? Brand.onGold : Colors.white),
+                          GameIcon(GameIcons.eye,
+                              size: 20,
+                              color: showWord ? Brand.onGold : Colors.white),
                           const SizedBox(width: 8),
                           Flexible(
-                            child: Text(showWord ? 'Draw: ${g.word}' : 'Hold to see the word',
-                                maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: Fonts.display, fontSize: 18, color: showWord ? Brand.onGold : Colors.white)),
+                            child: Text(
+                                showWord
+                                    ? 'Draw: ${g.word}'
+                                    : 'Hold to see the word',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontFamily: Fonts.display,
+                                    fontSize: 18,
+                                    color: showWord
+                                        ? Brand.onGold
+                                        : Colors.white)),
                           ),
                         ]),
                       ),
@@ -342,13 +417,21 @@ class _DrawViewState extends State<_DrawView> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                RoundButton(icon: GameIcons.restart, label: 'Clear the drawing', onPressed: g.clearDrawing),
+                RoundButton(
+                    icon: GameIcons.restart,
+                    label: 'Clear the drawing',
+                    onPressed: g.clearDrawing),
               ]),
             const SizedBox(height: 8),
-            Expanded(child: Center(child: AspectRatio(aspectRatio: 1, child: _Canvas(g: g, canDraw: isArtist)))),
+            Expanded(
+                child: Center(
+                    child: AspectRatio(
+                        aspectRatio: 1,
+                        child: _Canvas(g: g, canDraw: isArtist)))),
             const SizedBox(height: 8),
             if (!online) ...[
-              Text('WHO GUESSED IT?', textAlign: TextAlign.center, style: t.styles.label),
+              Text('WHO GUESSED IT?',
+                  textAlign: TextAlign.center, style: t.styles.label),
               const SizedBox(height: 6),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -367,20 +450,44 @@ class _DrawViewState extends State<_DrawView> {
                           },
                         ),
                       ),
-                  KitButton('Nobody · skip', style: KitButtonStyle.outline, height: 48, onPressed: g.giveUp),
+                  KitButton('Nobody · skip',
+                      style: KitButtonStyle.outline,
+                      height: 48,
+                      onPressed: g.giveUp),
                 ]),
               ),
             ] else if (isArtist) ...[
-              Text(g.wrongGuesses.isEmpty ? 'Guesses will appear here' : 'Guesses: ${g.wrongGuesses.join(', ')}', textAlign: TextAlign.center, maxLines: 2, style: t.styles.bodyStrong.copyWith(color: t.onBgMuted)),
+              Text(
+                  g.wrongGuesses.isEmpty
+                      ? 'Guesses will appear here'
+                      : 'Guesses: ${g.wrongGuesses.join(', ')}',
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: t.styles.bodyStrong.copyWith(color: t.onBgMuted)),
               const SizedBox(height: 6),
-              KitButton('Give up', style: KitButtonStyle.outline, height: 48, onPressed: g.giveUp),
+              KitButton('Give up',
+                  style: KitButtonStyle.outline,
+                  height: 48,
+                  onPressed: g.giveUp),
             ] else ...[
-              if (g.wrongGuesses.isNotEmpty) Text('Wrong: ${g.wrongGuesses.join(', ')}', textAlign: TextAlign.center, maxLines: 2, style: t.styles.bodyStrong.copyWith(color: t.onBgMuted)),
+              if (g.wrongGuesses.isNotEmpty)
+                Text('Wrong: ${g.wrongGuesses.join(', ')}',
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: t.styles.bodyStrong.copyWith(color: t.onBgMuted)),
               const SizedBox(height: 6),
               Row(children: [
-                Expanded(child: KitField(controller: _guess, hint: 'Type your guess', icon: GameIcons.speech, onChanged: (_) {})),
+                Expanded(
+                    child: KitField(
+                        controller: _guess,
+                        hint: 'Type your guess',
+                        icon: GameIcons.speech,
+                        onChanged: (_) {})),
                 const SizedBox(width: 8),
-                RoundButton(icon: GameIcons.forward, label: 'Send guess', onPressed: () => _send(me)),
+                RoundButton(
+                    icon: GameIcons.forward,
+                    label: 'Send guess',
+                    onPressed: () => _send(me)),
               ]),
             ],
           ]),
@@ -391,12 +498,25 @@ class _DrawViewState extends State<_DrawView> {
         return PartyFrame(
           title: by >= 0 ? '${players[by].name} got it!' : 'Nobody got it',
           subtitle: turnLabel,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Expanded(child: Center(child: AspectRatio(aspectRatio: 1, child: _Canvas(g: g, canDraw: false)))),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Expanded(
+                child: Center(
+                    child: AspectRatio(
+                        aspectRatio: 1, child: _Canvas(g: g, canDraw: false)))),
             const SizedBox(height: 8),
-            TurnBanner(text: 'The word was: ${g.word}', color: Brand.gold, kind: by >= 0 ? TurnBannerKind.success : TurnBannerKind.info, icon: GameIcons.pencil, compact: true),
+            TurnBanner(
+                text: 'The word was: ${g.word}',
+                color: Brand.gold,
+                kind: by >= 0 ? TurnBannerKind.success : TurnBannerKind.info,
+                icon: GameIcons.pencil,
+                compact: true),
             const SizedBox(height: 10),
-            GoldButton(g.turn + 1 >= g.totalTurns ? 'See scores' : 'Next artist', icon: GameIcons.forward, height: 58, onPressed: g.next),
+            GoldButton(
+                g.turn + 1 >= g.totalTurns ? 'See scores' : 'Next artist',
+                icon: GameIcons.forward,
+                height: 58,
+                onPressed: g.next),
           ]),
         );
     }
@@ -415,7 +535,8 @@ class _GuesserChip extends StatelessWidget {
   final GpPlayer player;
   final int seat;
   final VoidCallback onTap;
-  const _GuesserChip({required this.player, required this.seat, required this.onTap});
+  const _GuesserChip(
+      {required this.player, required this.seat, required this.onTap});
   @override
   Widget build(BuildContext context) => Semantics(
         button: true,
@@ -423,7 +544,9 @@ class _GuesserChip extends StatelessWidget {
         excludeSemantics: true,
         child: Material(
           color: player.color.withValues(alpha: 0.2),
-          shape: RoundedRectangleBorder(borderRadius: Radii.rChip, side: BorderSide(color: player.color, width: 1.5)),
+          shape: RoundedRectangleBorder(
+              borderRadius: Radii.rChip,
+              side: BorderSide(color: player.color, width: 1.5)),
           child: InkWell(
             borderRadius: Radii.rChip,
             onTap: onTap,
@@ -432,9 +555,18 @@ class _GuesserChip extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(8, 0, 14, 0),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  PlayerBadge(index: seat, size: 24, color: player.color, initial: player.name),
+                  PlayerBadge(
+                      index: seat,
+                      size: 24,
+                      color: player.color,
+                      initial: player.name),
                   const SizedBox(width: 8),
-                  Text(player.name, style: const TextStyle(fontFamily: Fonts.body, fontWeight: FontWeight.w900, fontSize: 14, color: Colors.white)),
+                  Text(player.name,
+                      style: const TextStyle(
+                          fontFamily: Fonts.body,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14,
+                          color: Colors.white)),
                 ]),
               ),
             ),
@@ -458,18 +590,33 @@ class _Canvas extends StatelessWidget {
         Offset norm(Offset p) => Offset(p.dx / size.width, p.dy / size.height);
         // A sheet of paper with a soft shadow.
         return Container(
-          decoration: BoxDecoration(borderRadius: Radii.rLg, boxShadow: const [BoxShadow(color: Color(0x80000000), offset: Offset(0, 10), blurRadius: 20)]),
+          decoration: BoxDecoration(borderRadius: Radii.rLg, boxShadow: const [
+            BoxShadow(
+                color: Color(0x80000000), offset: Offset(0, 10), blurRadius: 20)
+          ]),
           child: ClipRRect(
-          borderRadius: Radii.rLg,
-          child: GestureDetector(
-            onPanStart: canDraw ? (d) => g.addPoint(norm(d.localPosition).dx, norm(d.localPosition).dy, newStroke: true) : null,
-            onPanUpdate: canDraw ? (d) => g.addPoint(norm(d.localPosition).dx, norm(d.localPosition).dy) : null,
-            onPanEnd: canDraw ? (_) => g.flushInk() : null,
-            child: Semantics(
-              label: canDraw ? 'Drawing pad. Draw with your finger.' : 'The drawing',
-              child: RepaintBoundary(child: CustomPaint(size: size, painter: _InkPainter(g.strokes, g.pointCount))),
+            borderRadius: Radii.rLg,
+            child: GestureDetector(
+              onPanStart: canDraw
+                  ? (d) => g.addPoint(
+                      norm(d.localPosition).dx, norm(d.localPosition).dy,
+                      newStroke: true)
+                  : null,
+              onPanUpdate: canDraw
+                  ? (d) => g.addPoint(
+                      norm(d.localPosition).dx, norm(d.localPosition).dy)
+                  : null,
+              onPanEnd: canDraw ? (_) => g.flushInk() : null,
+              child: Semantics(
+                label: canDraw
+                    ? 'Drawing pad. Draw with your finger.'
+                    : 'The drawing',
+                child: RepaintBoundary(
+                    child: CustomPaint(
+                        size: size,
+                        painter: _InkPainter(g.strokes, g.pointCount))),
+              ),
             ),
-          ),
           ),
         );
       });
@@ -500,7 +647,8 @@ class _InkPainter extends CustomPainter {
       if (s.length < 2) continue;
       final path = Path()..moveTo(s[0] * size.width, s[1] * size.height);
       if (s.length == 2) {
-        canvas.drawCircle(Offset(s[0] * size.width, s[1] * size.height), pen.strokeWidth / 2, Paint()..color = pen.color);
+        canvas.drawCircle(Offset(s[0] * size.width, s[1] * size.height),
+            pen.strokeWidth / 2, Paint()..color = pen.color);
         continue;
       }
       for (var i = 2; i + 1 < s.length; i += 2) {
@@ -511,5 +659,6 @@ class _InkPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_InkPainter old) => old.count != count || old.strokes.length != strokes.length;
+  bool shouldRepaint(_InkPainter old) =>
+      old.count != count || old.strokes.length != strokes.length;
 }

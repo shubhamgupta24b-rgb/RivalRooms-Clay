@@ -95,12 +95,14 @@ class ColourClashLogic extends LocalGameLogic {
 
   ClashCard get top => discard.last;
   List<ClashCard> get hand => hands[turn];
-  int nextPlayer([int steps = 1]) => ((turn + direction * steps) % players + players) % players;
+  int nextPlayer([int steps = 1]) =>
+      ((turn + direction * steps) % players + players) % players;
 
   @override
   bool get finished => phase == ClashPhase.finished;
   @override
-  List<int> get scores => [for (var i = 0; i < players; i++) winner == i ? 1 : 0];
+  List<int> get scores =>
+      [for (var i = 0; i < players; i++) winner == i ? 1 : 0];
   @override
   void update(int elapsedMs) {}
 
@@ -129,7 +131,9 @@ class ColourClashLogic extends LocalGameLogic {
   }
 
   /// Cards in the current hand that may be played now.
-  Iterable<ClashCard> get playable => drewThisTurn ? [if (drawnCard != null && canPlay(drawnCard!)) drawnCard!] : hand.where(canPlay);
+  Iterable<ClashCard> get playable => drewThisTurn
+      ? [if (drawnCard != null && canPlay(drawnCard!)) drawnCard!]
+      : hand.where(canPlay);
 
   /// The next player picks up the phone.
   void reveal() {
@@ -147,7 +151,8 @@ class ColourClashLogic extends LocalGameLogic {
     final i = hand.indexWhere((c) => c.id == cardId);
     if (i < 0) return false;
     final card = hand[i];
-    if (!canPlay(card) || (drewThisTurn && card.id != drawnCard?.id)) return false;
+    if (!canPlay(card) || (drewThisTurn && card.id != drawnCard?.id))
+      return false;
     hand.removeAt(i);
     discard.add(card);
     if (card.isWild) {
@@ -209,9 +214,11 @@ class ColourClashLogic extends LocalGameLogic {
     }
     final effect = switch (card.kind) {
       ClashKind.skip => 'Next player skipped',
-      ClashKind.reverse => players == 2 ? 'Reverse: same player again' : 'Direction reversed',
+      ClashKind.reverse =>
+        players == 2 ? 'Reverse: same player again' : 'Direction reversed',
       ClashKind.drawTwo => 'Next player draws 2 and is skipped',
-      ClashKind.wildFour => 'Next player draws 4 and is skipped. Colour: ${_colorName(color)}',
+      ClashKind.wildFour =>
+        'Next player draws 4 and is skipped. Colour: ${_colorName(color)}',
       ClashKind.wild => 'Colour is now ${_colorName(color)}',
       ClashKind.number => '',
     };

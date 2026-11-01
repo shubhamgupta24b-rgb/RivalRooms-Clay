@@ -17,8 +17,15 @@ class SocketManager {
   Stream<SocketEvent> get events => _events.stream;
 
   static const _serverEvents = [
-    'room_state', 'game_state', 'game_event', 'round_started', 'round_finished',
-    'game_finished', 'player_disconnected', 'player_reconnected', 'error',
+    'room_state',
+    'game_state',
+    'game_event',
+    'round_started',
+    'round_finished',
+    'game_finished',
+    'player_disconnected',
+    'player_reconnected',
+    'error',
   ];
 
   Future<void> connect(String url, String token) async {
@@ -43,7 +50,8 @@ class SocketManager {
     });
     s.onDisconnect((_) => connected.value = false);
     s.onConnectError((e) {
-      if (!done.isCompleted) done.completeError(Exception('Cannot reach server'));
+      if (!done.isCompleted)
+        done.completeError(Exception('Cannot reach server'));
     });
     for (final name in _serverEvents) {
       s.on(name, (d) => _events.add(SocketEvent(name, d)));
@@ -51,18 +59,22 @@ class SocketManager {
     s.connect();
     // A free cloud server can take up to a minute to wake up. Report the slow start, but keep
     // the socket: it goes on retrying and flips [connected] as soon as the server answers.
-    await done.future.timeout(const Duration(seconds: 10), onTimeout: () => throw Exception('Connection timed out'));
+    await done.future.timeout(const Duration(seconds: 10),
+        onTimeout: () => throw Exception('Connection timed out'));
   }
 
   /// Sends an event and waits for the server ack: {ok: true, ...} or {ok: false, error: CODE}.
-  Future<Map<String, dynamic>> request(String event, [Map<String, dynamic>? payload]) {
+  Future<Map<String, dynamic>> request(String event,
+      [Map<String, dynamic>? payload]) {
     final s = _socket;
-    if (s == null || !s.connected) return Future.value({'ok': false, 'error': 'OFFLINE'});
+    if (s == null || !s.connected)
+      return Future.value({'ok': false, 'error': 'OFFLINE'});
     final c = Completer<Map<String, dynamic>>();
     s.emitWithAck(event, payload ?? {}, ack: (d) {
       if (!c.isCompleted) c.complete(Map<String, dynamic>.from(d as Map));
     });
-    return c.future.timeout(const Duration(seconds: 8), onTimeout: () => {'ok': false, 'error': 'TIMEOUT'});
+    return c.future.timeout(const Duration(seconds: 8),
+        onTimeout: () => {'ok': false, 'error': 'TIMEOUT'});
   }
 
   void disconnect() {

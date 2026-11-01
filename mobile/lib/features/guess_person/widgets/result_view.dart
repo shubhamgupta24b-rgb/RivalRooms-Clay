@@ -14,20 +14,42 @@ class ResultView extends StatelessWidget {
   final List<GpPlayer> players;
   final bool lastRound;
   final VoidCallback onNext;
-  const ResultView({super.key, required this.result, required this.players, required this.lastRound, required this.onNext});
+  const ResultView(
+      {super.key,
+      required this.result,
+      required this.players,
+      required this.lastRound,
+      required this.onNext});
 
   @override
   Widget build(BuildContext context) {
     final (icon, title, sub, color) = switch (result.outcome) {
-      RoundOutcome.correct => (GameIcons.check, 'CORRECT!', 'YOU FOUND THE PERSON!', GpColors.yes),
-      RoundOutcome.wrong => (GameIcons.cross, 'WRONG GUESS', 'The correct person was:', GpColors.no),
-      RoundOutcome.timeUp => (GameIcons.lock, 'TIME UP!', 'The correct person was:', Colors.orangeAccent),
+      RoundOutcome.correct => (
+          GameIcons.check,
+          'CORRECT!',
+          'YOU FOUND THE PERSON!',
+          GpColors.yes
+        ),
+      RoundOutcome.wrong => (
+          GameIcons.cross,
+          'WRONG GUESS',
+          'The correct person was:',
+          GpColors.no
+        ),
+      RoundOutcome.timeUp => (
+          GameIcons.lock,
+          'TIME UP!',
+          'The correct person was:',
+          Colors.orangeAccent
+        ),
     };
     final found = result.outcome == RoundOutcome.correct;
     final secretCard = SizedBox(
       width: 130,
       height: 165,
-      child: PersonCard(person: result.secret, mark: found ? CardMark.correct : CardMark.wrong),
+      child: PersonCard(
+          person: result.secret,
+          mark: found ? CardMark.correct : CardMark.wrong),
     );
 
     return Stack(children: [
@@ -39,32 +61,63 @@ class ResultView extends StatelessWidget {
             child: DarkPanel(
               padding: const EdgeInsets.all(20),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-              GameIcon(icon, size: 40, color: color),
-              const SizedBox(height: 4),
-              Text(title, textAlign: TextAlign.center, style: TextStyle(fontFamily: Fonts.display, color: color, fontSize: 34)),
-              const SizedBox(height: 6),
-              Text(sub, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700)),
-              const SizedBox(height: 16),
-              found ? _Pop(child: secretCard) : _Shake(child: secretCard),
-              if (result.outcome == RoundOutcome.wrong && result.guessed != null) ...[
-                const SizedBox(height: 8),
-                Text('You guessed ${result.guessed!.name}', style: const TextStyle(color: Colors.white70)),
-              ],
-              const SizedBox(height: 12),
-              Text(result.points == 1 ? '+1 POINT' : '+${result.points} POINTS',
-                  style: TextStyle(color: found ? GpColors.accent : Colors.white54, fontSize: 24, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 24),
-              const Text('ROUND COMPLETE', style: TextStyle(color: GpColors.muted, fontWeight: FontWeight.w800, letterSpacing: 1.5)),
-              const SizedBox(height: 6),
-              Text(found ? '${result.guesser.name} found the person!' : "${result.guesser.name} didn't find the person.",
-                  textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700)),
-              const SizedBox(height: 12),
-              ScoreBoard(players: players),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: GpButton(lastRound ? 'SEE FINAL SCORE' : 'NEXT ROUND', onPressed: onNext, icon: lastRound ? Icons.emoji_events_rounded : Icons.arrow_forward_rounded),
-              ),
+                GameIcon(icon, size: 40, color: color),
+                const SizedBox(height: 4),
+                Text(title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: Fonts.display, color: color, fontSize: 34)),
+                const SizedBox(height: 6),
+                Text(sub,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700)),
+                const SizedBox(height: 16),
+                found ? _Pop(child: secretCard) : _Shake(child: secretCard),
+                if (result.outcome == RoundOutcome.wrong &&
+                    result.guessed != null) ...[
+                  const SizedBox(height: 8),
+                  Text('You guessed ${result.guessed!.name}',
+                      style: const TextStyle(color: Colors.white70)),
+                ],
+                const SizedBox(height: 12),
+                Text(
+                    result.points == 1
+                        ? '+1 POINT'
+                        : '+${result.points} POINTS',
+                    style: TextStyle(
+                        color: found ? GpColors.accent : Colors.white54,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900)),
+                const SizedBox(height: 24),
+                const Text('ROUND COMPLETE',
+                    style: TextStyle(
+                        color: GpColors.muted,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.5)),
+                const SizedBox(height: 6),
+                Text(
+                    found
+                        ? '${result.guesser.name} found the person!'
+                        : "${result.guesser.name} didn't find the person.",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700)),
+                const SizedBox(height: 12),
+                ScoreBoard(players: players),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: GpButton(lastRound ? 'SEE FINAL SCORE' : 'NEXT ROUND',
+                      onPressed: onNext,
+                      icon: lastRound
+                          ? Icons.emoji_events_rounded
+                          : Icons.arrow_forward_rounded),
+                ),
               ]),
             ),
           ),
@@ -95,7 +148,8 @@ class _Shake extends StatelessWidget {
   Widget build(BuildContext context) => TweenAnimationBuilder<double>(
         tween: Tween(begin: 0, end: 1),
         duration: const Duration(milliseconds: 500),
-        builder: (_, t, c) => Transform.translate(offset: Offset(sin(t * pi * 6) * 12 * (1 - t), 0), child: c),
+        builder: (_, t, c) => Transform.translate(
+            offset: Offset(sin(t * pi * 6) * 12 * (1 - t), 0), child: c),
         child: child,
       );
 }
@@ -107,8 +161,11 @@ class Confetti extends StatefulWidget {
   State<Confetti> createState() => _ConfettiState();
 }
 
-class _ConfettiState extends State<Confetti> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600))..forward();
+class _ConfettiState extends State<Confetti>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 1600))
+    ..forward();
   final _rng = Random();
   late final List<_Bit> _bits = List.generate(
     50,
@@ -117,7 +174,13 @@ class _ConfettiState extends State<Confetti> with SingleTickerProviderStateMixin
       speed: 0.6 + _rng.nextDouble() * 0.7,
       drift: (_rng.nextDouble() - 0.5) * 0.3,
       spin: _rng.nextDouble() * 6,
-      color: [GpColors.accent, GpColors.yes, GpColors.no, const Color(0xFF4D96FF), Colors.white][_rng.nextInt(5)],
+      color: [
+        GpColors.accent,
+        GpColors.yes,
+        GpColors.no,
+        const Color(0xFF4D96FF),
+        Colors.white
+      ][_rng.nextInt(5)],
     ),
   );
 
@@ -128,13 +191,21 @@ class _ConfettiState extends State<Confetti> with SingleTickerProviderStateMixin
   }
 
   @override
-  Widget build(BuildContext context) => AnimatedBuilder(animation: _c, builder: (_, __) => CustomPaint(painter: _ConfettiPainter(_bits, _c.value)));
+  Widget build(BuildContext context) => AnimatedBuilder(
+      animation: _c,
+      builder: (_, __) =>
+          CustomPaint(painter: _ConfettiPainter(_bits, _c.value)));
 }
 
 class _Bit {
   final double x, speed, drift, spin;
   final Color color;
-  _Bit({required this.x, required this.speed, required this.drift, required this.spin, required this.color});
+  _Bit(
+      {required this.x,
+      required this.speed,
+      required this.drift,
+      required this.spin,
+      required this.color});
 }
 
 class _ConfettiPainter extends CustomPainter {
@@ -152,7 +223,8 @@ class _ConfettiPainter extends CustomPainter {
       canvas.save();
       canvas.translate(x * size.width, y * size.height);
       canvas.rotate(b.spin * t * pi);
-      canvas.drawRect(const Rect.fromLTWH(-4, -7, 8, 14), Paint()..color = b.color.withValues(alpha: fade));
+      canvas.drawRect(const Rect.fromLTWH(-4, -7, 8, 14),
+          Paint()..color = b.color.withValues(alpha: fade));
       canvas.restore();
     }
   }

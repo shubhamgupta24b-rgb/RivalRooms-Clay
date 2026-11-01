@@ -7,7 +7,11 @@ import 'dart:ui';
 /// original path strings. No package needed.
 Path svgPath(String d) {
   final path = Path();
-  final tokens = RegExp(r'[MmLlHhVvCcSsQqTtAaZz]|-?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?').allMatches(d).map((m) => m.group(0)!).toList();
+  final tokens =
+      RegExp(r'[MmLlHhVvCcSsQqTtAaZz]|-?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?')
+          .allMatches(d)
+          .map((m) => m.group(0)!)
+          .toList();
   var i = 0;
   var cmd = 'M';
   var x = 0.0, y = 0.0, sx = 0.0, sy = 0.0;
@@ -48,7 +52,8 @@ Path svgPath(String d) {
         lcx = x2;
         lcy = y2;
       case 'S':
-        final x1 = lcx == null ? x : 2 * x - lcx, y1 = lcx == null ? y : 2 * y - lcy!;
+        final x1 = lcx == null ? x : 2 * x - lcx,
+            y1 = lcx == null ? y : 2 * y - lcy!;
         final x2 = ox + n(), y2 = oy + n();
         x = ox + n();
         y = oy + n();
@@ -63,7 +68,8 @@ Path svgPath(String d) {
         lcx = x1;
         lcy = y1;
       case 'T':
-        final x1 = lcx == null ? x : 2 * x - lcx, y1 = lcx == null ? y : 2 * y - lcy!;
+        final x1 = lcx == null ? x : 2 * x - lcx,
+            y1 = lcx == null ? y : 2 * y - lcy!;
         x = ox + n();
         y = oy + n();
         path.quadraticBezierTo(x1, y1, x, y);
@@ -73,7 +79,11 @@ Path svgPath(String d) {
         final rx = n(), ry = n(), rot = n(), large = n() != 0, sweep = n() != 0;
         x = ox + n();
         y = oy + n();
-        path.arcToPoint(Offset(x, y), radius: Radius.elliptical(rx, ry), rotation: rot, largeArc: large, clockwise: sweep);
+        path.arcToPoint(Offset(x, y),
+            radius: Radius.elliptical(rx, ry),
+            rotation: rot,
+            largeArc: large,
+            clockwise: sweep);
         lcx = null;
       case 'Z':
         path.close();
@@ -88,9 +98,14 @@ Path svgPath(String d) {
 }
 
 /// Shape helpers in SVG terms.
-Path svgCircle(double cx, double cy, double r) => Path()..addOval(Rect.fromCircle(center: Offset(cx, cy), radius: r));
-Path svgEllipse(double cx, double cy, double rx, double ry) => Path()..addOval(Rect.fromCenter(center: Offset(cx, cy), width: rx * 2, height: ry * 2));
-Path svgRect(double x, double y, double w, double h, [double r = 0]) => Path()..addRRect(RRect.fromRectAndRadius(Rect.fromLTWH(x, y, w, h), Radius.circular(r)));
+Path svgCircle(double cx, double cy, double r) =>
+    Path()..addOval(Rect.fromCircle(center: Offset(cx, cy), radius: r));
+Path svgEllipse(double cx, double cy, double rx, double ry) => Path()
+  ..addOval(
+      Rect.fromCenter(center: Offset(cx, cy), width: rx * 2, height: ry * 2));
+Path svgRect(double x, double y, double w, double h, [double r = 0]) => Path()
+  ..addRRect(
+      RRect.fromRectAndRadius(Rect.fromLTWH(x, y, w, h), Radius.circular(r)));
 Path svgPolygon(List<double> pts) {
   final p = Path()..moveTo(pts[0], pts[1]);
   for (var k = 2; k + 1 < pts.length; k += 2) {
@@ -106,7 +121,24 @@ Path svgLine(double x1, double y1, double x2, double y2) => Path()
 /// [p] rotated by [deg] degrees around ([cx], [cy]), like SVG `rotate(deg cx cy)`.
 Path svgRotate(Path p, double deg, double cx, double cy) {
   final a = deg * math.pi / 180;
-  final m = Float64List.fromList([math.cos(a), math.sin(a), 0, 0, -math.sin(a), math.cos(a), 0, 0, 0, 0, 1, 0, cx - cx * math.cos(a) + cy * math.sin(a), cy - cx * math.sin(a) - cy * math.cos(a), 0, 1]);
+  final m = Float64List.fromList([
+    math.cos(a),
+    math.sin(a),
+    0,
+    0,
+    -math.sin(a),
+    math.cos(a),
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    cx - cx * math.cos(a) + cy * math.sin(a),
+    cy - cx * math.sin(a) - cy * math.cos(a),
+    0,
+    1
+  ]);
   return p.transform(m);
 }
 
@@ -116,7 +148,8 @@ class InkStroke {
   final double width;
   final StrokeCap cap;
   final StrokeJoin join;
-  const InkStroke(this.width, {this.cap = StrokeCap.round, this.join = StrokeJoin.round});
+  const InkStroke(this.width,
+      {this.cap = StrokeCap.round, this.join = StrokeJoin.round});
 }
 
 class IconInk {
@@ -128,7 +161,14 @@ class IconInk {
   final InkStroke? style;
   final double opacity;
   final Path? clip;
-  const IconInk(this.path, {this.fill, this.fillCurrent = false, this.stroke, this.strokeCurrent = false, this.style, this.opacity = 1, this.clip});
+  const IconInk(this.path,
+      {this.fill,
+      this.fillCurrent = false,
+      this.stroke,
+      this.strokeCurrent = false,
+      this.style,
+      this.opacity = 1,
+      this.clip});
 
   void paint(Canvas canvas, Color current) {
     if (clip != null) {
@@ -136,7 +176,9 @@ class IconInk {
       canvas.clipPath(clip!);
     }
     final f = fillCurrent ? current : fill;
-    if (f != null) canvas.drawPath(path, Paint()..color = f.withValues(alpha: f.a * opacity));
+    if (f != null)
+      canvas.drawPath(
+          path, Paint()..color = f.withValues(alpha: f.a * opacity));
     final s = strokeCurrent ? current : stroke;
     if (s != null) {
       canvas.drawPath(

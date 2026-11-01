@@ -23,7 +23,11 @@ class BrickBreakerLogic extends SoloLogic {
 
   double get speed => 0.85 + level * 0.12;
 
-  Rect brickRect(int i) => Rect.fromLTWH((i % cols) / cols + 0.006, brickTop + (i ~/ cols) * brickH + 0.004, 1 / cols - 0.012, brickH - 0.008);
+  Rect brickRect(int i) => Rect.fromLTWH(
+      (i % cols) / cols + 0.006,
+      brickTop + (i ~/ cols) * brickH + 0.004,
+      1 / cols - 0.012,
+      brickH - 0.008);
 
   void movePaddle(double x) {
     if (over) return;
@@ -51,10 +55,14 @@ class BrickBreakerLogic extends SoloLogic {
 
   void _move(double dt) {
     ball = ball + vel * dt;
-    if (ball.x < ballR && vel.x < 0 || ball.x > 1 - ballR && vel.x > 0) vel = V(-vel.x, vel.y);
+    if (ball.x < ballR && vel.x < 0 || ball.x > 1 - ballR && vel.x > 0)
+      vel = V(-vel.x, vel.y);
     if (ball.y < ballR && vel.y < 0) vel = V(vel.x, -vel.y);
     // Paddle: the further from the centre you hit, the sharper the angle.
-    if (vel.y > 0 && ball.y + ballR >= paddleY && ball.y < paddleY + 0.02 && (ball.x - paddleX).abs() <= paddleW / 2 + ballR) {
+    if (vel.y > 0 &&
+        ball.y + ballR >= paddleY &&
+        ball.y < paddleY + 0.02 &&
+        (ball.x - paddleX).abs() <= paddleW / 2 + ballR) {
       final off = ((ball.x - paddleX) / (paddleW / 2)).clamp(-1.0, 1.0);
       final a = off * 1.05;
       vel = V(sin(a), -cos(a)) * speed;
@@ -67,7 +75,8 @@ class BrickBreakerLogic extends SoloLogic {
       if (!r.contains(Offset(ball.x, ball.y))) continue;
       bricks[i] = false;
       score += 10;
-      final fromSide = min(ball.x - r.left, r.right - ball.x) < min(ball.y - r.top, r.bottom - ball.y);
+      final fromSide = min(ball.x - r.left, r.right - ball.x) <
+          min(ball.y - r.top, r.bottom - ball.y);
       vel = fromSide ? V(-vel.x, vel.y) : V(vel.x, -vel.y);
       break;
     }
@@ -128,7 +137,10 @@ final brickBreakerInfo = LocalGameInfo(
               onPanDown: (d) => g.movePaddle(d.localPosition.dx / c.maxWidth),
               onPanUpdate: (d) => g.movePaddle(d.localPosition.dx / c.maxWidth),
               onPanEnd: (_) => g.launch(),
-              child: ClipRRect(borderRadius: BorderRadius.circular(14), child: CustomPaint(size: c.biggest, painter: _BrickPainter(g))),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child:
+                      CustomPaint(size: c.biggest, painter: _BrickPainter(g))),
             ),
           ),
         ),
@@ -140,21 +152,49 @@ final brickBreakerInfo = LocalGameInfo(
 class _BrickPainter extends CustomPainter {
   final BrickBreakerLogic g;
   _BrickPainter(this.g);
-  static const _rowColors = [Color(0xFFE53935), Color(0xFFFF7043), Color(0xFFFFCA28), Color(0xFF66BB6A), Color(0xFF29B6F6), Color(0xFFAB47BC)];
+  static const _rowColors = [
+    Color(0xFFE53935),
+    Color(0xFFFF7043),
+    Color(0xFFFFCA28),
+    Color(0xFF66BB6A),
+    Color(0xFF29B6F6),
+    Color(0xFFAB47BC)
+  ];
   @override
   void paint(Canvas canvas, Size size) {
     final s = size.width;
-    canvas.drawRect(Offset.zero & size, Paint()..color = const Color(0xFF0F1438));
+    canvas.drawRect(
+        Offset.zero & size, Paint()..color = const Color(0xFF0F1438));
     for (var i = 0; i < g.bricks.length; i++) {
       if (!g.bricks[i]) continue;
       final r = g.brickRect(i);
-      canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTRB(r.left * s, r.top * s, r.right * s, r.bottom * s), const Radius.circular(4)), Paint()..color = _rowColors[(i ~/ BrickBreakerLogic.cols) % _rowColors.length]);
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              Rect.fromLTRB(r.left * s, r.top * s, r.right * s, r.bottom * s),
+              const Radius.circular(4)),
+          Paint()
+            ..color =
+                _rowColors[(i ~/ BrickBreakerLogic.cols) % _rowColors.length]);
     }
-    final p = Rect.fromCenter(center: Offset(g.paddleX * s, (BrickBreakerLogic.paddleY + 0.012) * s), width: BrickBreakerLogic.paddleW * s, height: 0.024 * s);
-    canvas.drawRRect(RRect.fromRectAndRadius(p, const Radius.circular(8)), Paint()..color = Colors.white);
-    canvas.drawCircle(Offset(g.ball.x * s, g.ball.y * s), BrickBreakerLogic.ballR * s, Paint()..color = const Color(0xFFFFD43B));
+    final p = Rect.fromCenter(
+        center: Offset(g.paddleX * s, (BrickBreakerLogic.paddleY + 0.012) * s),
+        width: BrickBreakerLogic.paddleW * s,
+        height: 0.024 * s);
+    canvas.drawRRect(RRect.fromRectAndRadius(p, const Radius.circular(8)),
+        Paint()..color = Colors.white);
+    canvas.drawCircle(Offset(g.ball.x * s, g.ball.y * s),
+        BrickBreakerLogic.ballR * s, Paint()..color = const Color(0xFFFFD43B));
     if (!g.launched && !g.over) {
-      final tp = TextPainter(text: const TextSpan(text: 'TAP TO LAUNCH', style: TextStyle(fontFamily: Fonts.display, color: Colors.white70, fontSize: 22, letterSpacing: 1)), textDirection: TextDirection.ltr)..layout();
+      final tp = TextPainter(
+          text: const TextSpan(
+              text: 'TAP TO LAUNCH',
+              style: TextStyle(
+                  fontFamily: Fonts.display,
+                  color: Colors.white70,
+                  fontSize: 22,
+                  letterSpacing: 1)),
+          textDirection: TextDirection.ltr)
+        ..layout();
       tp.paint(canvas, Offset((size.width - tp.width) / 2, size.height * 0.62));
     }
   }

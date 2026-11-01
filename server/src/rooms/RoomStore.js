@@ -1,4 +1,5 @@
-// In-memory store. Swap for a Redis-backed class with the same interface to scale out.
+// Single-process, mutable in-memory rooms. A shared store alone is not enough to scale out:
+// membership, timers, sockets and atomic game transitions also need coordination.
 class MemoryRoomStore {
   constructor() { this.rooms = new Map(); }
   get(code) { return this.rooms.get(code); }

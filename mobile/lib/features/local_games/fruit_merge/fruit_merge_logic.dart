@@ -3,8 +3,32 @@ import '../shell/local_game_logic.dart';
 import '../solo/solo_common.dart';
 
 /// The fruits from smallest to biggest. Two of the same merge into the next one.
-const fruitEmoji = ['🍒', '🍓', '🍇', '🍊', '🍋', '🍎', '🍐', '🍑', '🍍', '🍈', '🍉'];
-const fruitRadius = [0.045, 0.058, 0.072, 0.088, 0.105, 0.124, 0.146, 0.17, 0.196, 0.226, 0.26];
+const fruitEmoji = [
+  '🍒',
+  '🍓',
+  '🍇',
+  '🍊',
+  '🍋',
+  '🍎',
+  '🍐',
+  '🍑',
+  '🍍',
+  '🍈',
+  '🍉'
+];
+const fruitRadius = [
+  0.045,
+  0.058,
+  0.072,
+  0.088,
+  0.105,
+  0.124,
+  0.146,
+  0.17,
+  0.196,
+  0.226,
+  0.26
+];
 
 /// Points for making a fruit of each size (two watermelons vanish for a bonus).
 const mergePoints = [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55];
@@ -25,10 +49,12 @@ class Fruit {
 /// (y grows downwards). Fruits fall, bounce, roll, stack and merge.
 class FruitBox {
   static const height = 1.5;
-  static const dangerY = 0.3; // the red line: fruit resting above it for too long ends the game
+  static const dangerY =
+      0.3; // the red line: fruit resting above it for too long ends the game
   static const spawnY = 0.13;
   static const dropCooldownMs = 450;
-  static const graceMs = 1500; // a freshly dropped fruit may pass the line on its way down
+  static const graceMs =
+      1500; // a freshly dropped fruit may pass the line on its way down
   static const dangerMs = 2600;
   static const _gravity = 3.2;
   static const _dt = 1 / 120;
@@ -38,7 +64,8 @@ class FruitBox {
   int score = 0;
   int next; // the fruit you hold
   int after; // the one after it
-  double aimX = 0.5; // where the held fruit hangs (not part of the online state)
+  double aimX =
+      0.5; // where the held fruit hangs (not part of the online state)
   bool over = false;
   int? dangerSince;
   int biggest = 0; // biggest fruit made so far
@@ -46,7 +73,8 @@ class FruitBox {
   int nowMs = 0;
   double _acc = 0;
   int _lastMs = 0;
-  final List<(double x, double y, int level, int ms)> pops = []; // recent merges, for effects
+  final List<(double x, double y, int level, int ms)> pops =
+      []; // recent merges, for effects
 
   FruitBox(this.rng)
       : next = rng.nextInt(3),
@@ -58,7 +86,15 @@ class FruitBox {
   int _randomDrop() {
     // Small fruits more often than big ones.
     final r = rng.nextDouble();
-    return r < 0.32 ? 0 : r < 0.6 ? 1 : r < 0.8 ? 2 : r < 0.93 ? 3 : 4;
+    return r < 0.32
+        ? 0
+        : r < 0.6
+            ? 1
+            : r < 0.8
+                ? 2
+                : r < 0.93
+                    ? 3
+                    : 4;
   }
 
   /// Drops the held fruit at [x] (0..1 across the box). Returns false if it can't yet.
@@ -172,13 +208,16 @@ class FruitBox {
         if (gone.contains(b) || b.level != a.level) continue;
         final dx = b.x - a.x, dy = b.y - a.y, touch = (a.r + b.r) * 1.02;
         if (dx * dx + dy * dy > touch * touch) continue;
-        gone..add(a)..add(b);
+        gone
+          ..add(a)
+          ..add(b);
         final mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
         if (a.level == fruitEmoji.length - 1) {
           score += watermelonBonus; // two watermelons: both vanish
         } else {
           final up = a.level + 1;
-          final f = Fruit(mx, my, up, nowMs - graceMs) // a merged fruit is never "freshly dropped"
+          final f = Fruit(mx, my, up,
+              nowMs - graceMs) // a merged fruit is never "freshly dropped"
             ..vx = (a.vx + b.vx) / 2
             ..vy = min(0, (a.vy + b.vy) / 2) - 0.25; // a little pop upwards
           born.add(f);
@@ -196,7 +235,8 @@ class FruitBox {
   }
 
   void _checkDanger() {
-    final above = fruits.any((f) => nowMs - f.bornMs > graceMs && f.y - f.r < dangerY);
+    final above =
+        fruits.any((f) => nowMs - f.bornMs > graceMs && f.y - f.r < dangerY);
     if (!above) {
       dangerSince = null;
     } else {
@@ -207,21 +247,36 @@ class FruitBox {
 
   /// Online state: every fruit as x, y (thousandths) and size, plus score and the next fruits.
   Map<String, dynamic> save() => {
-        'f': [for (final f in fruits) ...[(f.x * 1000).round(), (f.y * 1000).round(), f.level]],
+        'f': [
+          for (final f in fruits) ...[
+            (f.x * 1000).round(),
+            (f.y * 1000).round(),
+            f.level
+          ]
+        ],
         's': score,
         'n': next,
         'a': after,
         'o': over,
         'd': dangerSince != null,
         'b': biggest,
-        'p': [for (final p in pops) ...[(p.$1 * 1000).round(), (p.$2 * 1000).round(), p.$3]],
+        'p': [
+          for (final p in pops) ...[
+            (p.$1 * 1000).round(),
+            (p.$2 * 1000).round(),
+            p.$3
+          ]
+        ],
       };
 
   void load(Map<String, dynamic> s, int nowMs) {
     final f = (s['f'] as List).cast<num>();
     fruits
       ..clear()
-      ..addAll([for (var i = 0; i + 2 < f.length; i += 3) Fruit(f[i] / 1000, f[i + 1] / 1000, f[i + 2].toInt(), -100000)]);
+      ..addAll([
+        for (var i = 0; i + 2 < f.length; i += 3)
+          Fruit(f[i] / 1000, f[i + 1] / 1000, f[i + 2].toInt(), -100000)
+      ]);
     score = (s['s'] as num).toInt();
     next = (s['n'] as num).toInt();
     after = (s['a'] as num).toInt();
@@ -231,7 +286,10 @@ class FruitBox {
     final p = (s['p'] as List).cast<num>();
     pops
       ..clear()
-      ..addAll([for (var i = 0; i + 2 < p.length; i += 3) (p[i] / 1000, p[i + 1] / 1000, p[i + 2].toInt(), nowMs)]);
+      ..addAll([
+        for (var i = 0; i + 2 < p.length; i += 3)
+          (p[i] / 1000, p[i + 1] / 1000, p[i + 2].toInt(), nowMs)
+      ]);
     this.nowMs = nowMs;
   }
 }

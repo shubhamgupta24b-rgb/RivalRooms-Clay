@@ -34,10 +34,14 @@ class WhackLogic extends SoloLogic {
     if (now >= durationMs) return gameOver(600);
     up.removeWhere((p) => now >= p.until);
     if (now >= _nextPop) {
-      final free = [for (var h = 0; h < holes; h++) if (!up.any((p) => p.hole == h)) h];
+      final free = [
+        for (var h = 0; h < holes; h++)
+          if (!up.any((p) => p.hole == h)) h
+      ];
       if (free.isNotEmpty) {
         final r = _rng.nextDouble();
-        final kind = r < 0.12 ? Popper.bomb : (r < 0.22 ? Popper.golden : Popper.mole);
+        final kind =
+            r < 0.12 ? Popper.bomb : (r < 0.22 ? Popper.golden : Popper.mole);
         final life = (1100 - now * 0.02).round().clamp(550, 1100);
         up.add(Pop(free[_rng.nextInt(free.length)], kind, now + life));
       }
@@ -96,10 +100,16 @@ final whackInfo = LocalGameInfo(
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [Color(0xFF8BC34A), Color(0xFF5E9A2E)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+              gradient: const LinearGradient(
+                  colors: [Color(0xFF8BC34A), Color(0xFF5E9A2E)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: const Color(0xFF4E7D24), width: 3),
-              boxShadow: const [BoxShadow(color: Colors.black45, offset: Offset(0, 6), blurRadius: 6)],
+              boxShadow: const [
+                BoxShadow(
+                    color: Colors.black45, offset: Offset(0, 6), blurRadius: 6)
+              ],
             ),
             child: GridView.count(
               crossAxisCount: 3,
@@ -116,13 +126,27 @@ final whackInfo = LocalGameInfo(
                         // A dirt pit: dark in the middle, a lighter rim of earth around it.
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          gradient: RadialGradient(colors: [Color(0xFF1E120D), Color(0xFF3B2519), Color(0xFF6D4A33)], stops: [0.45, 0.8, 1]),
-                          boxShadow: [BoxShadow(color: Color(0x66000000), offset: Offset(0, 3), blurRadius: 2)],
+                          gradient: RadialGradient(colors: [
+                            Color(0xFF1E120D),
+                            Color(0xFF3B2519),
+                            Color(0xFF6D4A33)
+                          ], stops: [
+                            0.45,
+                            0.8,
+                            1
+                          ]),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Color(0x66000000),
+                                offset: Offset(0, 3),
+                                blurRadius: 2)
+                          ],
                         ),
                         alignment: Alignment.center,
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 120),
-                          transitionBuilder: (child, a) => ScaleTransition(scale: a, child: child),
+                          transitionBuilder: (child, a) =>
+                              ScaleTransition(scale: a, child: child),
                           child: pop == null
                               ? const SizedBox.shrink(key: ValueKey('empty'))
                               : FittedBox(
@@ -130,8 +154,24 @@ final whackInfo = LocalGameInfo(
                                   child: Padding(
                                     padding: const EdgeInsets.all(6),
                                     child: Container(
-                                      decoration: pop.kind == Popper.golden ? const BoxDecoration(shape: BoxShape.circle, boxShadow: [BoxShadow(color: Color(0xAAFFD54F), blurRadius: 18, spreadRadius: 2)]) : null,
-                                      child: GameIcon(switch (pop.kind) { Popper.mole => GameIcons.mole, Popper.golden => GameIcons.goldenMole, Popper.bomb => GameIcons.bomb }, size: 64),
+                                      decoration: pop.kind == Popper.golden
+                                          ? const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                  BoxShadow(
+                                                      color: Color(0xAAFFD54F),
+                                                      blurRadius: 18,
+                                                      spreadRadius: 2)
+                                                ])
+                                          : null,
+                                      child: GameIcon(
+                                          switch (pop.kind) {
+                                            Popper.mole => GameIcons.mole,
+                                            Popper.golden =>
+                                              GameIcons.goldenMole,
+                                            Popper.bomb => GameIcons.bomb
+                                          },
+                                          size: 64),
                                     ),
                                   ),
                                 ),

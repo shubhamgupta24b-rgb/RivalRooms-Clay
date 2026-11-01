@@ -55,12 +55,21 @@ function attachSockets(io, rooms) {
     if (old && old.id !== socket.id) { old.emit('error', { code: 'SESSION_REPLACED' }); old.disconnect(true); }
 
     const resumed = rooms.reconnect(userId);
-    if (resumed) { socket.join(resumed.code); sendGameState(resumed, userId); }
+    if (resumed) {
+      socket.join(resumed.code);
+      socket.emit('room_state', rooms.publicRoom(resumed));
+      sendGameState(resumed, userId);
+      if (resumed.status === 'finished') {
+        const result = registry.get(resumed.gameType).getResult(resumed.game);
+        socket.emit('game_finished', resumed.party ? { ...result, party: rooms.publicRoom(resumed).party } : result);
+      }
+    }
 
     // Wraps a handler: rate limit, validate, ack {ok,...} or {ok:false,error}
     const on = (event, fn) => socket.on(event, async (payload, cb) => {
       const ack = typeof cb === 'function' ? cb : () => {};
       try {
+        if (sockets.get(userId) !== socket) throw new GameError('SESSION_REPLACED');
         if (!allow(socket)) throw new GameError('RATE_LIMITED');
         ack({ ok: true, ...(await fn(payload || {})) });
       } catch (e) {
@@ -101,8 +110,8 @@ function attachSockets(io, rooms) {
       return {};
     });
     on('game_action', p => {
-      if (typeof p.type !== 'string' || p.type.length > 40 || !Number.isInteger(p.seq) || p.seq < 0
-        || (p.payload !== undefined && (typeof p.payload !== 'object' || p.payload === null)))
+      if (typeof p.type !== 'string' || p.type.length > 40 || !Number.isSafeInteger(p.seq) || p.seq < 0
+        || (p.payload !== undefined && (typeof p.payload !== 'object' || p.payload === null || Array.isArray(p.payload))))
         throw new GameError('INVALID_PAYLOAD');
       const { response } = rooms.gameAction(userId, p);
       return { response: response || null };

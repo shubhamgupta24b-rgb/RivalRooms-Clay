@@ -65,7 +65,7 @@ test('room capacity (2/3/4) enforced by server', async t => {
 test('payload validation', async t => {
   const { mk } = await setup(t);
   const a = await mk('a');
-  assert.strictEqual((await emit(a, 'create_room', { gameType: 'memory', maxPlayers: 7 })).error, 'INVALID_PAYLOAD');
+  assert.strictEqual((await emit(a, 'create_room', { gameType: 'memory', maxPlayers: 11 })).error, 'INVALID_PAYLOAD');
   assert.strictEqual((await emit(a, 'create_room', { gameType: 'memory', maxPlayers: 1 })).error, 'INVALID_PAYLOAD');
   assert.strictEqual((await emit(a, 'create_room', { gameType: 'nope', maxPlayers: 2 })).error, 'INVALID_PAYLOAD');
   assert.strictEqual((await emit(a, 'join_room', { code: 'zz' })).error, 'INVALID_PAYLOAD');
@@ -114,11 +114,12 @@ test('game action pipeline: anti-cheat, finish, return to lobby', async t => {
   await emit(h, 'start_game');
   assert.strictEqual((await emit(out, 'game_action', { type: 'test:inc', seq: 0 })).error, 'NOT_IN_ROOM');
   assert.strictEqual((await emit(h, 'game_action', { type: 'bogus', seq: 0 })).error, 'INVALID_ACTION');
+  assert.ok((await emit(h, 'game_action', { type: 'test:inc', seq: 0 })).ok, 'rejected action does not consume the sequence');
   assert.strictEqual((await emit(h, 'game_action', { type: 'test:inc', seq: 0 })).error, 'DUPLICATE_ACTION');
   assert.strictEqual((await emit(h, 'game_action', { type: 'test:inc', seq: 'x' })).error, 'INVALID_PAYLOAD');
   const fin = waitFor(h, 'game_finished');
   assert.ok((await emit(h, 'game_action', { type: 'test:inc', seq: 1 })).ok);
-  assert.ok((await emit(h, 'game_action', { type: 'test:inc', seq: 2 })).ok);
+  assert.strictEqual((await emit(h, 'game_action', { type: 'test:inc', seq: 2 })).error, 'BAD_PHASE');
   assert.deepStrictEqual((await fin).scores, { h: 2, p: 0 });
   assert.strictEqual((await emit(p, 'game_action', { type: 'test:inc', seq: 0 })).error, 'BAD_PHASE');
   assert.strictEqual((await emit(p, 'return_to_lobby')).error, 'NOT_HOST');

@@ -18,7 +18,8 @@ class GpSettings {
     this.rounds = 5,
     this.timerSeconds = 0,
     this.peopleCount = 30,
-    this.autoEliminate = flatStyle, // the flat app folds down non-matching faces by itself
+    this.autoEliminate =
+        flatStyle, // the flat app folds down non-matching faces by itself
     this.sound = true,
     this.playerCount = 2,
   });
@@ -26,7 +27,14 @@ class GpSettings {
   // A future "Quick Mode" is just another preset, e.g.
   // const GpSettings(rounds: 3, timerSeconds: 15, peopleCount: 12).
 
-  GpSettings copyWith({int? rounds, int? timerSeconds, int? peopleCount, bool? autoEliminate, bool? sound, int? playerCount}) => GpSettings(
+  GpSettings copyWith(
+          {int? rounds,
+          int? timerSeconds,
+          int? peopleCount,
+          bool? autoEliminate,
+          bool? sound,
+          int? playerCount}) =>
+      GpSettings(
         rounds: rounds ?? this.rounds,
         timerSeconds: timerSeconds ?? this.timerSeconds,
         peopleCount: peopleCount ?? this.peopleCount,

@@ -1,14 +1,21 @@
 import 'dart:math';
-import 'package:flutter/material.dart';
-import '../../../core/ui/components.dart';
 import 'package:flutter/services.dart';
 import '../shell/local_game_info.dart';
-import '../shell/ticking_play.dart';
+import 'hex_sort.dart';
 import 'solo_common.dart';
 
+// Candy colours, picked to stay easy to tell apart.
 const _ballColors = [
-  Color(0xFFE53935), Color(0xFF1E88E5), Color(0xFF43A047), Color(0xFFFDD835), Color(0xFF8E24AA),
-  Color(0xFFFB8C00), Color(0xFF00ACC1), Color(0xFFEC407A), Color(0xFF6D4C41), Color(0xFF7CB342),
+  Color(0xFFFF4D6D),
+  Color(0xFF3A86FF),
+  Color(0xFF2EC4B6),
+  Color(0xFFFFBE0B),
+  Color(0xFF9B5DE5),
+  Color(0xFFFF8C42),
+  Color(0xFF00BBF9),
+  Color(0xFFF15BB5),
+  Color(0xFF8D6346),
+  Color(0xFF80ED99),
 ];
 
 /// Ball Sort: tubes of 4 coloured balls. Tap a tube, then another, to pour its top ball(s)
@@ -34,15 +41,24 @@ class BallSortLogic extends SoloLogic {
     final n = colors;
     // Deal 4 balls of each colour across n tubes, then 2 empty tubes; avoid starting solved.
     do {
-      final balls = [for (var c = 0; c < n; c++) for (var i = 0; i < capacity; i++) c]..shuffle(rng);
-      tubes = [for (var t = 0; t < n; t++) balls.sublist(t * capacity, (t + 1) * capacity), <int>[], <int>[]];
+      final balls = [
+        for (var c = 0; c < n; c++)
+          for (var i = 0; i < capacity; i++) c
+      ]..shuffle(rng);
+      tubes = [
+        for (var t = 0; t < n; t++)
+          balls.sublist(t * capacity, (t + 1) * capacity),
+        <int>[],
+        <int>[]
+      ];
     } while (solved);
     _history.clear();
     selected = null;
     moves = 0;
   }
 
-  bool get solved => tubes.every((t) => t.isEmpty || (t.length == capacity && t.every((b) => b == t.first)));
+  bool get solved => tubes.every((t) =>
+      t.isEmpty || (t.length == capacity && t.every((b) => b == t.first)));
 
   /// How many balls would pour from [from] to [to] (0 if that's not allowed).
   int pourable(int from, int to) {
@@ -121,94 +137,16 @@ final ballSortInfo = LocalGameInfo(
   id: 'ball_sort',
   title: 'Ball Sort',
   emoji: '🧪',
-  color: const Color(0xFF26A69A),
-  tagline: 'Pour the balls until every tube is one colour!',
+  color: const Color(0xFFFF6B8A),
+  tagline: 'Sort coloured balls inside hexagonal rings!',
   rules: const [
-    'Tap a tube, then another tube, to pour the top ball onto the same colour or into an empty tube.',
-    'Fill every tube with balls of a single colour to clear the level.',
-    'Each level adds a colour. Stuck? Use UNDO or RESTART. Tap DONE to finish.',
+    'Each difficulty has 50 levels. Clear one to unlock the next.',
+    'Tap a ring, then another, to pour the top balls onto the same colour or into an empty ring.',
+    'Undo, restart, or take a hint. Works with no internet.',
   ],
   scoreUnit: 'levels',
   splitScreen: false,
   minPlayers: 1,
   maxPlayers: 1,
-  play: (players, onFinished) => TickingPlay<BallSortLogic>(
-    create: () => BallSortLogic(),
-    onFinished: onFinished,
-    builder: (context, g) => SoloFrame(
-      title: g.clearedAt != null ? 'Level ${g.level} cleared!' : 'Level ${g.level}',
-      score: g.score,
-      extra: '${g.moves} moves · ${g.colors} colours',
-      child: Column(children: [
-        Expanded(
-          child: LayoutBuilder(builder: (context, c) {
-            final n = g.tubes.length;
-            final perRow = n <= 6 ? n : (n / 2).ceil();
-            final rows = (n / perRow).ceil();
-            final tubeW = min((c.maxWidth - 12 * perRow) / perRow, 64.0);
-            final tubeH = min(tubeW * 3.9, (c.maxHeight - 30 * rows) / rows);
-            return Center(
-              child: Wrap(alignment: WrapAlignment.center, spacing: 12, runSpacing: 30, children: [
-                for (var t = 0; t < n; t++) _Tube(g: g, index: t, width: tubeW, height: tubeH),
-              ]),
-            );
-          }),
-        ),
-        Row(children: [
-          Expanded(child: KitButton('Undo', icon: GameIcons.undo, style: KitButtonStyle.soft, onPressed: g.undo)),
-          const SizedBox(width: 8),
-          Expanded(child: KitButton('Reset', icon: GameIcons.restart, style: KitButtonStyle.soft, onPressed: g.restart)),
-          const SizedBox(width: 8),
-          Expanded(child: GoldButton('Done', icon: GameIcons.flag, height: 52, fontSize: 18, onPressed: g.finish)),
-        ]),
-      ]),
-    ),
-  ),
+  play: (players, onFinished) => HexSortScreen(onFinished: onFinished),
 );
-
-class _Tube extends StatelessWidget {
-  final BallSortLogic g;
-  final int index;
-  final double width, height;
-  const _Tube({required this.g, required this.index, required this.width, required this.height});
-
-  @override
-  Widget build(BuildContext context) {
-    final balls = g.tubes[index];
-    final picked = g.selected == index;
-    final done = balls.length == BallSortLogic.capacity && balls.every((b) => b == balls.first);
-    final d = width * 0.78;
-    return Semantics(
-      button: true,
-      label: 'Tube ${index + 1}',
-      child: GestureDetector(
-        onTap: () => g.tap(index),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          transform: Matrix4.translationValues(0, picked ? -14 : 0, 0),
-          width: width,
-          height: height,
-          padding: EdgeInsets.only(bottom: width * 0.1),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [Colors.white.withValues(alpha: 0.22), Colors.white.withValues(alpha: 0.06)]),
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(width / 2), top: const Radius.circular(6)),
-            border: Border.all(color: done ? StatusColors.success : (picked ? Brand.gold : Colors.white54), width: done || picked ? 3 : 2),
-          ),
-          child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-            for (var i = balls.length - 1; i >= 0; i--)
-              Container(
-                width: d,
-                height: d,
-                margin: EdgeInsets.only(top: width * 0.06),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(center: const Alignment(-0.35, -0.4), colors: [Color.lerp(_ballColors[balls[i]], Colors.white, 0.5)!, _ballColors[balls[i]]]),
-                  boxShadow: const [BoxShadow(color: Colors.black26, offset: Offset(0, 2), blurRadius: 2)],
-                ),
-              ),
-          ]),
-        ),
-      ),
-    );
-  }
-}

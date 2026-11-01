@@ -14,6 +14,11 @@ val dartDefines: List<String> = (project.findProperty("dart-defines") as String?
     ?.map { String(Base64.getDecoder().decode(it)) }
     ?: emptyList()
 val flatApp = dartDefines.contains("APP_STYLE=flat")
+val googleMobileAdsAppId = dartDefines
+    .firstOrNull { it.startsWith("ADMOB_APP_ID=") }
+    ?.substringAfter("=")
+    ?.takeIf { it.isNotBlank() }
+    ?: "ca-app-pub-2273708482671832~3323244780"
 
 // Release signing key (android/key.properties + upload-keystore.jks, never committed).
 // Without them (e.g. a CI build) release builds fall back to the debug key.
@@ -37,8 +42,9 @@ android {
     }
 
     defaultConfig {
-        applicationId = if (flatApp) "com.shubhamgupta.rivalroom.clay.flat" else "com.shubhamgupta.rivalroom.clay"
+        applicationId = if (flatApp) "com.shubhamgupta.partygames.flat" else "com.shubhamgupta.partygames"
         manifestPlaceholders["appLabel"] = if (flatApp) "RivalRoom Clay Flat" else "RivalRoom Clay"
+        manifestPlaceholders["googleMobileAdsAppId"] = googleMobileAdsAppId
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

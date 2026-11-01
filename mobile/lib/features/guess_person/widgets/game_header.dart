@@ -32,11 +32,19 @@ class GameHeader extends StatelessWidget {
           constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
         ),
       Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-          Text('ROUND $round / $totalRounds', style: const TextStyle(color: GpColors.muted, fontWeight: FontWeight.w800, letterSpacing: 1.2, fontSize: 13)),
-          const SizedBox(height: 4),
-          PlayerTag(name: playerName, color: playerColor, role: role),
-        ]),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('ROUND $round / $totalRounds',
+                  style: const TextStyle(
+                      color: GpColors.muted,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                      fontSize: 13)),
+              const SizedBox(height: 4),
+              PlayerTag(name: playerName, color: playerColor, role: role),
+            ]),
       ),
       if (trailing != null) trailing!,
     ]);
@@ -52,15 +60,19 @@ class TimerBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final urgent = seconds <= 5;
     final warn = seconds <= 10;
-    final color = urgent ? GpColors.no : (warn ? Colors.orangeAccent : Colors.white);
+    final color =
+        urgent ? GpColors.no : (warn ? Colors.orangeAccent : Colors.white);
     return Semantics(
       label: '$seconds seconds left',
       child: TweenAnimationBuilder<double>(
-        key: ValueKey(urgent ? seconds : -1), // restart pulse each second only when urgent
+        key: ValueKey(urgent
+            ? seconds
+            : -1), // restart pulse each second only when urgent
         tween: Tween(begin: urgent ? 1.25 : 1.0, end: 1.0),
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeOut,
-        builder: (_, scale, child) => Transform.scale(scale: scale, child: child),
+        builder: (_, scale, child) =>
+            Transform.scale(scale: scale, child: child),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
@@ -70,8 +82,15 @@ class TimerBadge extends StatelessWidget {
             border: Border.all(color: color, width: 2),
           ),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Text('TIME', style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w800)),
-            Text('$seconds', style: TextStyle(color: color, fontSize: 26, fontWeight: FontWeight.w900, height: 1.1)),
+            Text('TIME',
+                style: TextStyle(
+                    color: color, fontSize: 11, fontWeight: FontWeight.w800)),
+            Text('$seconds',
+                style: TextStyle(
+                    color: color,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
+                    height: 1.1)),
           ]),
         ),
       ),
