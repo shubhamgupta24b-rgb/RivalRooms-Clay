@@ -4,7 +4,8 @@ import '../../guess_person/models/gp_player.dart';
 import 'bots.dart';
 import 'local_game_logic.dart';
 
-export 'bots.dart' show BotSeat, BotTurn, botFor, BotScope;
+export 'bots.dart'
+    show BotSeat, BotTurn, botFor, BotScope, CpuDifficulty, CpuSkill;
 
 typedef PlayBuilder = Widget Function(
     List<GpPlayer> players, void Function(List<int> scores) onFinished);

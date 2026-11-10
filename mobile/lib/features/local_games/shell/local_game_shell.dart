@@ -21,6 +21,22 @@ export 'result_screen.dart' show ResultExtras, ResultScope;
 
 enum _ShellPhase { intro, countdown, playing, result }
 
+/// Solo games that start moving the moment they appear. They get the same
+/// 3-2-1 as a two-player match. Games with their own level menu gate themselves.
+const soloCountdownIds = {
+  'fruit_cut',
+  'flappy_jump',
+  'dino_run',
+  'brick_breaker',
+  'space_shooter',
+  'color_switch',
+  'sky_jumper',
+  'stack_tower',
+  'whack_mole',
+  'bubble_shooter',
+  'piano_tiles',
+};
+
 /// Lets a game place its own pause (and help) button wherever it fits its layout.
 /// [onLeave] opens the pause sheet, [onHelp] How to play; [state] is the game's current
 /// state line ("Arrow 3 of 5"), shown on the pause sheet.
@@ -99,6 +115,7 @@ class _LocalGameShellState extends State<LocalGameShell>
   var matchNo = 0;
   int botCount =
       0; // computer players (the last seats); 0 = everyone is a person
+  int cpuLevel = 1; // 0 easy, 1 medium, 2 hard
   bool get vsComputer => botCount > 0;
   List<BotSeat> _bots = const [];
   final _paused = ValueNotifier(false);
@@ -111,6 +128,7 @@ class _LocalGameShellState extends State<LocalGameShell>
   @override
   void initState() {
     super.initState();
+    cpuLevel = AppSettings.cpuLevel.value.clamp(0, 2);
     WidgetsBinding.instance.addObserver(this);
     final lifecycle = WidgetsBinding.instance.lifecycleState;
     _background = lifecycle != null && lifecycle != AppLifecycleState.resumed;
@@ -197,7 +215,12 @@ class _LocalGameShellState extends State<LocalGameShell>
   int turnMinutes = 1;
   bool get _turnsOn => takeTurns && _game.turns != null && players.length > 1;
 
-  // No 3-2-1 for solo games (you start when you're ready) or take turns (each turn has its START).
+  /// Take-turns games count down inside each turn. Puzzle solos start when you tap.
+  /// Real-time solos (and every head-to-head game) get Ready's 3-2-1.
+  bool get _showCountdown =>
+      !_turnsOn &&
+      (!widget.game.solo || soloCountdownIds.contains(widget.game.id));
+
   void _start() {
     setState(() {
       // Invalidate the previous game's callbacks before the countdown starts.
@@ -206,7 +229,7 @@ class _LocalGameShellState extends State<LocalGameShell>
       best = null;
       newBest = false;
     });
-    if (_turnsOn || widget.game.solo) _go(matchNo);
+    if (!_showCountdown) _go(matchNo);
   }
 
   void _go(int match) {
@@ -216,10 +239,12 @@ class _LocalGameShellState extends State<LocalGameShell>
       _stateLine.value = null;
       _extras = ResultExtras();
       // Fresh computer players every match (their memory and timing start over).
+      final difficulty = CpuDifficulty
+          .values[cpuLevel.clamp(0, CpuDifficulty.values.length - 1)];
       _bots = vsComputer && _game.bot != null
           ? [
               for (var i = players.length - botCount; i < players.length; i++)
-                BotSeat(i, null, players.length - botCount == 1),
+                BotSeat(i, null, players.length - botCount == 1, difficulty),
             ]
           : const [];
       phase = _ShellPhase.playing;
@@ -414,6 +439,13 @@ class _LocalGameShellState extends State<LocalGameShell>
           onPlayerCount: _setPlayerCount,
           onName: _setName,
           onBotCount: g.bot == null ? null : _setBotCount,
+          cpuLevel: g.bot == null ? null : cpuLevel,
+          onCpuLevel: g.bot == null
+              ? null
+              : (level) {
+                  setState(() => cpuLevel = level);
+                  AppSettings.setCpuLevel(level);
+                },
           teams: g.teamVariant != null && players.length == 4 ? teams : null,
           onTeams: (on) => setState(() {
             teams = on;

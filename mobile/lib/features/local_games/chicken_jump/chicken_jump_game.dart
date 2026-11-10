@@ -6,6 +6,7 @@ import '../../guess_person/models/gp_player.dart';
 import '../shell/game_hud.dart';
 import '../shell/local_game_info.dart';
 import '../shell/local_game_shell.dart' show PauseButton;
+import '../shell/start_gate.dart';
 import '../shell/local_game_logic.dart';
 import '../shell/ticking_play.dart';
 import '../solo/solo_common.dart';
@@ -237,7 +238,9 @@ class _ChickenMenuState extends State<_ChickenMenu> {
         ]),
       );
     }
-    return TickingPlay<ChickenLogic>(
+    return StartGate(
+      color: const Color(0xFFFFC21A),
+      child: (context) => TickingPlay<ChickenLogic>(
       create: () => ChickenLogic(level: level!),
       onFinished: widget.onFinished,
       builder: (context, g) => SoloFrame(
@@ -250,9 +253,9 @@ class _ChickenMenuState extends State<_ChickenMenu> {
             behavior: HitTestBehavior.opaque,
             onTap: g.flap,
             child: CustomPaint(
-                painter: _ChickenPainter(g), child: const SizedBox.expand())),
+                painter: _ChickenPainter(g),                 child: const SizedBox.expand())),
       ),
-    );
+    ));
   }
 }
 

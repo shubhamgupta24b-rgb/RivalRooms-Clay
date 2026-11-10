@@ -84,7 +84,7 @@ void main() {
 
   testWidgets('hub lists all games with their player counts', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: LocalGamesHubScreen()));
-    expect(find.text('71 games'), findsOneWidget,
+    expect(find.text('74 games'), findsOneWidget,
         reason: 'the count includes local games and the two built-in games');
     expect(find.text('Guess the Person'), findsOneWidget);
     expect(find.text('Raja Mantri Chor Sipahi'), findsOneWidget);

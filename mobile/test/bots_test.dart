@@ -67,6 +67,7 @@ void main() {
       'mini_golf', 'slingshot', 'archery', 'shooting_gallery', 'bottle_smash',
       'chess', 'tug_of_war', 'darts', 'hot_potato', 'knife_hit', 'cup_pong',
       'hungry_hippos', 'penguin_push', 'ring_sort',
+      'carrom', 'eight_ball', 'tank_battle', 'sumo_push',
     });
   });
 

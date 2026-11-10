@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../../../core/text/agreement.dart';
 import '../../guess_person/models/gp_player.dart';
 import '../../../core/audio/game_audio.dart';
 import '../../../core/ui/components.dart';
@@ -207,7 +208,7 @@ class _CupTableState extends State<_CupTable> {
       onChange: (fx, _, __) {
         if (g.winner != null) {
           keyMoment(fx, 'ALL CUPS!',
-              sub: '${players[g.winner!].name} wins',
+              sub: winsPhrase(players[g.winner!].name),
               sound: 'win',
               confetti: true);
         } else if (g.lastHit == true) {
@@ -225,7 +226,7 @@ class _CupTableState extends State<_CupTable> {
             Expanded(
               child: Text(
                   g.finished
-                      ? '${players[g.winner!].name} wins!'
+                      ? winsBang(players[g.winner!].name)
                       : "${possessive(current.name)} throw",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
@@ -276,7 +277,7 @@ class _CupTableState extends State<_CupTable> {
                             : null,
                         child: Semantics(
                           label:
-                              'Cup pong table. ${players[0].name} has ${g.cups[0].length} cups, ${players[1].name} has ${g.cups[1].length}. ${current.name} to throw: drag back and release.',
+                              'Cup pong table. ${players[0].name} ${hasWord(players[0].name)} ${g.cups[0].length} cups, ${players[1].name} ${hasWord(players[1].name)} ${g.cups[1].length}. ${current.name} to throw: drag back and release.',
                           child: CustomPaint(
                               painter: _TablePainter(g, players, _aim, scale)),
                         ),

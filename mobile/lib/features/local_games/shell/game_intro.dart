@@ -17,6 +17,8 @@ class GameIntro extends StatelessWidget {
   final void Function(int seat, String name) onName;
   final ValueChanged<int>?
       onBotCount; // null: this game has no computer players
+  final int? cpuLevel; // 0 easy, 1 medium, 2 hard; null when there is no bot
+  final ValueChanged<int>? onCpuLevel;
   final bool? teams; // null: no team version for this game / player count
   final ValueChanged<bool>? onTeams;
   final (bool, int)? turns; // (take turns?, minutes each); null: not offered
@@ -30,6 +32,8 @@ class GameIntro extends StatelessWidget {
       required this.onPlayerCount,
       required this.onName,
       this.onBotCount,
+      this.cpuLevel,
+      this.onCpuLevel,
       this.teams,
       this.onTeams,
       this.turns,
@@ -103,6 +107,30 @@ class GameIntro extends StatelessWidget {
                                 onName: (name) => onName(i, name),
                               ),
                             ],
+                          ],
+                          if (onBotCount != null &&
+                              botCount > 0 &&
+                              cpuLevel != null &&
+                              onCpuLevel != null) ...[
+                            const SizedBox(height: 14),
+                            Text('COMPUTER', style: t.styles.label),
+                            const SizedBox(height: 8),
+                            Row(children: [
+                              for (var i = 0; i < 3; i++) ...[
+                                if (i > 0) const SizedBox(width: 8),
+                                Expanded(
+                                  child: _ModeTile(
+                                      title: const ['Easy', 'Medium', 'Hard'][i],
+                                      hint: const [
+                                        'Slow, misses',
+                                        'A fair match',
+                                        'Sharp aim'
+                                      ][i],
+                                      selected: cpuLevel == i,
+                                      onTap: () => onCpuLevel!(i)),
+                                ),
+                              ],
+                            ]),
                           ],
                           if (teams != null && onTeams != null) ...[
                             const SizedBox(height: 14),

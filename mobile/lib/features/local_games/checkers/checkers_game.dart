@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../../core/text/agreement.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../guess_person/models/gp_player.dart';
@@ -313,7 +314,7 @@ class _CheckersTable extends StatelessWidget {
             subtitle: g.draw
                 ? 'Draw'
                 : (g.finished
-                    ? '${players[g.winner!].name} wins'
+                    ? winsPhrase(players[g.winner!].name)
                     : (mustCapture
                         ? '${current.name}: must capture'
                         : '${possessive(current.name)} turn')),

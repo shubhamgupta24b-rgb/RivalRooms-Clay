@@ -96,12 +96,20 @@ class _SoloFrameState extends State<SoloFrame> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 1),
                         child: GameIcon(
-                            h < widget.lives!
+                            h < widget.lives!.clamp(0, widget.maxLives)
                                 ? GameIcons.heart
                                 : GameIcons.heartEmpty,
                             size: 16,
-                            color: const Color(0xFFFF5B6E)),
+                            color: h < widget.lives!.clamp(0, widget.maxLives)
+                                ? const Color(0xFFFF5B6E)
+                                : const Color(0x66FFFFFF)),
                       ),
+                    const SizedBox(width: 4),
+                    Text('${widget.lives!.clamp(0, widget.maxLives)}',
+                        style: const TextStyle(
+                            fontFamily: Fonts.display,
+                            color: Color(0xFFFF5B6E),
+                            fontSize: 14)),
                   ]),
                 ),
               ),

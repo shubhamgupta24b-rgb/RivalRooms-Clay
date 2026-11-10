@@ -275,9 +275,16 @@ class _ArcheryViewState extends State<_ArcheryView> {
         GameHud(
             players: widget.players,
             scores: g.score,
-            turn: g.finished ? null : g.turn,
-            extra: (i) => '${g.arrowsEach - g.shots[i].length} left'),
-        const SizedBox(height: 8),
+            turn: g.finished ? null : g.turn),
+        const SizedBox(height: 2),
+        Text(
+            'Arrow ${min(g.arrowsEach, g.shots[g.turn].length + 1)} of ${g.arrowsEach}'
+            ' · wind ${(g.wind.abs() * 20).toStringAsFixed(1)}',
+            style: const TextStyle(
+                color: Colors.white70,
+                fontWeight: FontWeight.w800,
+                fontSize: 13)),
+        const SizedBox(height: 4),
         Expanded(
           child: LayoutBuilder(builder: (context, c) {
             final w = min(c.maxWidth, c.maxHeight / ArcheryLogic.h);
@@ -391,23 +398,7 @@ class _RangePainter extends CustomPainter {
             ..close(),
           Paint()..color = k.isEven ? const Color(0xFFFF6B3D) : Colors.white);
     }
-    // Wind chip: a drawn arrow and the strength.
-    final wt = TextPainter(
-      text: TextSpan(
-          text: 'WIND ${(g.wind.abs() * 20).toStringAsFixed(1)}',
-          style: const TextStyle(
-              fontFamily: Fonts.display, color: Colors.white, fontSize: 13)),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    final chip = RRect.fromRectAndRadius(
-        Rect.fromCenter(
-            center: o(0.5, 0.2), width: wt.width + 34, height: wt.height + 8),
-        const Radius.circular(20));
-    canvas.drawRRect(chip, Paint()..color = const Color(0x8C1B1036));
-    wt.paint(canvas, Offset(chip.left + 8, chip.center.dy - wt.height / 2));
-    paintIcon(canvas, g.wind >= 0 ? GameIcons.arrowRight : GameIcons.arrowLeft,
-        Rect.fromLTWH(chip.right - 22, chip.center.dy - 8, 16, 16),
-        color: Colors.white);
+    // Wind strength lives in the HUD so this chip does not cover the range.
     // Target on its wooden stand, with a straw boss behind the face.
     final tc = o(ArcheryLogic.targetX, g.targetY);
     final legs = Paint()

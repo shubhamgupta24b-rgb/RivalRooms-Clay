@@ -1,4 +1,5 @@
 import 'dart:math';
+import '../../../core/text/agreement.dart';
 import 'package:flutter/material.dart';
 import '../../guess_person/models/gp_player.dart';
 import '../../../core/audio/game_audio.dart';
@@ -153,7 +154,7 @@ final hotPotatoInfo = LocalGameInfo(
             title: 'Hot Potato',
             subtitle: g.phase == PotatoPhase.boom
                 ? 'Boom!'
-                : '${players[g.holder].name} has the potato',
+                : '${players[g.holder].name} ${hasWord(players[g.holder].name)} the potato',
           ),
           const SizedBox(height: 6),
           PlayerScoreRow(

@@ -1187,7 +1187,8 @@ class SettingsPanel extends StatelessWidget {
         AppSettings.haptics,
         Motion.reduceSetting,
         AppSettings.playerName,
-        AppSettings.playerColor
+        AppSettings.playerColor,
+        AppSettings.cpuLevel,
       ]),
       builder: (context, _) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -1208,6 +1209,26 @@ class SettingsPanel extends StatelessWidget {
                 value: Motion.reduceSetting.value,
                 onChanged: AppSettings.setReduceMotion,
                 color: color),
+            const SizedBox(height: Space.m),
+            Text('COMPUTER OPPONENT', style: context.tk.cardStyles.label),
+            const SizedBox(height: Space.s),
+            Text('Easy gives them more time and worse aim. Hard is sharp.',
+                style: TextStyle(
+                    fontFamily: Fonts.body,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: context.tk.textMuted)),
+            const SizedBox(height: Space.s),
+            Row(children: [
+              for (var i = 0; i < AppSettings.cpuLabels.length; i++) ...[
+                if (i > 0) const SizedBox(width: 8),
+                Expanded(
+                  child: KitChip(AppSettings.cpuLabels[i],
+                      selected: AppSettings.cpuLevel.value == i,
+                      onTap: () => AppSettings.setCpuLevel(i)),
+                ),
+              ],
+            ]),
             if (showProfile) const _ProfileEditor(),
           ]),
     );

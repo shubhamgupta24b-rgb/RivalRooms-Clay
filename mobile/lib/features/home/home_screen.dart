@@ -264,6 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               tint: PlayerPalette.colors[0],
                               ink: PlayerPalette.tints[0],
                               label: 'Play online',
+                              hint: 'Internet rooms',
                               onTap: _playOnline)),
                       const SizedBox(width: 10),
                       Expanded(
@@ -272,6 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               tint: PlayerPalette.colors[2],
                               ink: PlayerPalette.tints[2],
                               label: 'Same Wi-Fi',
+                              hint: 'Hotspot, no internet',
                               onTap: _sameWifi)),
                       const SizedBox(width: 10),
                       Expanded(
@@ -280,8 +282,54 @@ class _HomeScreenState extends State<HomeScreen> {
                               tint: Brand.gold,
                               ink: const Color(0xFFFFE08A),
                               label: 'My records',
+                              hint: 'On this phone',
                               onTap: () => _open(const RecordsScreen()))),
                     ]),
+                    const SizedBox(height: 16),
+                    const SectionHeader('Party lobby'),
+                    const SizedBox(height: 8),
+                    Row(children: [
+                      Expanded(
+                        child: _LobbyCard(
+                            title: 'Solo',
+                            text: 'One player, this phone',
+                            onTap: () => _open(const LocalGamesHubScreen(
+                                initialFilter: 'solo'))),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _LobbyCard(
+                            title: '2 players',
+                            text: 'Pass the phone or split the screen',
+                            onTap: () => _open(const LocalGamesHubScreen(
+                                initialPlayers: 2))),
+                      ),
+                    ]),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 56,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        clipBehavior: Clip.none,
+                        padding: const EdgeInsets.only(right: 28),
+                        children: [
+                          for (final (label, filter) in const [
+                            ('Party', 'party'),
+                            ('Board', 'board'),
+                            ('Cards', 'cards'),
+                            ('Action', 'action'),
+                            ('Solo', 'solo'),
+                          ])
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: KitChip(label,
+                                  selected: false,
+                                  onTap: () => _open(LocalGamesHubScreen(
+                                      initialFilter: filter))),
+                            ),
+                        ],
+                      ),
+                    ),
                     if (recent != null) ...[
                       const SizedBox(height: 16),
                       _ContinueChip(
@@ -366,10 +414,11 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, online, _) {
           final t = context.tk;
           final wifi = AppConfig.mode == ServerMode.wifi;
+          // Names the real mode. A dead socket is not a separate "Offline" game.
           final label = !online
-              ? 'Offline'
+              ? (wifi ? 'Same Wi-Fi · off' : 'Online · off')
               : (wifi
-                  ? (AppConfig.hosting ? 'Hosting' : 'Wi-Fi host')
+                  ? (AppConfig.hosting ? 'Same Wi-Fi · host' : 'Same Wi-Fi')
                   : 'Online');
           final c = online
               ? (wifi ? PlayerPalette.colors[3] : StatusColors.success)
@@ -482,7 +531,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
     final info = {for (final g in localGames) g.id: g};
     return SizedBox(
-      height: 178,
+      height: 210,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         clipBehavior: Clip.none,
@@ -508,17 +557,58 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+/// Solo or two-player entry on the party lobby.
+class _LobbyCard extends StatelessWidget {
+  final String title, text;
+  final VoidCallback onTap;
+  const _LobbyCard(
+      {required this.title, required this.text, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final flat = context.tk.flat;
+    return Semantics(
+      button: true,
+      label: '$title. $text',
+      excludeSemantics: true,
+      child: SkinPanel(
+        radius: Radii.button,
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(title,
+                style: TextStyle(
+                    fontFamily: Fonts.display,
+                    fontSize: 22,
+                    color: flat ? FlatPalette.ink : Colors.white)),
+            const SizedBox(height: 2),
+            Text(text,
+                style: TextStyle(
+                    fontFamily: Fonts.body,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: flat ? FlatPalette.inkMuted : Colors.white70)),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
 /// A big square choice on Home: icon in a colour, Lilita label.
 class _ModeTile extends StatelessWidget {
   final GameIcons icon;
   final Color tint, ink;
   final String label;
+  final String? hint;
   final VoidCallback onTap;
   const _ModeTile(
       {required this.icon,
       required this.tint,
       required this.ink,
       required this.label,
+      this.hint,
       required this.onTap});
 
   @override
@@ -533,10 +623,10 @@ class _ModeTile extends StatelessWidget {
         radius: Radii.button,
         onTap: onTap,
         child: SizedBox(
-          height: 104,
+          height: 112,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            GameIcon(icon, size: 30, color: flat ? fillFor(tint) : ink),
-            const SizedBox(height: 8),
+            GameIcon(icon, size: 28, color: flat ? fillFor(tint) : ink),
+            const SizedBox(height: 6),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: FittedBox(
@@ -547,6 +637,19 @@ class _ModeTile extends StatelessWidget {
                           fontSize: 15,
                           color: flat ? FlatPalette.ink : Colors.white))),
             ),
+            if (hint != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 2, 4, 0),
+                child: Text(hint!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: Fonts.body,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: flat ? FlatPalette.inkMuted : Colors.white70)),
+              ),
           ]),
         ),
       ),

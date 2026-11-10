@@ -26,7 +26,7 @@ const relayIds = [
   'chess', 'tug_of_war', 'darts', 'hot_potato', 'knife_hit', 'cup_pong',
   'hungry_hippos', 'penguin_push', 'ring_sort', //
   'minesweeper', 'color_switch', 'fruit_cut', 'chicken_jump', 'carrom',
-  'eight_ball', 'bike_race',
+  'eight_ball', 'bike_race', 'tank_battle', 'sumo_push',
 ];
 
 /// Applies an action the way the host does: with forwarding switched off.

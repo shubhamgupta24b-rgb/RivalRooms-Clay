@@ -78,6 +78,8 @@ import 'solo/word_scramble.dart';
 import 'shell/local_game_info.dart';
 import 'shell/game_art.dart';
 import 'shell/local_game_shell.dart';
+import 'sumo_push/sumo_push_game.dart';
+import 'tank_battle/tank_battle_game.dart';
 
 final localGames = <LocalGameInfo>[
   colourClashInfo, findSpyInfo, ludoInfo, mafiaInfo, undercoverInfo,
@@ -106,6 +108,7 @@ final localGames = <LocalGameInfo>[
   fruitMergeInfo, game2048Info, flappyInfo, minesweeperInfo, brickBreakerInfo,
   whackInfo, pianoInfo, wordScrambleInfo, stackInfo, simonInfo,
   fruitCutInfo, chickenJumpInfo, carromInfo, eightBallInfo, candyCrushInfo,
+  tankBattleInfo, sumoPushInfo,
   bikeRaceInfo, nitroKartsInfo,
   ballSortInfo, slidingInfo, sudokuInfo, hangmanInfo, dinoInfo,
   blockDropInfo, bubbleInfo, skyInfo, spaceInfo, colorSwitchInfo
@@ -198,7 +201,12 @@ const _counts = <int?>[null, 2, 3, 4, 5];
 /// Every game that runs on one device (spec 4.4, mockup app/Hub.dc.html): search, category
 /// tabs, a player-count filter, recently played and favourites (the star, or long-press).
 class LocalGamesHubScreen extends StatefulWidget {
-  const LocalGamesHubScreen({super.key});
+  /// 'solo', 'party', 'board', 'cards', 'action' or 'favourites'.
+  final String? initialFilter;
+
+  /// Player-count filter. 5 means 5–6.
+  final int? initialPlayers;
+  const LocalGamesHubScreen({super.key, this.initialFilter, this.initialPlayers});
   @override
   State<LocalGamesHubScreen> createState() => _LocalGamesHubScreenState();
 }
@@ -206,8 +214,16 @@ class LocalGamesHubScreen extends StatefulWidget {
 class _LocalGamesHubScreenState extends State<LocalGamesHubScreen> {
   final _entriesList = _entries();
   final _search = TextEditingController();
-  var filter = _Filter.all;
-  int? players; // null: any
+  late var filter = switch (widget.initialFilter) {
+    'party' => _Filter.party,
+    'board' => _Filter.board,
+    'cards' => _Filter.cards,
+    'action' => _Filter.action,
+    'solo' => _Filter.solo,
+    'favourites' => _Filter.favourites,
+    _ => _Filter.all,
+  };
+  late int? players = widget.initialPlayers; // null: any
   Set<String> favourites = {};
   List<String> recent = const [];
 
@@ -354,17 +370,13 @@ class _LocalGamesHubScreenState extends State<LocalGamesHubScreen> {
               ),
             ),
             SliverToBoxAdapter(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                child: Row(children: [
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+                child: Wrap(spacing: 6, runSpacing: 6, children: [
                   for (final f in _Filter.values)
-                    Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: KitChip(_filterLabels[f]!,
-                            selected: filter == f,
-                            onTap: () => setState(() => filter = f))),
+                    KitChip(_filterLabels[f]!,
+                        selected: filter == f,
+                        onTap: () => setState(() => filter = f)),
                 ]),
               ),
             ),

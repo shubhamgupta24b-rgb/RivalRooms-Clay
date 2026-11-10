@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/auth/authentication_manager.dart';
+import '../core/text/agreement.dart';
 import '../core/records/records.dart';
 import '../core/room/room_manager.dart';
 import '../core/session/game_session_manager.dart';
@@ -204,7 +205,9 @@ class _Results extends StatelessWidget {
         TextSpan(
             text: name(partyOrder.first),
             style: TextStyle(color: ink(partyOrder.first))),
-        const TextSpan(text: ' wins the party!')
+        TextSpan(
+            text:
+                ' ${winsWord(name(partyOrder.first))} the party!'),
       ]);
     } else if (draw) {
       title = const TextSpan(text: "It's a draw!");
@@ -218,7 +221,11 @@ class _Results extends StatelessWidget {
           TextSpan(
               text: name(winners[k]), style: TextStyle(color: ink(winners[k]))),
         ],
-        TextSpan(text: winners.length > 1 ? ' win!' : ' wins!'),
+        TextSpan(
+            text: winners.length > 1 ||
+                    (winners.length == 1 && isYou(name(winners.first)))
+                ? ' win!'
+                : ' wins!'),
       ]);
     }
     final subtitle = party == null

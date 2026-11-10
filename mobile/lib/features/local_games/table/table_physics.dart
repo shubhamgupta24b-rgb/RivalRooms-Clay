@@ -34,6 +34,14 @@ class TableSim {
 
   bool get resting => pucks.every((p) => p.pocketed || p.speed < 0.04);
 
+  /// Ball ids that collided this shot, in order. Callers clear this when a shot starts.
+  final List<int> hitA = [];
+  final List<int> hitB = [];
+  void clearHits() {
+    hitA.clear();
+    hitB.clear();
+  }
+
   Puck byId(int id) => pucks.firstWhere((p) => p.id == id);
 
   /// Advances [dt] seconds in fixed slices.
@@ -109,6 +117,8 @@ class TableSim {
           a.vy -= impulse * ny / a.mass;
           b.vx += impulse * nx / b.mass;
           b.vy += impulse * ny / b.mass;
+          hitA.add(a.id);
+          hitB.add(b.id);
         }
       }
     }

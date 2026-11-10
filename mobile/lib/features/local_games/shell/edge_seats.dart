@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../core/ui/components.dart';
 import '../../guess_person/models/gp_player.dart';
+import 'bots.dart';
 
 /// Seats around a shared arena on a phone lying flat: player 1 at the bottom edge, player 2
 /// at the top, players 3 and 4 on the left and right. Used by one-button arena games, where
@@ -96,7 +97,9 @@ class EdgeScore extends StatelessWidget {
     return Semantics(
         label: '${player.name} $score',
         excludeSemantics: true,
-        child: RotatedBox(quarterTurns: edgeTurns(seat), child: chip));
+        child: RotatedBox(
+            quarterTurns: BotScope.isBot(context, seat) ? 0 : edgeTurns(seat),
+            child: chip));
   }
 }
 

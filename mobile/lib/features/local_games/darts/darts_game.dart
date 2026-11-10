@@ -1,4 +1,5 @@
 import 'dart:math';
+import '../../../core/text/agreement.dart';
 import 'package:flutter/material.dart';
 import '../../guess_person/models/gp_player.dart';
 import '../../../core/audio/game_audio.dart';
@@ -255,7 +256,7 @@ class _DartsView extends StatelessWidget {
                   aspectRatio: 1,
                   child: Semantics(
                     label:
-                        'Dartboard. ${current.name} has thrown ${g.darts.length} of 3 darts. Tap to throw.',
+                        'Dartboard. ${current.name} ${hasWord(current.name)} thrown ${g.darts.length} of 3 darts. Tap to throw.',
                     child: RepaintBoundary(
                         child: CustomPaint(
                             painter: _BoardPainter(

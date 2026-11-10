@@ -19,13 +19,13 @@ import 'package:multiplayer_game/features/local_games/snake_duel/snake_duel_game
 
 void main() {
   test(
-      '70 shell entries, 71 visible hub games, unique ids, 1-6 local seats',
+      '72 shell entries, 74 visible hub games, unique ids, 1-6 local seats',
       () {
-    expect(localGames, hasLength(70));
-    expect(localGames.map((g) => g.id).toSet(), hasLength(70));
+    expect(localGames, hasLength(72));
+    expect(localGames.map((g) => g.id).toSet(), hasLength(72));
     expect(localGames.where((g) => g.solo), hasLength(20));
-    expect(localGames.where((g) => !g.remoteOnly), hasLength(69));
-    expect(totalGameCount, 71);
+    expect(localGames.where((g) => !g.remoteOnly), hasLength(72));
+    expect(totalGameCount, 74);
     for (final g in localGames) {
       expect(g.maxPlayers, inInclusiveRange(1, 6), reason: g.id);
     }

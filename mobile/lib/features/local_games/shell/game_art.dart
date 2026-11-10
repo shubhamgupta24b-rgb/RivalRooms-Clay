@@ -72,6 +72,8 @@ const gameIcons = <String, GameIcons>{
   'stack_tower': GameIcons.woodBlock,
   'sudoku': GameIcons.pencil,
   'tic_tac_toe': GameIcons.cross,
+  'sumo_push': GameIcons.people,
+  'tank_battle': GameIcons.tank,
   'tug_of_war': GameIcons.flag,
   'darts': GameIcons.target,
   'hot_potato': GameIcons.bomb,
