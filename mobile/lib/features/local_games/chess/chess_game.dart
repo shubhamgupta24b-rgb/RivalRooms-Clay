@@ -1,4 +1,5 @@
 import 'dart:math';
+import '../../../core/text/agreement.dart';
 import 'package:flutter/material.dart';
 import '../../guess_person/models/gp_player.dart';
 import '../../../core/audio/game_audio.dart';
@@ -405,7 +406,10 @@ final chessInfo = LocalGameInfo(
   bot: botFor<ChessLogic>((g, b, now) {
     if (g.finished || g.turn != b.seat) return;
     if (!b.thinkFirst(g.moveNo, now, 700, 1400)) return;
-    g.play(chessBotPick(g, b.rng));
+    final legal = g.legal;
+    g.play(b.slips() && legal.isNotEmpty
+        ? legal[b.rng.nextInt(legal.length)]
+        : chessBotPick(g, b.rng));
   }),
   online: RelaySpec<ChessLogic>(
     create: (n) => ChessLogic(),
@@ -494,7 +498,7 @@ class _ChessTable extends StatelessWidget {
       onChange: (fx, before, now) {
         if (g.end == ChessEnd.checkmate) {
           keyMoment(fx, 'CHECKMATE!',
-              sub: '${players[g.winner!].name} wins',
+              sub: winsPhrase(players[g.winner!].name),
               sound: 'win',
               confetti: true);
         } else if (g.finished) {

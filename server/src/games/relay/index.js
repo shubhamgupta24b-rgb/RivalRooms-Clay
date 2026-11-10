@@ -54,6 +54,8 @@ const RELAY_GAMES = [
   { id: 'carrom', min: 2, max: 2, optIn: true },
   { id: 'eight_ball', min: 2, max: 2, optIn: true },
   { id: 'bike_race', min: 1, max: 2, optIn: true },
+  { id: 'tank_battle', min: 2, max: 2, optIn: true },
+  { id: 'sumo_push', min: 2, max: 2, optIn: true },
 ];
 
 const MAX_STATE_BYTES = 64 * 1024;

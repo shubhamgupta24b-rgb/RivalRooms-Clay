@@ -214,7 +214,7 @@ void main() {
         );
         await tester.runAsync(auth.restore);
         await tester.pump();
-        expect(find.text('Offline'), findsOneWidget);
+        expect(find.text('Online · off'), findsOneWidget);
         expect(find.text('Ready to play?'), findsOneWidget);
 
         Future<void> open(Finder target) async {

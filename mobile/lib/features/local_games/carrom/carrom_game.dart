@@ -18,7 +18,7 @@ class CarromLogic extends LocalGameLogic {
   bool queenCover = false;
   int coverFor = -1;
   bool queenDone = false;
-  String message = 'Drag to aim, release to shoot';
+  String message = 'Pull back from the striker and let go';
   int _last = 0;
   double aim = 1.2;
   double power = 0.8;
@@ -29,7 +29,7 @@ class CarromLogic extends LocalGameLogic {
   }
 
   static TableSim _rack() {
-    final pucks = <Puck>[Puck(0, 0.5, 0.82, r: 0.038, mass: 1.4)];
+    final pucks = <Puck>[Puck(0, 0.5, 0.78, r: 0.038, mass: 1.4)];
     pucks.add(Puck(queen, 0.5, 0.42, r: 0.026));
     for (var i = 0; i < 12; i++) {
       final a = i * pi / 6;
@@ -85,16 +85,13 @@ class CarromLogic extends LocalGameLogic {
     aim = angle;
     power = pow.clamp(0.35, 1.8);
     final s = table.byId(0);
-    if (s.pocketed) {
-      s.pocketed = false;
-      s.x = 0.5;
-      s.y = 0.82;
-    }
+    if (s.pocketed) _resetStriker();
     s.vx = cos(angle) * power * 2.4;
     s.vy = sin(angle) * power * 2.4;
     _before
       ..clear()
       ..addAll(_pocketed());
+    table.clearHits();
     moving = true;
     _last = 0;
     notifyListeners();
@@ -106,13 +103,10 @@ class CarromLogic extends LocalGameLogic {
     final fresh = now.difference(_before);
     final strikerIn = fresh.contains(0);
     if (strikerIn) {
-      final s = table.byId(0);
-      s.pocketed = false;
-      s.x = 0.5;
-      s.y = 0.82;
       message = 'Foul: striker in the pocket';
       if (queenCover && coverFor == turn) _returnQueen();
       turn = 1 - turn;
+      _resetStriker();
       _checkWin();
       return;
     }
@@ -131,13 +125,36 @@ class CarromLogic extends LocalGameLogic {
       _returnQueen();
       message = 'Queen returned';
     }
-    if (own > 0 && !strikerIn) {
+    final hitCoin = _struckCoin();
+    if (!hitCoin) {
+      message = 'Foul: missed the coins';
+      if (queenCover && coverFor == turn) _returnQueen();
+      turn = 1 - turn;
+    } else if (own > 0) {
       message = 'Pocket! Shoot again';
     } else {
       turn = 1 - turn;
       message = 'Other player';
     }
+    _resetStriker();
     _checkWin();
+  }
+
+  bool _struckCoin() {
+    for (var i = 0; i < table.hitA.length; i++) {
+      final a = table.hitA[i], b = table.hitB[i];
+      if (a == 0 && b != 0 || b == 0 && a != 0) return true;
+    }
+    return false;
+  }
+
+  /// The striker always returns to the shooter's baseline, clear of the coins.
+  void _resetStriker() {
+    final s = table.byId(0);
+    s.pocketed = false;
+    s.vx = s.vy = 0;
+    s.x = 0.5;
+    s.y = turn == 0 ? 0.78 : 0.22;
   }
 
   void _returnQueen() {
@@ -180,12 +197,29 @@ final carromInfo = LocalGameInfo(
   rules: const [
     'Drag from the striker to aim. Release to shoot. Power follows how far you drag.',
     'Pocket your colour to shoot again. The red queen must be covered by your own coin next shot.',
-    'The striker in a pocket is a foul. First to pocket all six of their coins, with the queen covered, wins.',
+    'The striker returns to your baseline every turn. Pocketing it, or missing the coins, is a foul.',
+    'First to pocket all six of their coins, with the queen covered, wins. Scores sit above the board.',
   ],
   scoreUnit: 'coins',
   splitScreen: false,
   minPlayers: 2,
   maxPlayers: 2,
+  bot: botFor<CarromLogic>((g, b, now) {
+    if (g.finished || g.moving || g.turn != b.seat) return;
+    final down = g.table.pucks.where((p) => p.pocketed).length;
+    if (!b.thinkFirst((g.turn, down, g.queenCover), now, 500, 1200)) return;
+    final striker = g.table.byId(0);
+    final mine = [
+      for (final p in g.table.pucks)
+        if (!p.pocketed && p.id != 0 && (g.mine(p.id) || p.id == CarromLogic.queen))
+          p
+    ];
+    if (mine.isEmpty) return;
+    final target = b.prefer(mine);
+    var angle = atan2(target.y - striker.y, target.x - striker.x);
+    if (b.slips()) angle += b.aimNoise(1.2);
+    g.shoot(b.seat, angle, b.slips() ? 0.5 : 1.1);
+  }),
   online: RelaySpec<CarromLogic>(
     create: (n) => CarromLogic(),
     save: (g) => {
@@ -316,6 +350,19 @@ class _CarromPainter extends CustomPainter {
     final inner = Rect.fromLTWH(18, 18, size.width - 36, size.height - 36);
     canvas.drawRRect(RRect.fromRectAndRadius(inner, const Radius.circular(8)),
         Paint()..color = const Color(0xFFE7D3A1));
+    final base = Paint()
+      ..color = const Color(0xFF8A5A2B)
+      ..strokeWidth = 2;
+    for (final y in [0.22, 0.78]) {
+      final py = y * size.height;
+      canvas.drawLine(
+          Offset(size.width * 0.12, py), Offset(size.width * 0.88, py), base);
+      canvas.drawCircle(Offset(size.width * 0.5, py), 6,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.6
+            ..color = const Color(0xFF8A5A2B));
+    }
     for (final c in g.table.pockets) {
       canvas.drawCircle(
           Offset(c.dx * size.width, c.dy * size.height),

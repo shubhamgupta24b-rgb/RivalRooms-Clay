@@ -1,4 +1,5 @@
 import 'dart:math';
+import '../../../core/text/agreement.dart';
 import 'package:flutter/material.dart';
 import '../../guess_person/models/gp_player.dart';
 import '../../../core/audio/game_audio.dart';
@@ -108,7 +109,7 @@ class _TugField extends StatelessWidget {
         final s = g.scores;
         if (s.contains(1)) {
           keyMoment(fx, g.winner != null ? 'PULLED OVER!' : 'TIME UP!',
-              sub: '${players[s.indexOf(1)].name} wins',
+              sub: winsPhrase(players[s.indexOf(1)].name),
               sound: 'win',
               confetti: true);
         } else {

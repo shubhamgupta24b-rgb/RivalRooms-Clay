@@ -1,4 +1,5 @@
 import 'dart:math';
+import '../../../core/text/agreement.dart';
 import 'package:flutter/material.dart';
 import '../../../core/audio/game_audio.dart';
 import '../../../core/ui/components.dart';
@@ -53,11 +54,11 @@ final colourClashInfo = LocalGameInfo(
     'Everyone gets 7 cards. Play a card that matches the top card by colour, number or symbol, or play a Wild.',
     "Can't play? Draw one. Skip ⊘, Reverse ⇄, +2 and Wild +4 work like the classic game.",
     'Down to two cards? Tap ONE! before you play, or pick up 2. First to empty their hand wins!',
-    'Online on two phones. Your cards stay on your phone. Pass-and-play is turned off.',
+    'Play on one phone or online. Your cards stay hidden from the other players.',
   ],
   scoreUnit: 'wins',
   splitScreen: false,
-  remoteOnly: true,
+  remoteOnly: false,
   minPlayers: 2,
   maxPlayers: 2,
   bot: botFor<ColourClashLogic>((g, b, now) {
@@ -527,7 +528,7 @@ class _ClashTable extends StatelessWidget {
             ScoreHud(
               title: 'Colour Clash',
               state: g.winner != null
-                  ? '${players[g.winner!].name} wins'
+                  ? winsPhrase(players[g.winner!].name)
                   : '${possessive(players[g.turn].name)} turn',
               players: players,
               turn: g.winner != null ? null : g.turn,

@@ -40,6 +40,9 @@ void main() {
     await tester.pump();
     expect(find.text('Ludo'), findsOneWidget);
     expect(find.text('Bingo'), findsNothing);
+    await tester.enterText(find.byType(TextField), 'Colour Clash');
+    await tester.pump();
+    expect(find.text('Colour Clash'), findsWidgets);
     await tester.enterText(
         find.byType(TextField), 'watermelon'); // in Fruit Merge's description
     await tester.pump();

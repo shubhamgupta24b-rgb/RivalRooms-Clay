@@ -1,4 +1,5 @@
 import 'dart:math';
+import '../../../core/text/agreement.dart';
 import 'package:flutter/material.dart';
 import '../../guess_person/models/gp_player.dart';
 import '../../../core/audio/game_audio.dart';
@@ -324,7 +325,7 @@ class _BattleTable extends StatelessWidget {
     final m = stripEmoji(g.message);
     final Widget banner = g.finished
         ? TurnBanner(
-            text: '${players[winner!].name} wins!',
+            text: winsBang(players[winner!].name),
             sub: 'Whole fleet sunk',
             color: players[winner].color,
             kind: TurnBannerKind.success,

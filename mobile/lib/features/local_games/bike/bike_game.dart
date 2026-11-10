@@ -5,7 +5,8 @@ import '../../guess_person/models/gp_player.dart';
 import '../shell/game_hud.dart';
 import '../shell/local_game_info.dart';
 import '../shell/local_game_logic.dart';
-import '../shell/local_game_shell.dart' show PauseButton;
+import '../shell/local_game_shell.dart' show PauseButton, ResultScope;
+import '../shell/start_gate.dart';
 import '../shell/ticking_play.dart';
 import '../solo/solo_common.dart';
 
@@ -60,7 +61,7 @@ class BikeLogic extends SoloLogic {
         speed *= 0.25;
       }
     }
-    score = (progress * 1000).floor();
+    score = (progress * 100).floor().clamp(0, 100);
     if (progress >= 1) gameOver(600);
     notifyListeners();
   }
@@ -80,9 +81,10 @@ class BikeRace extends LocalGameLogic {
   @override
   bool get finished => winner != null || elapsed > 120000;
   @override
+  /// 0–100, the percent of the track each bike has covered. The finisher is 100.
   List<int> get scores => [
         for (var i = 0; i < bikes.length; i++)
-          winner == i ? 100000 - elapsed : bikes[i].score
+          winner == i ? 100 : bikes[i].score.clamp(0, 99)
       ];
 
   void input(int player, double steer, bool gas, bool brake) {
@@ -140,7 +142,7 @@ final bikeRaceInfo = LocalGameInfo(
     'Three tracks. Later tracks are faster and have more blocks.',
     'Online, both bikes share the track. The first across the line wins.',
   ],
-  scoreUnit: 'points',
+  scoreUnit: 'percent of the track',
   splitScreen: false,
   minPlayers: 1,
   maxPlayers: 2,
@@ -191,13 +193,18 @@ class _BikeMenuState extends State<_BikeMenu> {
         ]),
       );
     }
-    return TickingPlay<BikeLogic>(
+    return StartGate(
+      color: const Color(0xFF3D7A4A),
+      child: (context) => TickingPlay<BikeLogic>(
       create: () => BikeLogic(track: track!),
       onFinished: widget.onFinished,
-      builder: (context, g) => SoloFrame(
+      builder: (context, g) {
+        ResultScope.of(context)?.subtitle =
+            'Track progress · ${g.score}% of the lap';
+        return SoloFrame(
           title: 'Track ${g.track}',
           score: g.score,
-          extra: g.progress >= 1 ? 'Finish' : '${(g.progress * 100).floor()}%',
+          extra: g.progress >= 1 ? 'Finish' : '${g.score}% of the track',
           child: _Pad(
               onSteer: g.setSteer,
               onGas: g.setGas,
@@ -205,8 +212,8 @@ class _BikeMenuState extends State<_BikeMenu> {
               child: CustomPaint(
                   painter: _TrackPainter(
                       progress: g.progress, lane: g.lane, blocks: g.blocks),
-                  child: const SizedBox.expand()))),
-    );
+                  child: const SizedBox.expand())));
+      }));
   }
 }
 
@@ -219,18 +226,20 @@ class _BikeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final b = race.bikes[me];
+    ResultScope.of(context)?.subtitle = 'Percent of the track';
     return Column(children: [
       GameHud(
           players: players,
-          scores: [for (final x in race.bikes) (x.progress * 100).floor()],
+          scores: race.scores,
+          extra: (_) => '%',
           trailing: Text(
               race.elapsed < 3000
                   ? '${(3 - race.elapsed / 1000).ceil()}'
-                  : '${(b.speed * 200).floor()}',
+                  : '${(b.speed * 200).floor()} km/h',
               style: const TextStyle(
                   fontFamily: Fonts.display,
                   color: Colors.white,
-                  fontSize: 20))),
+                  fontSize: 18))),
       Expanded(
           child: _Pad(
               onSteer: (v) => race.input(me, v, b.gas, b.brake),

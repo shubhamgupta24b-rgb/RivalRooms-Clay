@@ -415,9 +415,14 @@ class _SlingViewState extends State<_SlingView> {
         GameHud(
             players: widget.players,
             scores: g.score,
-            turn: g.finished ? null : g.turn,
-            trailing: HudLabel('FORT ${g.round}/${SlingLogic.rounds}')),
-        const SizedBox(height: 8),
+            turn: g.finished ? null : g.turn),
+        const SizedBox(height: 4),
+        Text('Fort ${g.round} of ${SlingLogic.rounds}',
+            style: const TextStyle(
+                color: Colors.white70,
+                fontWeight: FontWeight.w800,
+                fontSize: 13)),
+        const SizedBox(height: 4),
         Expanded(
           child: LayoutBuilder(builder: (context, c) {
             final w = min(c.maxWidth, c.maxHeight / SlingLogic.h);
@@ -457,8 +462,8 @@ class _SlingViewState extends State<_SlingView> {
           turnText: g.finished
               ? 'All forts done!'
               : (_mine
-                  ? '${current.whose} TURN · ${g.birds} ${g.birds == 1 ? 'bird' : 'birds'} left'
-                  : '${current.name} is aiming... · ${g.pigsLeft} pigs left'),
+                  ? '${current.whose} TURN · ${g.birds} left'
+                  : '${current.name} aiming · ${g.pigsLeft} pigs'),
           message: showMsg ? g.message : null,
         ),
       ]),

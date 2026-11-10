@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import '../../guess_person/models/gp_player.dart';
 import '../../../core/ui/components.dart';
 import '../shell/local_game_info.dart';
+import '../shell/local_game_shell.dart' show PauseButton;
 import '../shell/local_game_logic.dart';
-import '../shell/split_screen.dart';
 import '../shell/ticking_play.dart';
 
 /// Simple 2D vector for the table physics.
@@ -160,10 +160,11 @@ final airHockeyInfo = LocalGameInfo(
     final target = trapped
         ? V(g.puck.x + (g.puck.x > 0.5 ? -0.13 : 0.13), g.puck.y + 0.01)
         : inMyHalf
-            ? V(g.puck.x + side * 0.05, g.puck.y - 0.06)
+            ? V(g.puck.x + side * 0.05 + b.aimNoise(0.35),
+                g.puck.y - 0.06 + b.aimNoise(0.2))
             : V(0.5 + (g.puck.x - 0.5) * 0.5, 0.18);
     final d = target - me;
-    final step = 1.4 * dt; // a little slower than a quick finger
+    final step = 1.4 * b.skill.tracking * dt;
     final len = d.length;
     g.moveMallet(b.seat, len <= step ? target : me + d * (step / len));
   }),
@@ -197,35 +198,84 @@ final airHockeyInfo = LocalGameInfo(
     // Player 2 sees the table turned round, so their goal is at the bottom too.
     view: (context, g, players, me) => RotatedBox(
       quarterTurns: me == 1 ? 2 : 0,
-      child: Column(children: [
-        Expanded(
-            child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: TableView(players: players, logic: g))),
-        DuelMiddleBar(
-            players: players,
-            scores: g.scores,
-            secondsLeft: g.secondsLeft,
-            progress: g.progress),
-      ]),
+      child: _PlainRink(players: players, g: g),
     ),
   ),
   play: (players, onFinished) => TickingPlay<AirHockeyLogic>(
     create: () => AirHockeyLogic(),
     onFinished: onFinished,
-    builder: (context, g) => Column(children: [
-      Expanded(
-          child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: TableView(players: players, logic: g))),
-      DuelMiddleBar(
-          players: players,
-          scores: g.scores,
-          secondsLeft: g.secondsLeft,
-          progress: g.progress),
-    ]),
+    builder: (context, g) => _PlainRink(players: players, g: g),
   ),
 );
+
+/// Scores sit beside the ice. Nothing is drawn on top of the numbers, and the
+/// pause control is above the rink, outside the mallet touch area.
+class _PlainRink extends StatelessWidget {
+  final List<GpPlayer> players;
+  final AirHockeyLogic g;
+  const _PlainRink({required this.players, required this.g});
+
+  @override
+  Widget build(BuildContext context) {
+    final farUpright = BotScope.isBot(context, 1);
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(8, 6, 12, 0),
+        child: Row(children: [
+          const PauseButton(),
+          const Spacer(),
+          Text('${g.secondsLeft}s',
+              style: const TextStyle(
+                  fontFamily: Fonts.display, color: Colors.white, fontSize: 22)),
+        ]),
+      ),
+      Expanded(
+        child: Row(children: [
+          _RinkScore(player: players[0], score: g.scores[0]),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: TableView(players: players, logic: g),
+            ),
+          ),
+          _RinkScore(
+              player: players[1], score: g.scores[1], upright: farUpright),
+        ]),
+      ),
+    ]);
+  }
+}
+
+class _RinkScore extends StatelessWidget {
+  final GpPlayer player;
+  final int score;
+  final bool upright;
+  const _RinkScore(
+      {required this.player, required this.score, this.upright = true});
+
+  @override
+  Widget build(BuildContext context) {
+    final chip = SizedBox(
+      width: 64,
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(player.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+                color: Colors.white70,
+                fontWeight: FontWeight.w800,
+                fontSize: 11)),
+        Text('$score',
+            style: TextStyle(
+                fontFamily: Fonts.display,
+                fontSize: 32,
+                height: 1,
+                color: player.color)),
+      ]),
+    );
+    return RotatedBox(quarterTurns: upright ? 0 : 2, child: chip);
+  }
+}
 
 /// Shared table widget: draws the table and turns touches into mallet moves.
 /// Touches in the bottom half drive player 1, the top half player 2.
@@ -335,7 +385,7 @@ class _TablePainter extends CustomPainter {
     canvas.drawLine(at(const V(0, AirHockeyLogic.length / 2)),
         at(const V(1, AirHockeyLogic.length / 2)), line);
     canvas.drawCircle(
-        at(const V(0.5, AirHockeyLogic.length / 2)), s * 0.15, line);
+        at(const V(0.5, AirHockeyLogic.length / 2)), s * 0.06, line);
     for (final (y, c) in [
       (0.0, colors[1]),
       (AirHockeyLogic.length, colors[0])

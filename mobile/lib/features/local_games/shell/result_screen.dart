@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/ads/ad_mob_service.dart';
+import '../../../core/text/agreement.dart';
 import '../../../core/ui/components.dart';
 import '../../guess_person/models/gp_player.dart';
 import 'game_art.dart';
@@ -150,7 +151,11 @@ class ResultScreen extends StatelessWidget {
                   style:
                       TextStyle(color: nameColor(players[leaders[k]].color))),
             ],
-            TextSpan(text: teamWin ? ' win!' : ' wins!'),
+            TextSpan(
+                text: teamWin ||
+                        leaders.length == 1 && isYou(players[leaders[0]].name)
+                    ? ' win!'
+                    : ' wins!'),
           ]);
     final hero = extras?.hero;
     return _frame(

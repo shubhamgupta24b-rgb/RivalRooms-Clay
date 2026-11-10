@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/text/agreement.dart';
 import '../../../core/audio/game_audio.dart';
 import '../../../core/ui/components.dart';
 import '../../guess_person/models/gp_player.dart';
@@ -82,7 +83,7 @@ final ticTacToeInfo = LocalGameInfo(
     }
 
     // Win, else block, else centre, else a corner, else anything. Sometimes it slips up.
-    final int move = b.chance(0.12)
+    final int move = b.slips()
         ? b.pick(empty)
         : finishing(b.seat) ??
             finishing(1 - b.seat) ??
@@ -163,7 +164,7 @@ class _BoardState extends State<_Board> {
         if (!done) return;
         if (g.winner != null) {
           keyMoment(fx, 'THREE IN A ROW!',
-              sub: '${players[g.winner!].name} wins',
+              sub: winsPhrase(players[g.winner!].name),
               sound: 'win',
               confetti: true);
         } else {
@@ -177,7 +178,7 @@ class _BoardState extends State<_Board> {
           ScoreHud(
             title: 'Tic-Tac-Toe',
             state: g.winner != null
-                ? '${players[g.winner!].name} wins'
+                ? winsPhrase(players[g.winner!].name)
                 : (g.isDraw
                     ? 'Draw'
                     : '${possessive(current.name)} turn (${_Board.mark(g.turn)})'),

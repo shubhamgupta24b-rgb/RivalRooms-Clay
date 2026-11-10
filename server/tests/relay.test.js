@@ -9,8 +9,8 @@ const room = (n, hostId = 'a') => ({ hostId, players: ['a', 'b', 'c', 'd', 'e', 
 const act = (g, s, u, type, payload) => g.onAction(s, u, { type, payload });
 
 test('Relay: every relay game is registered with its player limits', () => {
-  assert.strictEqual(RELAY_GAMES.length, 49);
-  assert.strictEqual(new Set(RELAY_GAMES.map(g => g.id)).size, 49, 'no duplicates');
+  assert.strictEqual(RELAY_GAMES.length, 51);
+  assert.strictEqual(new Set(RELAY_GAMES.map(g => g.id)).size, 51, 'no duplicates');
   for (const { id, min, max } of RELAY_GAMES) {
     const g = registry.get(id);
     assert.ok(g && g.relay, id);

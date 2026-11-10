@@ -13,6 +13,10 @@ abstract final class AppSettings {
   static final playerName = ValueNotifier<String>('');
   static final playerColor = ValueNotifier<int>(0);
 
+  /// 0 easy, 1 medium, 2 hard. Shared by every computer opponent.
+  static const cpuLabels = ['Easy', 'Medium', 'Hard'];
+  static final cpuLevel = ValueNotifier<int>(1);
+
   static Future<void> init() async {
     try {
       final p = await SharedPreferences.getInstance();
@@ -21,6 +25,7 @@ abstract final class AppSettings {
       playerName.value = p.getString('set_player_name') ?? '';
       playerColor.value = (p.getInt('set_player_color') ?? 0)
           .clamp(0, PlayerPalette.colors.length - 1);
+      cpuLevel.value = (p.getInt('set_cpu_level') ?? 1).clamp(0, 2);
     } catch (_) {}
     _applyHaptics();
   }
@@ -40,6 +45,11 @@ abstract final class AppSettings {
   static Future<void> setPlayerName(String name) async {
     playerName.value = name.trim();
     await _save((p) => p.setString('set_player_name', name.trim()));
+  }
+
+  static Future<void> setCpuLevel(int level) async {
+    cpuLevel.value = level.clamp(0, 2);
+    await _save((p) => p.setInt('set_cpu_level', cpuLevel.value));
   }
 
   static Future<void> setPlayerColor(int seat) async {

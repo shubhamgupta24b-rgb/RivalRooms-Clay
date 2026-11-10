@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/text/agreement.dart';
 import '../../../core/audio/game_audio.dart';
 import '../../../core/ui/components.dart';
 import '../../guess_person/models/gp_player.dart';
@@ -209,7 +210,7 @@ class _BoardState extends State<_Board> {
         if (!done) return;
         if (g.winner != null) {
           keyMoment(fx, 'FOUR IN A ROW!',
-              sub: '${players[g.winner!].name} wins',
+              sub: winsPhrase(players[g.winner!].name),
               sound: 'win',
               confetti: true);
         } else {
@@ -222,7 +223,7 @@ class _BoardState extends State<_Board> {
           ScoreHud(
             title: 'Connect Four',
             state: g.winner != null
-                ? '${players[g.winner!].name} wins'
+                ? winsPhrase(players[g.winner!].name)
                 : (g.isDraw ? 'Draw' : '${possessive(current.name)} turn'),
             players: players,
             turn: g.finished ? null : g.turn,

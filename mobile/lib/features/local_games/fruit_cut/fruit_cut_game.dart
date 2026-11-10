@@ -226,6 +226,7 @@ class _Solo extends StatelessWidget {
             : 'Fruit Cut',
         score: g.score,
         lives: g.lives,
+        maxLives: 3,
         child: _Canvas(fruits: g.fruits, onSwipe: g.swipe),
       );
 }
@@ -295,21 +296,23 @@ class _FruitPainter extends CustomPainter {
     for (final f in fruits) {
       final c = Offset(f.x * s.width, f.y / FruitCutLogic.height * s.height);
       final rad = f.r * s.width;
-      if (f.kind < 0) {
-        canvas.drawCircle(c, rad, Paint()..color = const Color(0xFF2B2B2B));
-        canvas.drawCircle(
-            c, rad * 0.35, Paint()..color = const Color(0xFFFFC21A));
+      final icon = f.kind < 0
+          ? GameIcons.bomb
+          : fruitIcons[f.kind % fruitIcons.length];
+      final box = Rect.fromCircle(center: c, radius: rad * 2.2);
+      if (f.sliced && f.kind >= 0) {
+        canvas.save();
+        canvas.clipRect(Rect.fromLTRB(c.dx - rad * 2.2, c.dy - rad * 2.2,
+            c.dx, c.dy + rad * 2.2));
+        paintIcon(canvas, icon, box.shift(const Offset(-4, 0)));
+        canvas.restore();
+        canvas.save();
+        canvas.clipRect(Rect.fromLTRB(c.dx, c.dy - rad * 2.2,
+            c.dx + rad * 2.2, c.dy + rad * 2.2));
+        paintIcon(canvas, icon, box.shift(const Offset(4, 2)));
+        canvas.restore();
       } else {
-        canvas.drawCircle(
-            c, rad, Paint()..color = fruitKinds[f.kind % fruitKinds.length]);
-        if (f.sliced) {
-          canvas.drawLine(
-              c - Offset(rad, 0),
-              c + Offset(rad, 0),
-              Paint()
-                ..color = Colors.white
-                ..strokeWidth = 2);
-        }
+        paintIcon(canvas, icon, box);
       }
     }
   }

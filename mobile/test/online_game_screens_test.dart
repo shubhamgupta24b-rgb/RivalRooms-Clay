@@ -103,7 +103,8 @@ void main() {
         'chess', 'tug_of_war', 'darts', 'hot_potato', 'knife_hit', 'cup_pong',
         'hungry_hippos', 'penguin_push', 'ring_sort', //
         'minesweeper', 'color_switch', 'fruit_cut', 'chicken_jump', 'carrom',
-        'eight_ball', 'bike_race', 'nitro_knockout',
+        'eight_ball', 'bike_race', 'tank_battle', 'sumo_push',
+        'nitro_knockout',
       });
       expect(gameCatalog.map((g) => g.id), isNot(contains('guess_person')),
           reason: 'quiz removed from rooms');
@@ -116,7 +117,7 @@ void main() {
             'fruit_duel',
             'classic_snake'
           ])));
-      expect(gameCatalog.length, 54);
+      expect(gameCatalog.length, 56);
       for (final g in gameCatalog) {
         expect(g.playable, isTrue, reason: g.id);
         expect(gameScreenFor(g.id), isNotNull, reason: g.id);

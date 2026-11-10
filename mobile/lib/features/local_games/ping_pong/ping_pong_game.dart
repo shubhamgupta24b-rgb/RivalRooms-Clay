@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import '../../guess_person/models/gp_player.dart';
 import '../air_hockey/air_hockey_game.dart' show V;
 import '../shell/local_game_info.dart';
+import '../shell/local_game_shell.dart' show PauseButton;
 import '../shell/local_game_logic.dart';
-import '../shell/split_screen.dart';
 import '../shell/ticking_play.dart';
 
 /// Ping pong on a 1 x [length] table. Player 1's paddle is at the bottom, player 2's at
@@ -127,10 +127,12 @@ final pingPongInfo = LocalGameInfo(
     // Follow the ball when it's coming, aiming a little off-centre (for angle) and a little late.
     final coming = b.seat == 1 ? g.vel.y < 0 : g.vel.y > 0;
     final aimOff = (b.memory['off'] as double?) ?? 0.0;
-    if (!coming) b.memory['off'] = (b.rng.nextDouble() - 0.5) * 0.16;
-    final target = coming ? g.ball.x + aimOff : 0.5;
+    if (!coming) {
+      b.memory['off'] = (b.rng.nextDouble() - 0.5) * (0.08 + b.skill.aimError);
+    }
+    final target = coming ? g.ball.x + aimOff + b.aimNoise(0.35) : 0.5;
     final x = g.paddleX[b.seat];
-    final step = 0.95 * dt;
+    final step = 0.95 * b.skill.tracking * dt;
     g.movePaddle(b.seat, x + (target - x).clamp(-step, step));
   }),
   online: RelaySpec<PingPongLogic>(
@@ -160,29 +162,75 @@ final pingPongInfo = LocalGameInfo(
     continuous: const {'paddle'},
     view: (context, g, players, me) => RotatedBox(
       quarterTurns: me == 1 ? 2 : 0,
-      child: Column(children: [
-        Expanded(
-            child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: _PongTable(players: players, g: g))),
-        ScoreMiddleBar(
-            players: players, scores: g.scores, label: 'FIRST TO ${g.target}'),
-      ]),
+      child: _PongFrame(players: players, g: g),
     ),
   ),
   play: (players, onFinished) => TickingPlay<PingPongLogic>(
     create: () => PingPongLogic(),
     onFinished: onFinished,
-    builder: (context, g) => Column(children: [
-      Expanded(
-          child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: _PongTable(players: players, g: g))),
-      ScoreMiddleBar(
-          players: players, scores: g.scores, label: 'FIRST TO ${g.target}'),
-    ]),
+    builder: (context, g) => _PongFrame(players: players, g: g),
   ),
 );
+
+/// Scores sit beside the table. The pause button is above the play surface.
+class _PongFrame extends StatelessWidget {
+  final List<GpPlayer> players;
+  final PingPongLogic g;
+  const _PongFrame({required this.players, required this.g});
+
+  @override
+  Widget build(BuildContext context) {
+    final farUpright = BotScope.isBot(context, 1);
+    Widget score(GpPlayer player, int value, {bool upright = true}) {
+      final chip = SizedBox(
+        width: 64,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text(player.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800)),
+          Text('$value',
+              style: TextStyle(
+                  fontFamily: Fonts.display,
+                  fontSize: 32,
+                  height: 1,
+                  color: player.color)),
+        ]),
+      );
+      return RotatedBox(quarterTurns: upright ? 0 : 2, child: chip);
+    }
+
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(8, 6, 12, 0),
+        child: Row(children: [
+          const PauseButton(),
+          const Spacer(),
+          Text('FIRST TO ${g.target}',
+              style: const TextStyle(
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1)),
+        ]),
+      ),
+      Expanded(
+        child: Row(children: [
+          score(players[0], g.scores[0]),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: _PongTable(players: players, g: g),
+            ),
+          ),
+          score(players[1], g.scores[1], upright: farUpright),
+        ]),
+      ),
+    ]);
+  }
+}
 
 class _PongTable extends StatefulWidget {
   final List<GpPlayer> players;

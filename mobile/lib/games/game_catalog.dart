@@ -124,6 +124,8 @@ final List<GameInfo> gameCatalog = [
   _local('carrom', GameCategory.board),
   _local('eight_ball', GameCategory.board),
   _local('bike_race', GameCategory.action),
+  _local('tank_battle', GameCategory.action),
+  _local('sumo_push', GameCategory.action),
 ];
 
 String gameName(String id) => gameCatalog

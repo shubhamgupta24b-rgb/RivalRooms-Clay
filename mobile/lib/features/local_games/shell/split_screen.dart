@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/ui/components.dart';
 import '../../guess_person/models/gp_player.dart';
+import 'bots.dart';
 import 'local_game_shell.dart' show PauseButton;
 
 /// A player's zone (spec 2.12): a 10-24 % wash of their colour and a 2 px edge in it on
@@ -288,8 +289,14 @@ class _ScoreBadge extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              PlayerBadge(index: seat, size: 16, color: player.color),
-              const SizedBox(width: 6),
+              SizedBox(
+                width: 18,
+                height: 18,
+                child: ClipRect(
+                  child: PlayerBadge(index: seat, size: 16, color: player.color),
+                ),
+              ),
+              const SizedBox(width: 8),
               Text('$score',
                   style: const TextStyle(
                       fontFamily: Fonts.display,
@@ -328,7 +335,9 @@ class ScoreMiddleBar extends StatelessWidget {
       decoration: _barDecoration(),
       padding: const EdgeInsets.symmetric(horizontal: Space.m),
       child: Row(children: [
-        RotatedBox(quarterTurns: 2, child: _ScoreBadge(players[1], scores[1])),
+        RotatedBox(
+            quarterTurns: BotScope.isBot(context, 1) ? 0 : 2,
+            child: _ScoreBadge(players[1], scores[1])),
         Expanded(
           child: Text(stripEmoji(label).toUpperCase(),
               textAlign: TextAlign.center,
@@ -373,7 +382,9 @@ class DuelMiddleBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: Space.m),
       child: Row(children: [
         // Player 2's score is upside down so they can read it from their side.
-        RotatedBox(quarterTurns: 2, child: _ScoreBadge(players[1], scores[1])),
+        RotatedBox(
+            quarterTurns: BotScope.isBot(context, 1) ? 0 : 2,
+            child: _ScoreBadge(players[1], scores[1])),
         const SizedBox(width: Space.s),
         Expanded(
           child: ExcludeSemantics(
