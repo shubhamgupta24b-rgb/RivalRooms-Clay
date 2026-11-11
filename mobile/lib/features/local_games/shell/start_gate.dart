@@ -12,7 +12,7 @@ class StartGate extends StatefulWidget {
       {super.key,
       required this.color,
       required this.child,
-      this.ready = 'Ready'});
+      this.ready = 'Tap to start'});
 
   @override
   State<StartGate> createState() => _StartGateState();
@@ -39,7 +39,7 @@ class _StartGateState extends State<StartGate> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text('Ready?',
+                const Text('Tap to start',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontFamily: Fonts.display,

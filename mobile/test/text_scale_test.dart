@@ -26,7 +26,7 @@ Future<void> openAndPlay(WidgetTester tester, LocalGameInfo game) async {
   phone(tester);
   await tester.pumpWidget(scaled(LocalGameShell(game: game)));
   await tester.pump(const Duration(milliseconds: 400));
-  final play = find.text('Start');
+  final play = find.text('Tap to start');
   await tester.ensureVisible(play);
   await tester.pump();
   await tester.tap(play);
@@ -54,9 +54,9 @@ void main() {
     phone(tester);
     await tester.pumpWidget(scaled(LocalGameShell(
         game: localGames.firstWhere((g) => g.id == 'tic_tac_toe'))));
-    await tester.ensureVisible(find.text('Start'));
+    await tester.ensureVisible(find.text('Tap to start'));
     await tester.pump();
-    await tester.tap(find.text('Start'));
+    await tester.tap(find.text('Tap to start'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 2600));
     await tester.tap(find.byType(PauseButton).first);

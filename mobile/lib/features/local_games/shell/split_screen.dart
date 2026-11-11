@@ -272,7 +272,6 @@ class _ScoreBadge extends StatelessWidget {
   const _ScoreBadge(this.player, this.score);
   @override
   Widget build(BuildContext context) {
-    final seat = PlayerPalette.indexOf(player.color) ?? 0;
     return Semantics(
       label: '${player.name} $score',
       excludeSemantics: true,
@@ -289,14 +288,6 @@ class _ScoreBadge extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                width: 18,
-                height: 18,
-                child: ClipRect(
-                  child: PlayerBadge(index: seat, size: 16, color: player.color),
-                ),
-              ),
-              const SizedBox(width: 8),
               Text('$score',
                   style: const TextStyle(
                       fontFamily: Fonts.display,

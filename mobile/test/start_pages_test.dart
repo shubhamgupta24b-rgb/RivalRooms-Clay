@@ -14,9 +14,7 @@ import 'package:multiplayer_game/features/privacy/privacy_screen.dart';
 import 'package:multiplayer_game/features/quick_play/quick_play_screen.dart';
 import 'package:multiplayer_game/features/records/records_screen.dart';
 import 'package:multiplayer_game/features/local_games/local_games_hub_screen.dart';
-import 'package:multiplayer_game/features/local_games/shell/local_game_shell.dart';
 import 'package:multiplayer_game/features/login/login_screen.dart';
-import 'package:multiplayer_game/features/raja_mantri/rmcs_screen.dart';
 import 'package:multiplayer_game/features/splash/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -105,7 +103,8 @@ void main() {
     });
     await tester.pumpAndSettle();
     expect(find.byType(HomeScreen), findsOneWidget);
-    expect(find.text('Hi, asha'), findsOneWidget);
+    expect(find.text('A'), findsWidgets);
+    expect(find.text('RivalRoom Clay'), findsOneWidget);
     expect(auth.displayName, 'asha');
     expect(
       socket.connects.single,
@@ -123,7 +122,8 @@ void main() {
     await bootSplash(tester);
     await tester.pumpAndSettle();
     expect(find.byType(HomeScreen), findsOneWidget);
-    expect(find.text('Hi, Ravi'), findsOneWidget);
+    expect(find.text('R'), findsWidgets);
+    expect(find.text('RivalRoom Clay'), findsOneWidget);
     expect(socket.connects, ['dev:u1:Ravi']);
   });
 
@@ -215,7 +215,10 @@ void main() {
         await tester.runAsync(auth.restore);
         await tester.pump();
         expect(find.text('Online · off'), findsOneWidget);
-        expect(find.text('Ready to play?'), findsOneWidget);
+        expect(find.text('RivalRoom Clay'), findsOneWidget);
+        expect(find.text('How many are playing?'), findsOneWidget);
+        expect(find.textContaining('games · no internet needed'), findsOneWidget);
+        expect(find.text('Ready to play?'), findsNothing);
 
         Future<void> open(Finder target) async {
           await tester.scrollUntilVisible(
@@ -223,9 +226,7 @@ void main() {
             120,
             scrollable: find.byType(Scrollable).first,
           );
-          await tester.ensureVisible(
-            target,
-          ); // also scrolls the sideways featured row
+          await tester.ensureVisible(target);
           await tester.pumpAndSettle();
           await tester.tap(target);
           await tester.pumpAndSettle();
@@ -238,14 +239,23 @@ void main() {
           await tester.pumpAndSettle();
         }
 
-        await openAndBack(find.text('Play on one phone'), LocalGamesHubScreen);
-        // Play online: a sheet with create, join and quick play.
+        await open(find.text('2'));
+        expect(find.text('2-player games'), findsOneWidget);
+        expect(find.byType(LocalGamesHubScreen), findsOneWidget);
+        Navigator.of(tester.element(find.byType(LocalGamesHubScreen))).pop();
+        await tester.pumpAndSettle();
+
+        await open(find.text('3+'));
+        expect(find.text('3+ player games'), findsOneWidget);
+        Navigator.of(tester.element(find.byType(LocalGamesHubScreen))).pop();
+        await tester.pumpAndSettle();
+
         for (final (label, page) in const [
           ('Create room', CreateRoomScreen),
           ('Join room', JoinRoomScreen),
           ('Quick play', QuickPlayScreen),
         ]) {
-          await open(find.text('Play online'));
+          await open(find.text('Players online'));
           await tester.tap(find.text(label));
           await tester.pumpAndSettle();
           expect(find.byType(page), findsOneWidget);
@@ -253,17 +263,7 @@ void main() {
           await tester.pumpAndSettle();
         }
         await openAndBack(find.text('My records'), RecordsScreen);
-        await openAndBack(find.text('Memory'), LocalGameShell);
-        // Featured games scroll sideways.
-        await tester.dragUntilVisible(
-          find.text('Raja Mantri'),
-          find.byType(ListView).last,
-          const Offset(-150, 0),
-        );
-        await openAndBack(find.text('Raja Mantri'), RmcsMenuScreen);
-        await openAndBack(find.text('See all'), LocalGamesHubScreen);
         await openAndBack(find.text('Privacy'), PrivacyScreen);
-        // No server addresses on screen: just the connection pill.
         expect(find.textContaining('Server: '), findsNothing);
         await tester.scrollUntilVisible(
           find.text('Same Wi-Fi'),

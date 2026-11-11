@@ -428,6 +428,7 @@ class GameTile extends StatefulWidget {
   final VoidCallback onTap;
   final VoidCallback? onStar;
   final bool selected;
+  final String? ribbon;
   const GameTile(
       {super.key,
       required this.id,
@@ -438,7 +439,8 @@ class GameTile extends StatefulWidget {
       required this.onTap,
       this.favourite,
       this.onStar,
-      this.selected = false});
+      this.selected = false,
+      this.ribbon});
 
   @override
   State<GameTile> createState() => _GameTileState();
@@ -508,9 +510,31 @@ class _GameTileState extends State<GameTile> {
         ),
       ),
     );
-    if (w.favourite == null) return tile;
-    return Stack(children: [
+    final marked = Stack(children: [
       Positioned.fill(child: tile),
+      if (w.ribbon != null)
+        Positioned(
+          left: 8,
+          top: 8,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+                color: const Color(0xFFFFC21A),
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: const [
+                  BoxShadow(color: Color(0x66000000), blurRadius: 6, offset: Offset(0, 2))
+                ]),
+            child: Text(w.ribbon!,
+                style: const TextStyle(
+                    fontFamily: Fonts.display,
+                    fontSize: 12,
+                    color: Color(0xFF3A2500))),
+          ),
+        ),
+    ]);
+    if (w.favourite == null) return marked;
+    return Stack(children: [
+      Positioned.fill(child: marked),
       Positioned(
         top: 0,
         right: 0,

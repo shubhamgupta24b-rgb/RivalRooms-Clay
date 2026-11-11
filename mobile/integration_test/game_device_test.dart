@@ -323,7 +323,7 @@ void main() {
             await _tap(tester, find.text('Split screen'));
             _note(result, 'play-mode-selected', 'Split screen');
           }
-          await _tap(tester, find.text('Start'));
+          await _tap(tester, find.text('Tap to start'));
           _note(result, 'start-tapped');
           final countdown = find.byType(CountdownOverlay).evaluate().isNotEmpty;
           // Covers 3-2-1 + GO and the shell's transition. Solo/take-turn titles

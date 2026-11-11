@@ -27,7 +27,7 @@ Future<void> toggleComputer(WidgetTester tester, int seat) =>
 
 /// Starts the game from its intro.
 Future<void> tapStart(WidgetTester tester) =>
-    tapFound(tester, find.text('Start'));
+    tapFound(tester, find.text('Tap to start'));
 
 /// True on the result screen (Rematch for matches, Play again for solo games).
 bool atResult() =>
