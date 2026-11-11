@@ -3,14 +3,13 @@ import '../../guess_person/models/gp_player.dart';
 import '../shell/game_hud.dart';
 import '../shell/local_game_info.dart';
 import '../shell/local_game_logic.dart';
-import '../shell/local_game_shell.dart' show PauseButton;
 import '../shell/ticking_play.dart';
 
 /// Two wrestlers in a ring. Tap your half to shove. Push the other one out.
 /// First to 3 wins. The tap zone is the ring; the pause button stays above it.
 class SumoLogic extends LocalGameLogic {
   static const target = 3;
-  final List<Offset> pos = [const Offset(0.5, 0.68), const Offset(0.5, 0.32)];
+  final List<Offset> pos = [const Offset(0.5, 0.62), const Offset(0.5, 0.38)];
   final List<int> points = [0, 0];
   int elapsed = 0;
   int? winner;
@@ -41,8 +40,8 @@ class SumoLogic extends LocalGameLogic {
       final d = (pos[i] - const Offset(0.5, 0.5)).distance;
       if (d > 0.34) {
         points[1 - i]++;
-        pos[0] = const Offset(0.5, 0.66);
-        pos[1] = const Offset(0.5, 0.34);
+        pos[0] = const Offset(0.5, 0.62);
+        pos[1] = const Offset(0.5, 0.38);
         if (points[1 - i] >= target) winner = 1 - i;
         return;
       }
@@ -118,19 +117,12 @@ class _Ring extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(8, 6, 8, 4),
-        child: Row(children: [
-          const PauseButton(),
-          SizedBox(width: 8),
-          Expanded(
-            child: Text('Tap your half to shove',
-                style: TextStyle(
-                    color: Colors.white70, fontWeight: FontWeight.w800)),
-          ),
-        ]),
-      ),
-      GameHud(players: players, scores: g.points),
+      GameHud(
+          players: players,
+          scores: g.points,
+          trailing: const Text('Shove',
+              style: TextStyle(
+                  color: Colors.white70, fontWeight: FontWeight.w800))),
       const SizedBox(height: 8),
       Expanded(
         child: Padding(
@@ -167,21 +159,32 @@ class _SumoPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final c = size.center(Offset.zero);
     final r = size.shortestSide * 0.42;
-    canvas.drawCircle(c, r + 10, Paint()..color = const Color(0xFF8A5A2B));
-    canvas.drawCircle(c, r, Paint()..color = const Color(0xFFE7D3A1));
+    canvas.drawCircle(c + const Offset(0, 6), r + 14, Paint()..color = const Color(0xFF5C3A1E));
+    canvas.drawCircle(c, r + 12, Paint()..color = const Color(0xFF8A5A2B));
+    canvas.drawCircle(
+        c,
+        r,
+        Paint()
+          ..shader = const RadialGradient(
+                  colors: [Color(0xFFFFF1D2), Color(0xFFE7C48A)])
+              .createShader(Rect.fromCircle(center: c, radius: r)));
     canvas.drawCircle(
         c,
         r,
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 4
+          ..strokeWidth = 6
           ..color = const Color(0xFF5C3A1E));
     for (var i = 0; i < 2; i++) {
       final p = g.pos[i];
-      final at = Offset(p.dx * size.width, p.dy * size.height);
-      canvas.drawCircle(at, 22, Paint()..color = colors[i]);
-      canvas.drawCircle(at + const Offset(-6, -4), 3, Paint()..color = Colors.white);
-      canvas.drawCircle(at + const Offset(6, -4), 3, Paint()..color = Colors.white);
+      // Keep the body inside the clay ring at the starting marks.
+      final at = c + Offset((p.dx - 0.5) * r * 1.55, (p.dy - 0.5) * r * 1.55);
+      canvas.drawCircle(at + const Offset(0, 3), 20, Paint()..color = Colors.black26);
+      canvas.drawCircle(at, 20, Paint()..color = colors[i]);
+      canvas.drawCircle(
+          at + const Offset(-4, -6), 6, Paint()..color = Colors.white.withValues(alpha: 0.35));
+      canvas.drawCircle(at + const Offset(-6, -2), 3, Paint()..color = Colors.white);
+      canvas.drawCircle(at + const Offset(6, -2), 3, Paint()..color = Colors.white);
     }
   }
 

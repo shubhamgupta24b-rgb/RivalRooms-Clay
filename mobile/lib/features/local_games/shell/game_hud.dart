@@ -30,24 +30,52 @@ class GameHud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      const PauseButton(),
-      const SizedBox(width: Space.xs),
-      Expanded(
-        child: Wrap(spacing: 6, runSpacing: 6, children: [
-          for (var i = 0; i < players.length; i++)
-            PlayerChip(
-              name: nameOf?.call(i) ?? players[i].name,
-              color: players[i].color,
-              score: scores?[i],
-              suffix: extra?.call(i),
-              active: turn == i,
-              dim: dimmed.contains(i),
+    final nums = scores;
+    final scoreLine = nums == null || nums.isEmpty
+        ? null
+        : nums.map((n) => '$n').join('  –  ');
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 6, 12, 2),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        const PauseButton(),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            if (scoreLine != null)
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(scoreLine,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontFamily: Fonts.display,
+                        fontSize: 32,
+                        height: 1,
+                        color: Colors.white,
+                        fontFeatures: [FontFeature.tabularFigures()])),
+              ),
+            const SizedBox(height: 2),
+            Text(
+              [
+                for (var i = 0; i < players.length; i++)
+                  if (!dimmed.contains(i))
+                    '${nameOf?.call(i) ?? players[i].name}'
+                    '${extra == null ? '' : ' ${extra!(i)}'}'
+                    '${turn == i ? ' · turn' : ''}',
+              ].join('   '),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  fontFamily: Fonts.body,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white70),
             ),
-        ]),
-      ),
-      if (trailing != null) ...[const SizedBox(width: Space.s), trailing!],
-    ]);
+          ]),
+        ),
+        if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+      ]),
+    );
   }
 }
 

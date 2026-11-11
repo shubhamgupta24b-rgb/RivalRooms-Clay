@@ -5,7 +5,6 @@ import '../../guess_person/models/gp_player.dart';
 import '../shell/game_hud.dart';
 import '../shell/local_game_info.dart';
 import '../shell/local_game_logic.dart';
-import '../shell/local_game_shell.dart' show PauseButton;
 import '../shell/ticking_play.dart';
 
 class _Tank {
@@ -31,8 +30,27 @@ class TankBattleLogic extends LocalGameLogic {
   int? winner;
   int _last = 0;
 
+  static const obstacles = <Rect>[
+    Rect.fromLTWH(0.08, 0.62, 0.28, 0.08),
+    Rect.fromLTWH(0.64, 0.78, 0.28, 0.08),
+    Rect.fromLTWH(0.38, 0.32, 0.24, 0.1),
+  ];
+
   TankBattleLogic()
       : tanks = [_Tank(0.5, 1.15, -1.57), _Tank(0.5, 0.3, 1.57)];
+
+  static bool blocked(double x, double y) {
+    const pad = 0.05;
+    for (final r in obstacles) {
+      if (x > r.left - pad &&
+          x < r.right + pad &&
+          y > r.top - pad &&
+          y < r.bottom + pad) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   @override
   bool get finished => winner != null || elapsed >= 60000;
@@ -50,8 +68,12 @@ class TankBattleLogic extends LocalGameLogic {
     if (dist < 0.02) return;
     t.aim = atan2(dy, dx);
     final step = min(0.045, dist);
-    t.x = (t.x + cos(t.aim) * step).clamp(0.08, width - 0.08);
-    t.y = (t.y + sin(t.aim) * step).clamp(0.08, height - 0.08);
+    final nx = (t.x + cos(t.aim) * step).clamp(0.08, width - 0.08);
+    final ny = (t.y + sin(t.aim) * step).clamp(0.08, height - 0.08);
+    if (!blocked(nx, ny)) {
+      t.x = nx;
+      t.y = ny;
+    }
     notifyListeners();
   }
 
@@ -75,6 +97,7 @@ class TankBattleLogic extends LocalGameLogic {
       s.x += s.vx * dt;
       s.y += s.vy * dt;
       if (s.x < 0 || s.y < 0 || s.x > width || s.y > height) return true;
+      if (blocked(s.x, s.y)) return true;
       final other = 1 - s.owner;
       final t = tanks[other];
       if ((Offset(s.x, s.y) - Offset(t.x, t.y)).distance < 0.07) {
@@ -177,17 +200,15 @@ class _Field extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
+      GameHud(players: players, scores: g.hits, turn: null),
       Padding(
-        padding: const EdgeInsets.fromLTRB(8, 6, 8, 4),
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
         child: Row(children: [
-          const PauseButton(),
-          const SizedBox(width: 8),
           Expanded(child: _fire(0)),
           const SizedBox(width: 8),
           Expanded(child: _fire(1)),
         ]),
       ),
-      GameHud(players: players, scores: g.hits, turn: null),
       const SizedBox(height: 6),
       Expanded(
         child: Padding(
@@ -227,10 +248,45 @@ class _TankPainter extends CustomPainter {
   _TankPainter(this.g, this.colors);
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Offset.zero & size, Paint()..color = const Color(0xFFC4B48A));
+    final arena = RRect.fromRectAndRadius(
+        Offset.zero & size, const Radius.circular(28));
+    canvas.drawRRect(
+        arena.shift(const Offset(0, 6)), Paint()..color = const Color(0xFF5C3A1E));
+    canvas.drawRRect(
+        arena,
+        Paint()
+          ..shader = const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFFE7C48A), Color(0xFFC48A4A)])
+              .createShader(Offset.zero & size));
+    canvas.drawRRect(
+        arena,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 10
+          ..color = const Color(0xFF6B4423));
     Offset at(double x, double y) => Offset(
         x / TankBattleLogic.width * size.width,
         y / TankBattleLogic.height * size.height);
+    for (final r in TankBattleLogic.obstacles) {
+      final rect = Rect.fromLTRB(
+          at(r.left, r.top).dx,
+          at(r.left, r.top).dy,
+          at(r.right, r.bottom).dx,
+          at(r.right, r.bottom).dy);
+      final block = RRect.fromRectAndRadius(rect, const Radius.circular(10));
+      canvas.drawRRect(
+          block.shift(const Offset(0, 3)), Paint()..color = const Color(0xFF3A2414));
+      canvas.drawRRect(
+          block,
+          Paint()
+            ..shader = const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0xFF8D6A3A), Color(0xFF5C3A1E)])
+                .createShader(rect));
+    }
     for (var i = 0; i < 2; i++) {
       final t = g.tanks[i];
       final c = at(t.x, t.y);
@@ -238,14 +294,24 @@ class _TankPainter extends CustomPainter {
       canvas.translate(c.dx, c.dy);
       canvas.rotate(t.aim);
       final body = RRect.fromRectAndRadius(
-          const Rect.fromLTWH(-16, -12, 32, 24), const Radius.circular(4));
+          const Rect.fromLTWH(-18, -14, 36, 28), const Radius.circular(10));
+      canvas.drawRRect(
+          body.shift(const Offset(0, 3)), Paint()..color = Colors.black26);
       canvas.drawRRect(body, Paint()..color = colors[i]);
-      canvas.drawRect(const Rect.fromLTWH(8, -3, 16, 6),
-          Paint()..color = const Color(0xFF222222));
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              const Rect.fromLTWH(-10, -8, 16, 10), const Radius.circular(6)),
+          Paint()..color = Colors.white.withValues(alpha: 0.35));
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              const Rect.fromLTWH(8, -4, 16, 8), const Radius.circular(4)),
+          Paint()..color = const Color(0xFF2B2118));
       canvas.restore();
     }
     for (final s in g.shots) {
-      canvas.drawCircle(at(s.x, s.y), 4, Paint()..color = const Color(0xFF1A1440));
+      canvas.drawCircle(
+          at(s.x, s.y) + const Offset(1, 2), 5, Paint()..color = Colors.black26);
+      canvas.drawCircle(at(s.x, s.y), 5, Paint()..color = const Color(0xFFFFC21A));
     }
   }
 

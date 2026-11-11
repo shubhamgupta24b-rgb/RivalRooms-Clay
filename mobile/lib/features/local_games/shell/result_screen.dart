@@ -218,7 +218,7 @@ class ResultScreen extends StatelessWidget {
             const SizedBox(width: 10),
           ],
           Expanded(
-              child: KitButton('All games',
+              child: KitButton('Home',
                   style: KitButtonStyle.ghost, onPressed: onExit)),
         ]),
       ],
@@ -290,7 +290,7 @@ class ResultScreen extends StatelessWidget {
       buttons: [
         GoldButton('Play again', icon: GameIcons.restart, onPressed: onRematch),
         const SizedBox(height: 10),
-        KitButton('All games', style: KitButtonStyle.ghost, onPressed: onExit),
+        KitButton('Home', style: KitButtonStyle.ghost, onPressed: onExit),
       ],
     );
   }

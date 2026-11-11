@@ -108,7 +108,7 @@ void main() {
         find.textContaining('Meera wins!', findRichText: true), findsWidgets);
     expect(find.text('46 – 40 · 5 arrows each'), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp('^Place 1, Meera')), findsOneWidget);
-    for (final b in ['Rematch', 'Change players', 'All games']) {
+    for (final b in ['Rematch', 'Change players', 'Home']) {
       expect(find.text(b), findsOneWidget);
     }
   });

@@ -7,20 +7,14 @@ import '../../core/network/lan_discovery.dart';
 import '../../core/network/socket_manager.dart';
 import '../../core/room/room_manager.dart';
 import '../../core/ui/app_ui.dart';
-import '../../core/records/records.dart';
-import '../../core/settings/app_settings.dart';
 import '../../core/ui/components.dart';
-import '../../core/ui/materials/materials.dart';
 import '../create_room/create_room_screen.dart';
-import '../guess_person/screens/guess_person_menu_screen.dart';
 import '../join_room/join_room_screen.dart';
 import '../lobby/lobby_screen.dart';
 import '../local_games/local_games_hub_screen.dart';
-import '../local_games/shell/game_art.dart';
-import '../local_games/shell/local_game_shell.dart';
+import 'play_count.dart';
 import '../privacy/privacy_screen.dart';
 import '../quick_play/quick_play_screen.dart';
-import '../raja_mantri/rmcs_screen.dart';
 import '../records/records_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,7 +26,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final SocketManager _socket = context.read<SocketManager>();
   bool _rejoined = false;
-  String? _recent; // last game played on this phone
 
   @override
   void initState() {
@@ -40,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen> {
     // The server connects in the background, so check both now and once it comes up.
     WidgetsBinding.instance.addPostFrameCallback((_) => _rejoinRoom());
     _socket.connected.addListener(_onConnection);
-    _loadRecent();
   }
 
   void _onConnection() {
@@ -211,39 +203,10 @@ class _HomeScreenState extends State<HomeScreen> {
         (before != ServerMode.wifi || _socket.connected.value)) await _rooms();
   }
 
-  /// The last game played on this phone, for "Continue".
-  Future<void> _loadRecent() async {
-    try {
-      final r = await Records.recent();
-      if (mounted && r.isNotEmpty) setState(() => _recent = r.first);
-    } catch (_) {}
-  }
-
-  (String, Color, Widget)? _game(String id) {
-    if (id == 'guess_person')
-      return (
-        'Guess the Person',
-        const Color(0xFFFFC93C),
-        const GuessPersonMenuScreen()
-      );
-    if (id == 'raja_mantri')
-      return ('Raja Mantri', const Color(0xFF8A1C3A), const RmcsMenuScreen());
-    for (final g in localGames) {
-      if (g.id == id) return (g.title, g.color, LocalGameShell(game: g));
-    }
-    return null;
-  }
-
-  Future<void> _openGame(Widget page) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => page));
-    _loadRecent();
-  }
-
   @override
   Widget build(BuildContext context) {
     final name = context.watch<AuthenticationManager>().displayName;
     final t = context.tk;
-    final recent = _recent == null ? null : _game(_recent!);
     return Scaffold(
       body: AppBackground(
         child: SafeArea(
@@ -254,97 +217,47 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 14, 16, 22),
                   children: [
                     _header(name),
-                    const SizedBox(height: 16),
-                    _hero(),
+                    const SizedBox(height: 28),
+                    const Text('How many are playing?',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: Fonts.display,
+                            fontSize: 28,
+                            height: 1.05,
+                            color: Colors.white)),
+                    const SizedBox(height: 6),
+                    Text('$totalGameCount games · no internet needed',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontFamily: Fonts.body,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white70)),
+                    const SizedBox(height: 18),
+                    _countGrid(),
                     const SizedBox(height: 16),
                     Row(children: [
                       Expanded(
                           child: _ModeTile(
                               icon: GameIcons.globe,
-                              tint: PlayerPalette.colors[0],
-                              ink: PlayerPalette.tints[0],
-                              label: 'Play online',
+                              tint: const Color(0xFF2E8BFF),
+                              ink: const Color(0xFF9CC9FF),
+                              label: 'Players online',
                               hint: 'Internet rooms',
                               onTap: _playOnline)),
                       const SizedBox(width: 10),
                       Expanded(
                           child: _ModeTile(
                               icon: GameIcons.wifi,
-                              tint: PlayerPalette.colors[2],
-                              ink: PlayerPalette.tints[2],
+                              tint: const Color(0xFF1AA6A6),
+                              ink: const Color(0xFFB6F2F2),
                               label: 'Same Wi-Fi',
                               hint: 'Hotspot, no internet',
                               onTap: _sameWifi)),
-                      const SizedBox(width: 10),
-                      Expanded(
-                          child: _ModeTile(
-                              icon: GameIcons.trophy,
-                              tint: Brand.gold,
-                              ink: const Color(0xFFFFE08A),
-                              label: 'My records',
-                              hint: 'On this phone',
-                              onTap: () => _open(const RecordsScreen()))),
                     ]),
-                    const SizedBox(height: 16),
-                    const SectionHeader('Party lobby'),
+                    const SizedBox(height: 14),
+                    _RecordsPill(onTap: () => _open(const RecordsScreen())),
                     const SizedBox(height: 8),
-                    Row(children: [
-                      Expanded(
-                        child: _LobbyCard(
-                            title: 'Solo',
-                            text: 'One player, this phone',
-                            onTap: () => _open(const LocalGamesHubScreen(
-                                initialFilter: 'solo'))),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _LobbyCard(
-                            title: '2 players',
-                            text: 'Pass the phone or split the screen',
-                            onTap: () => _open(const LocalGamesHubScreen(
-                                initialPlayers: 2))),
-                      ),
-                    ]),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      height: 56,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        clipBehavior: Clip.none,
-                        padding: const EdgeInsets.only(right: 28),
-                        children: [
-                          for (final (label, filter) in const [
-                            ('Party', 'party'),
-                            ('Board', 'board'),
-                            ('Cards', 'cards'),
-                            ('Action', 'action'),
-                            ('Solo', 'solo'),
-                          ])
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: KitChip(label,
-                                  selected: false,
-                                  onTap: () => _open(LocalGamesHubScreen(
-                                      initialFilter: filter))),
-                            ),
-                        ],
-                      ),
-                    ),
-                    if (recent != null) ...[
-                      const SizedBox(height: 16),
-                      _ContinueChip(
-                          id: _recent!,
-                          title: recent.$1,
-                          color: recent.$2,
-                          onTap: () => _openGame(recent.$3)),
-                    ],
-                    const SizedBox(height: 16),
-                    SectionHeader('Featured games',
-                        action: 'See all',
-                        onAction: () => _open(const LocalGamesHubScreen())),
-                    const SizedBox(height: 8),
-                    _featured(),
-                    const SizedBox(height: 18),
                     Center(
                       child: TextButton(
                         style: TextButton.styleFrom(
@@ -368,36 +281,32 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _header(String name) {
-    final t = context.tk;
-    final seat = AppSettings.playerColor.value;
+    final initial = name.trim().isEmpty ? 'S' : name.trim().characters.first.toUpperCase();
     return Row(children: [
       Container(
-        decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [
-          BoxShadow(
-              color: PlayerPalette.color(seat).withValues(alpha: 0.25),
-              spreadRadius: 3)
-        ]),
-        child: PlayerBadge(
-            index: seat, size: 44, initial: name.isEmpty ? '?' : name),
+        width: 44,
+        height: 44,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF7B5CFF), Color(0xFF3E22B2)]),
+            boxShadow: const [
+              BoxShadow(color: Color(0x553E22B2), blurRadius: 8, offset: Offset(0, 3))
+            ]),
+        child: Text(initial,
+            style: const TextStyle(
+                fontFamily: Fonts.display, fontSize: 22, color: Colors.white)),
       ),
       const SizedBox(width: 10),
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Welcome back',
-              style: TextStyle(
-                  fontFamily: Fonts.body,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  color: t.flat ? t.onBg : NeonPalette.label)),
-          Text(name.isEmpty ? 'Hi there' : 'Hi, $name',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  fontFamily: Fonts.display,
-                  fontSize: 22,
-                  height: 1.1,
-                  color: t.onBg)),
-        ]),
+      const Expanded(
+        child: Text('RivalRoom Clay',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+                fontFamily: Fonts.display, fontSize: 20, color: Colors.white)),
       ),
       _status(),
       const SizedBox(width: 4),
@@ -406,6 +315,34 @@ class _HomeScreenState extends State<HomeScreen> {
           label: 'Settings',
           onPressed: () => showSettingsSheet(context)),
     ]);
+  }
+
+  void _openCount(PlayCount count) =>
+      _open(LocalGamesHubScreen(playCount: count));
+
+  Widget _countGrid() {
+    const cards = [
+      (PlayCount.solo, '1', 'Solo', Color(0xFFE23B4A)),
+      (PlayCount.two, '2', 'Players', Color(0xFF2E8BFF)),
+      (PlayCount.three, '3', 'Players', Color(0xFF2ECC71)),
+      (PlayCount.threePlus, '3+', 'Players', Color(0xFFFFC21A)),
+    ];
+    return GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 12,
+      childAspectRatio: 1.35,
+      children: [
+        for (final (count, numeral, caption, color) in cards)
+          _CountCard(
+              numeral: numeral,
+              caption: caption,
+              color: color,
+              onTap: () => _openCount(count)),
+      ],
+    );
   }
 
   /// Online / Hosting on this phone / On a Wi-Fi host / Offline. Tap to retry when offline.
@@ -460,136 +397,112 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       );
 
-  Widget _hero() {
-    return Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: Skin.heroPanel(),
-      child: Stack(children: [
-        const Positioned(
-            right: -6,
-            top: 6,
-            child: ExcludeSemantics(
-                child: SizedBox(
-                    width: 150,
-                    height: 120,
-                    child: CustomPaint(painter: _HeroArt())))),
-        Padding(
-          padding: const EdgeInsets.all(18),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('RIVALROOM',
-                style: TextStyle(
-                    fontFamily: Fonts.body,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.76,
-                    color: Colors.white)),
-            const SizedBox(height: 6),
-            const SizedBox(
-                width: 190,
-                child: Text('Ready to play?',
+}
+
+/// Puffy clay count card: purple body, glossy numeral, coloured caption.
+class _CountCard extends StatelessWidget {
+  final String numeral, caption;
+  final Color color;
+  final VoidCallback onTap;
+  const _CountCard(
+      {required this.numeral,
+      required this.caption,
+      required this.color,
+      required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: '$numeral $caption',
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: () {
+          haptic(HapticWeight.selection);
+          onTap();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF4A32C4), Color(0xFF2A1878)]),
+              boxShadow: const [
+                BoxShadow(
+                    color: Color(0x55201060),
+                    blurRadius: 16,
+                    offset: Offset(0, 8))
+              ]),
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+          child: Column(children: [
+            Expanded(
+              child: Center(
+                child: Text(numeral,
                     style: TextStyle(
                         fontFamily: Fonts.display,
-                        fontSize: 30,
-                        height: 1.05,
-                        color: Colors.white))),
-            const SizedBox(height: 8),
-            SizedBox(
-              width: 200,
-              child: Text(
-                  '$totalGameCount games · 2–6 players\nNo internet needed',
+                        fontSize: 64,
+                        height: 0.9,
+                        color: color,
+                        shadows: [
+                          Shadow(
+                              color: Colors.white.withValues(alpha: 0.45),
+                              offset: const Offset(-1, -2)),
+                          Shadow(
+                              color: color.withValues(alpha: 0.8),
+                              offset: const Offset(0, 4),
+                              blurRadius: 0),
+                        ])),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              decoration: BoxDecoration(
+                  color: color, borderRadius: BorderRadius.circular(14)),
+              child: Text(caption.toUpperCase(),
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
-                      fontFamily: Fonts.body,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
+                      fontFamily: Fonts.display,
+                      fontSize: 16,
                       color: Colors.white)),
             ),
-            const SizedBox(height: 14),
-            IntrinsicWidth(
-                child: GoldButton('Play on one phone',
-                    height: 50,
-                    fontSize: 19,
-                    onPressed: () => _open(const LocalGamesHubScreen()))),
           ]),
         ),
-      ]),
-    );
-  }
-
-  Widget _featured() {
-    final picks = [
-      for (final id in [
-        'memory',
-        'ludo',
-        'colour_clash',
-        'raja_mantri',
-        'archery',
-        'guess_person',
-        'air_hockey'
-      ])
-        if (_game(id) case final g?) (id, g),
-    ];
-    final info = {for (final g in localGames) g.id: g};
-    return SizedBox(
-      height: 210,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        clipBehavior: Clip.none,
-        itemCount: picks.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
-        itemBuilder: (context, i) {
-          final (id, (title, color, page)) = picks[i];
-          final g = info[id];
-          return SizedBox(
-            width: 150,
-            child: GameTile(
-              id: id,
-              title: title,
-              color: color,
-              minPlayers: g?.minPlayers ?? (id == 'raja_mantri' ? 4 : 2),
-              maxPlayers: g?.maxPlayers ?? (id == 'raja_mantri' ? 4 : 6),
-              onTap: () => _openGame(page),
-            ),
-          );
-        },
       ),
     );
   }
 }
 
-/// Solo or two-player entry on the party lobby.
-class _LobbyCard extends StatelessWidget {
-  final String title, text;
+class _RecordsPill extends StatelessWidget {
   final VoidCallback onTap;
-  const _LobbyCard(
-      {required this.title, required this.text, required this.onTap});
-
+  const _RecordsPill({required this.onTap});
   @override
   Widget build(BuildContext context) {
-    final flat = context.tk.flat;
     return Semantics(
       button: true,
-      label: '$title. $text',
+      label: 'My records',
       excludeSemantics: true,
-      child: SkinPanel(
-        radius: Radii.button,
+      child: GestureDetector(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title,
-                style: TextStyle(
-                    fontFamily: Fonts.display,
-                    fontSize: 22,
-                    color: flat ? FlatPalette.ink : Colors.white)),
-            const SizedBox(height: 2),
-            Text(text,
-                style: TextStyle(
-                    fontFamily: Fonts.body,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                    color: flat ? FlatPalette.inkMuted : Colors.white70)),
-          ]),
+        child: Container(
+          height: 56,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              gradient: const LinearGradient(
+                  colors: [Color(0xFFFFE08A), Color(0xFFFFC21A)]),
+              boxShadow: const [
+                BoxShadow(
+                    color: Color(0x66C48A00),
+                    blurRadius: 12,
+                    offset: Offset(0, 6))
+              ]),
+          child: const Text('My records',
+              style: TextStyle(
+                  fontFamily: Fonts.display,
+                  fontSize: 22,
+                  color: Color(0xFF3A2500))),
         ),
       ),
     );
@@ -651,66 +564,6 @@ class _ModeTile extends StatelessWidget {
                         color: flat ? FlatPalette.inkMuted : Colors.white70)),
               ),
           ]),
-        ),
-      ),
-    );
-  }
-}
-
-/// "Continue: play Archery again".
-class _ContinueChip extends StatelessWidget {
-  final String id, title;
-  final Color color;
-  final VoidCallback onTap;
-  const _ContinueChip(
-      {required this.id,
-      required this.title,
-      required this.color,
-      required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final flat = context.tk.flat;
-    final ink = flat ? FlatPalette.ink : Colors.white;
-    return Semantics(
-      button: true,
-      label: 'Continue: play $title again',
-      excludeSemantics: true,
-      child: SkinPanel(
-        radius: Radii.lg,
-        depth: 0.7,
-        onTap: onTap,
-        child: SizedBox(
-          height: 52,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(children: [
-              GameThumb(id: id, color: color, size: 32, radius: 9),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text.rich(
-                  TextSpan(children: [
-                    TextSpan(
-                        text: 'Continue: ',
-                        style: TextStyle(
-                            color: flat
-                                ? FlatPalette.inkMuted
-                                : const Color(0xFFD6DAF7),
-                            fontWeight: FontWeight.w800)),
-                    TextSpan(
-                        text: 'play $title again',
-                        style:
-                            TextStyle(color: ink, fontWeight: FontWeight.w900)),
-                  ]),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontFamily: Fonts.body, fontSize: 14),
-                ),
-              ),
-              GameIcon(GameIcons.forward,
-                  size: 18, color: flat ? FlatPalette.ink : Brand.gold),
-            ]),
-          ),
         ),
       ),
     );
@@ -782,80 +635,6 @@ class _SheetOption extends StatelessWidget {
   }
 }
 
-/// The hero card picture: a die and two cards (Main mockup).
-class _HeroArt extends CustomPainter {
-  const _HeroArt();
-  @override
-  void paint(Canvas canvas, Size size) {
-    void card(Offset at, double angle, Color edge, {bool back = false}) {
-      canvas.save();
-      canvas.translate(at.dx, at.dy);
-      canvas.rotate(angle);
-      const r = Rect.fromLTWH(-24, -33, 48, 66);
-      canvas.drawRRect(
-          RRect.fromRectAndRadius(
-              r.shift(const Offset(1, 4)), const Radius.circular(8)),
-          Paint()..color = Colors.black.withValues(alpha: 0.3));
-      if (back) {
-        canvas.translate(r.left, r.top);
-        const CardBackPainter(radius: 8).paint(canvas, r.size);
-      } else {
-        canvas.drawRRect(RRect.fromRectAndRadius(r, const Radius.circular(8)),
-            Paint()..color = const Color(0xFFFFF8EC));
-        canvas.drawRRect(
-            RRect.fromRectAndRadius(r.deflate(1.5), const Radius.circular(7)),
-            Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 2.5
-              ..color = edge);
-        paintIcon(canvas, GameIcons.cherry,
-            Rect.fromCenter(center: Offset.zero, width: 32, height: 32));
-      }
-      canvas.restore();
-    }
-
-    card(const Offset(62, 64), -0.22, PlayerPalette.colors[0], back: true);
-    card(const Offset(100, 58), 0.16, PlayerPalette.colors[1]);
-    // A die.
-    canvas.save();
-    canvas.translate(46, 92);
-    canvas.rotate(0.2);
-    const d = Rect.fromLTWH(-15, -15, 30, 30);
-    canvas.drawRRect(
-        RRect.fromRectAndRadius(
-            d.shift(const Offset(0, 3)), const Radius.circular(7)),
-        Paint()..color = Colors.black.withValues(alpha: 0.3));
-    canvas.drawRRect(RRect.fromRectAndRadius(d, const Radius.circular(7)),
-        Paint()..color = Colors.white);
-    final pip = Paint()..color = Brand.onGold;
-    for (final p in const [
-      Offset(-7, -7),
-      Offset(7, -7),
-      Offset(0, 0),
-      Offset(-7, 7),
-      Offset(7, 7)
-    ]) {
-      canvas.drawCircle(p, 2.8, pip);
-    }
-    canvas.restore();
-    // Sparkles.
-    final s = Paint()..color = Brand.gold;
-    for (final (x, y, r) in const [
-      (20.0, 22.0, 2.5),
-      (136.0, 18.0, 2.0),
-      (130.0, 104.0, 2.4)
-    ]) {
-      canvas.drawCircle(Offset(x, y), r, s);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_HeroArt old) => false;
-}
-
-/// Same Wi-Fi / hotspot: Host on this phone (pops [host]) or Join a friend, which searches
-/// this Wi-Fi/hotspot for a phone or laptop hosting games and pops its URL when found;
-/// or type the host's address.
 class _WifiSearchSheet extends StatefulWidget {
   static const host = 'host';
   const _WifiSearchSheet();

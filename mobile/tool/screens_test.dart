@@ -78,7 +78,7 @@ void main() {
       ));
       await tester.pump(const Duration(milliseconds: 300));
       await snap(tester, key, '${game.id}_intro');
-      final play = find.text('Start');
+      final play = find.text('Tap to start');
       await tester.ensureVisible(play);
       await tester.pump();
       await tester.tap(play);

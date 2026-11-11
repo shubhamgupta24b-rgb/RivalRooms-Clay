@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/records/records.dart';
 import '../../core/ui/components.dart';
 import '../../games/game_catalog.dart';
+import '../home/play_count.dart';
 import '../guess_person/screens/guess_person_menu_screen.dart';
 import '../../core/ui/app_ui.dart' show AppBackground;
 import '../raja_mantri/rmcs_screen.dart';
@@ -206,7 +207,11 @@ class LocalGamesHubScreen extends StatefulWidget {
 
   /// Player-count filter. 5 means 5–6.
   final int? initialPlayers;
-  const LocalGamesHubScreen({super.key, this.initialFilter, this.initialPlayers});
+
+  /// Home's count cards: solo, 2, 3, or more than 3.
+  final PlayCount? playCount;
+  const LocalGamesHubScreen(
+      {super.key, this.initialFilter, this.initialPlayers, this.playCount});
   @override
   State<LocalGamesHubScreen> createState() => _LocalGamesHubScreenState();
 }
@@ -269,7 +274,16 @@ class _LocalGamesHubScreenState extends State<LocalGamesHubScreen> {
         duration: const Duration(milliseconds: 1400));
   }
 
+  static const _newGames = {'tank_battle', 'sumo_push'};
+
   bool _matches(_Entry e) {
+    if (widget.playCount != null &&
+        !supportsPlayCount(
+            minPlayers: e.minPlayers,
+            maxPlayers: e.maxPlayers,
+            count: widget.playCount!)) {
+      return false;
+    }
     final q = _search.text.trim().toLowerCase();
     if (q.isNotEmpty &&
         !e.title.toLowerCase().contains(q) &&
@@ -293,6 +307,7 @@ class _LocalGamesHubScreenState extends State<LocalGamesHubScreen> {
   @override
   Widget build(BuildContext context) {
     final t = context.tk;
+    final wide = MediaQuery.sizeOf(context).width >= 700;
     final shown = _entriesList.where(_matches).toList();
     final together = shown.where((e) => !e.solo).toList(),
         solo = shown.where((e) => e.solo).toList();
@@ -310,11 +325,11 @@ class _LocalGamesHubScreenState extends State<LocalGamesHubScreen> {
     Widget grid(List<_Entry> items) => SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
           sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 230,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: wide ? 3 : 2,
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
-                mainAxisExtent: 196),
+                mainAxisExtent: 210),
             delegate: SliverChildBuilderDelegate(
               (_, i) {
                 final e = items[i];
@@ -325,6 +340,7 @@ class _LocalGamesHubScreenState extends State<LocalGamesHubScreen> {
                   minPlayers: e.minPlayers,
                   maxPlayers: e.maxPlayers,
                   favourite: favourites.contains(e.id),
+                  ribbon: _newGames.contains(e.id) ? 'NEW!' : null,
                   onTap: () => _open(e),
                   onStar: () => _toggleFavourite(e),
                 );
@@ -344,7 +360,9 @@ class _LocalGamesHubScreenState extends State<LocalGamesHubScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
                 child: PageHeader(
                   label: 'Play on one phone',
-                  title: '$totalGameCount games',
+                  title: widget.playCount == null
+                      ? '$totalGameCount games'
+                      : playCountTitle(widget.playCount!),
                   trailing: RoundButton(
                       icon: GameIcons.settings,
                       label: 'Settings',

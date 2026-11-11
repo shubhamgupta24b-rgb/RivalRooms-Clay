@@ -21,6 +21,7 @@ class EightBallLogic extends LocalGameLogic {
   bool ballInHand = false;
   String message = 'Pull back from the cue ball and let go';
   int _last = 0;
+  int _shotStart = 0;
   bool _clock = false;
   final Set<int> _before = {};
 
@@ -87,11 +88,29 @@ class EightBallLogic extends LocalGameLogic {
     if (!_clock) {
       _clock = true;
       _last = ms;
+      _shotStart = ms;
       return;
     }
     table.step(((ms - _last) / 1000).clamp(0.0, 0.05));
     _last = ms;
-    if (table.resting) _settle();
+    for (final p in table.pucks) {
+      if (p.pocketed) continue;
+      if (p.x < -0.3 || p.y < -0.3 || p.x > table.w + 0.3 || p.y > table.h + 0.3) {
+        p.vx = 0;
+        p.vy = 0;
+        p.x = p.x.clamp(p.r, table.w - p.r);
+        p.y = p.y.clamp(p.r, table.h - p.r);
+      }
+    }
+    // A shot that never quite rests used to leave "No ball pocketed" up and
+    // lock the table, so the next player never got the turn back.
+    if (table.resting || ms - _shotStart > 8000) {
+      for (final p in table.pucks) {
+        p.vx = 0;
+        p.vy = 0;
+      }
+      _settle();
+    }
     notifyListeners();
   }
 
@@ -203,8 +222,9 @@ class EightBallLogic extends LocalGameLogic {
     if (mine.isNotEmpty && theirs.isEmpty) {
       message = myGroupClear ? 'On the 8-ball' : 'Your ball. Shoot again';
     } else {
-      message = theirs.isNotEmpty ? 'Opponent ball' : 'No ball pocketed';
       turn = 1 - turn;
+      ballInHand = false;
+      message = theirs.isNotEmpty ? 'Opponent ball' : 'No ball pocketed';
       if (groupOwner != null &&
           left(groupOwner == turn ? group == 0 : group != 0) == 0) {
         message = 'On the 8-ball';
@@ -321,15 +341,23 @@ class _PoolViewState extends State<_PoolView> {
   Offset? _finger;
   double _power = 0;
 
-  bool get _mine {
-    final seat = widget.me ?? widget.g.turn;
-    return seat == widget.g.turn && !widget.g.moving && widget.g.winner == null;
+  int _seat(BuildContext context) {
+    if (widget.me != null) return widget.me!;
+    return BotScope.humanSeat(context) ?? widget.g.turn;
+  }
+
+  bool _mine(BuildContext context) {
+    final seat = _seat(context);
+    return seat == widget.g.turn &&
+        !widget.g.moving &&
+        widget.g.winner == null;
   }
 
   @override
   Widget build(BuildContext context) {
     final g = widget.g;
-    final seat = widget.me ?? g.turn;
+    final seat = _seat(context);
+    final mine = _mine(context);
     return Column(children: [
       GameHud(
           players: widget.players,
@@ -368,19 +396,19 @@ class _PoolViewState extends State<_PoolView> {
 
                     return GestureDetector(
                       behavior: HitTestBehavior.opaque,
-                      onTapUp: _mine && g.ballInHand
+                      onTapUp: mine && g.ballInHand
                           ? (d) {
                               final t = tableOf(d.localPosition);
                               g.placeCue(seat, t.dx, t.dy);
                             }
                           : null,
-                      onPanStart: _mine && !g.ballInHand
+                      onPanStart: mine && !g.ballInHand
                           ? (d) => aim(d.localPosition)
                           : null,
-                      onPanUpdate: _mine && !g.ballInHand
+                      onPanUpdate: mine && !g.ballInHand
                           ? (d) => aim(d.localPosition)
                           : null,
-                      onPanEnd: _mine && !g.ballInHand
+                      onPanEnd: mine && !g.ballInHand
                           ? (_) {
                               final finger = _finger;
                               setState(() {

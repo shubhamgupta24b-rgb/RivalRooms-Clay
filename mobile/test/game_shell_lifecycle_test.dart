@@ -93,7 +93,7 @@ Future<void> _open(
   );
   if (computer) await toggleComputer(tester, 1);
   await tapStart(tester);
-  if (!solo) await tester.pump(CountdownOverlay.total);
+  await tester.pump(CountdownOverlay.total);
   await tester.pump(const Duration(milliseconds: 400));
   await tester.pump(const Duration(milliseconds: 400));
 }
@@ -376,6 +376,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Restart').last);
       await tester.pump();
+      await tester.pump(CountdownOverlay.total);
       await tester.pump(const Duration(milliseconds: 400));
       expect(game.clocks, hasLength(2));
       expect(game.clocks.last.elapsedMs, lessThan(1000));
@@ -436,6 +437,7 @@ void main() {
       expect(_result(tester).best, isNull);
       _result(tester).onRematch();
       await tester.pump();
+      await tester.pump(CountdownOverlay.total);
       await tester.pump(const Duration(milliseconds: 400));
       game.finishes.last([10]);
       await tester.pump();

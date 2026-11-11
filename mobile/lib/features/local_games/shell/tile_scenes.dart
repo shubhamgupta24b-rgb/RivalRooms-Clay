@@ -1735,6 +1735,21 @@ final Map<String, void Function(_Kit k)> _scenes = {
         k.rc(0.65, 0.8, 0.34, 0.08), Paint()..color = const Color(0xFF6B4A2A));
     k.icon(GameIcons.hammer, k.p(0.95, 0.3), 0.4);
   },
+  'tank_battle': (k) {
+    final yard = k.rc(0.65, 0.52, 1.15, 0.9);
+    k.block(yard, const Color(0xFFE7C48A), radius: 0.08);
+    k.block(k.rc(0.45, 0.55, 0.28, 0.12), const Color(0xFF6B4423), radius: 0.03);
+    k.block(k.rc(0.9, 0.4, 0.26, 0.12), const Color(0xFF8D6A3A), radius: 0.03);
+    k.ball(k.p(0.4, 0.78), 0.08, _blue, shade: false);
+    k.ball(k.p(0.95, 0.28), 0.08, _orange, shade: false);
+  },
+  'sumo_push': (k) {
+    final c = k.p(0.65, 0.52);
+    k.c.drawCircle(c, 0.42 * k.u, Paint()..color = const Color(0xFF8A5A2B));
+    k.c.drawCircle(c, 0.34 * k.u, Paint()..color = const Color(0xFFFFF1D2));
+    k.ball(k.p(0.65, 0.66), 0.1, _blue, shade: false);
+    k.ball(k.p(0.65, 0.38), 0.1, _orange, shade: false);
+  },
 };
 
 /// Guess Who style: a row of character cards, one being checked.

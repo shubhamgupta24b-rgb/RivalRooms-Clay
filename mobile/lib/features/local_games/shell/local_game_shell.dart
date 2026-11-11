@@ -21,22 +21,6 @@ export 'result_screen.dart' show ResultExtras, ResultScope;
 
 enum _ShellPhase { intro, countdown, playing, result }
 
-/// Solo games that start moving the moment they appear. They get the same
-/// 3-2-1 as a two-player match. Games with their own level menu gate themselves.
-const soloCountdownIds = {
-  'fruit_cut',
-  'flappy_jump',
-  'dino_run',
-  'brick_breaker',
-  'space_shooter',
-  'color_switch',
-  'sky_jumper',
-  'stack_tower',
-  'whack_mole',
-  'bubble_shooter',
-  'piano_tiles',
-};
-
 /// Lets a game place its own pause (and help) button wherever it fits its layout.
 /// [onLeave] opens the pause sheet, [onHelp] How to play; [state] is the game's current
 /// state line ("Arrow 3 of 5"), shown on the pause sheet.
@@ -148,14 +132,11 @@ class _LocalGameShellState extends State<LocalGameShell>
   /// Names typed on the intro win over the defaults.
   List<GpPlayer> _makePlayers(int n) {
     final myName = AppSettings.playerName.value;
+    // Clay Party: blue is you, orange is the opponent, then distinct colours.
     final colours = [
       for (var i = 0; i < math.max(n, 1); i++)
         gpPlayerColors[i % gpPlayerColors.length],
     ];
-    final mine = PlayerPalette.color(AppSettings.playerColor.value);
-    final swap = colours.indexOf(mine);
-    if (swap > 0) colours[swap] = colours[0];
-    colours[0] = mine;
     if (widget.game.solo)
       return [
         GpPlayer(
@@ -215,11 +196,12 @@ class _LocalGameShellState extends State<LocalGameShell>
   int turnMinutes = 1;
   bool get _turnsOn => takeTurns && _game.turns != null && players.length > 1;
 
-  /// Take-turns games count down inside each turn. Puzzle solos start when you tap.
-  /// Real-time solos (and every head-to-head game) get Ready's 3-2-1.
+  /// Take-turns games count down inside each turn. Chicken Jump and Bike Racing
+  /// ask for a level first, then their own Tap to start. Everything else gets 3-2-1.
   bool get _showCountdown =>
       !_turnsOn &&
-      (!widget.game.solo || soloCountdownIds.contains(widget.game.id));
+      widget.game.id != 'chicken_jump' &&
+      widget.game.id != 'bike_race';
 
   void _start() {
     setState(() {

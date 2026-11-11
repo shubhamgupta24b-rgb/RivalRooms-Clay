@@ -91,6 +91,53 @@ void main() {
           isTrue);
     });
 
+    test('two misses in a row hand the turn back', () {
+      final g = EightBallLogic();
+      for (final p in g.table.pucks) {
+        if (p.id != 0 && p.id != 1) p.pocketed = true;
+      }
+      void lineUp() {
+        final cue = g.table.byId(0);
+        final ball = g.table.byId(1);
+        cue
+          ..pocketed = false
+          ..x = 0.42
+          ..y = 0.5
+          ..vx = 0
+          ..vy = 0;
+        ball
+          ..pocketed = false
+          ..x = 0.58
+          ..y = 0.5
+          ..vx = 0
+          ..vy = 0;
+        g.ballInHand = false;
+        g.moving = false;
+      }
+
+      void untilRest() {
+        for (var t = 0; t < 30000 && g.moving; t += 16) {
+          g.update(t);
+        }
+        expect(g.moving, isFalse, reason: g.message);
+      }
+
+      lineUp();
+      expect(g.turn, 0);
+      g.shoot(0, 0, 0.34);
+      untilRest();
+      expect(g.turn, 1, reason: g.message);
+      expect(g.message, 'No ball pocketed');
+      lineUp();
+      g.shoot(1, pi, 0.34);
+      untilRest();
+      expect(g.turn, 0, reason: 'the turn comes back after the second miss');
+      expect(g.ballInHand, isFalse);
+      lineUp();
+      g.shoot(0, 0, 0.34);
+      expect(g.moving, isTrue, reason: 'the first player can shoot again');
+    });
+
     test('missing every ball is a foul and ball-in-hand', () {
       final g = EightBallLogic();
       for (final p in g.table.pucks) {

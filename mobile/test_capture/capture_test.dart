@@ -249,7 +249,7 @@ void main() {
       await pumpPage(tester, LocalGameShell(game: g));
       await run(tester, 900);
       await snap(tester, 'g_${g.id}_1intro');
-      final start = find.text('Start');
+      final start = find.text('Tap to start');
       if (start.evaluate().isEmpty) return;
       await tester.ensureVisible(start);
       await tester.pump();
